@@ -1,10 +1,10 @@
 language: csharp
-solution: ./src/PolygonGeneralization.sln
+solution: PolygonGeneralization.sln
 
 install:
   - sudo apt-get install nunit-console
-  - nuget restore ./src/PolygonGeneralization.sln
+  - nuget restore PolygonGeneralization.sln
   
 script:    # the following commands are just examples, use whatever your build process requires
-  - xbuild /p:Configuration=Debug ./src/PolygonGeneralization.sln
-  - nunit-console ./src/PolygonGeneralization.Core.Tests/bin/Debug/PolygonGeneralization.Core.Tests.dll
+  - xbuild /p:Configuration=Debug PolygonGeneralization.sln
+  - nunit-console PolygonGeneralization.Core.Tests/bin/Debug/PolygonGeneralization.Core.Tests.dll
