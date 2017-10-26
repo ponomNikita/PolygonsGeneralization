@@ -3,17 +3,18 @@ using System.Collections.Generic;
 
 namespace PolygonGeneralization.Core
 {
-    using Path = List<List<PointD>>;
+    using Paths = List<List<PointD>>;
+    using Path = List<PointD>;
     public class MyClipper
     {
-        private Path _subject;
-        private Path _clipping;
-        private Path _solution;
+        private Paths _subject;
+        private Paths _clipping;
+        private Paths _solution;
 
         private HashSet<PointD> _pointsSet;
         private HashSet<Edge> _edgesSet;
        
-        public MyClipper(Path subject, Path clipping)
+        public MyClipper(Paths subject, Paths clipping)
         {
             _subject = subject;
             _clipping = clipping;
@@ -22,7 +23,7 @@ namespace PolygonGeneralization.Core
         public void Execute()
         {
             if(_solution == null)
-                _solution = new Path();
+                _solution = new Paths();
 
             if (_pointsSet == null)
                 _pointsSet = new HashSet<PointD>();
@@ -43,7 +44,7 @@ namespace PolygonGeneralization.Core
             BuildFrom(_clipping, false);
         }
 
-        private void BuildFrom(Path countours, bool isSubject)
+        private void BuildFrom(Paths countours, bool isSubject)
         {
             foreach (var contour in countours)
             {
@@ -158,6 +159,37 @@ namespace PolygonGeneralization.Core
             {
                 return X.GetHashCode() * 397 + Y.GetHashCode();
             }
+        }
+
+        public bool IsInside(Path contour)
+        {
+            int i, j;
+            bool isInside = false;
+            int size = contour.Count;
+
+            for (i = 0, j = size - 1; i < size; j = i++)
+            {
+                if (IsOnEdge(contour[j], contour[i]))
+                    return true;
+
+                if (((contour[i].Y > Y) != (contour[j].Y > Y)) && (X < (contour[j].X - contour[i].X) * (Y - contour[i].Y) / (contour[j].Y - contour[i].Y) + contour[i].X))
+                    isInside = !isInside;
+            }
+            return isInside;
+        }
+
+        public bool IsOnEdge(Edge edge)
+        {
+            return IsOnEdge(edge.A, edge.B);
+        }
+
+        public bool IsOnEdge(PointD a, PointD b)
+        {
+            var isOnLine = Math.Abs((X - a.X)*(b.Y - a.Y) - 
+                (Y - a.Y)*(b.X - a.X)) < Double.Epsilon;
+
+            return isOnLine && (X >= a.X && X <= b.X && a.X < b.X ||
+                   Y >= a.Y && Y <= b.Y && a.Y < b.Y);
         }
     }
 
