@@ -6,7 +6,7 @@ namespace PolygonGeneralization.Core
 {
     using Paths = List<List<PointD>>;
     using Path = List<PointD>;
-    public class MyClipper
+    public class Clipper
     {
         private Paths _subject;
         private Paths _clipping;
@@ -15,7 +15,7 @@ namespace PolygonGeneralization.Core
         private HashSet<PointD> _pointsSet;
         private HashSet<Edge> _edgesSet;
        
-        public MyClipper(Paths subject, Paths clipping)
+        public Clipper(Paths subject, Paths clipping)
         {
             _subject = subject;
             _clipping = clipping;
@@ -28,6 +28,12 @@ namespace PolygonGeneralization.Core
         {
             BuildModel();
             MarkEdges();
+            BuildSolution();
+        }
+
+        private void BuildSolution()
+        {
+            
         }
 
         private void MarkEdges()

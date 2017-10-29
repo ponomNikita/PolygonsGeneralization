@@ -9,7 +9,7 @@ namespace PolygonGeneralization.Core.Tests
     [TestFixture]
     public class ClipperTests
     {
-        private MyClipper _clipper;
+        private Clipper _clipper;
 
         private List<List<PointD>> _subject;
         private List<List<PointD>> _clipping;
@@ -54,14 +54,14 @@ namespace PolygonGeneralization.Core.Tests
                 }
             };
 
-            _insertEdgeMethod = typeof(MyClipper).GetMethod("InsertEdge", BindingFlags.Instance | BindingFlags.NonPublic);
-            _buildModelMethod = typeof(MyClipper).GetMethod("BuildModel", BindingFlags.Instance | BindingFlags.NonPublic);
-            _markEdgesMethod = typeof(MyClipper).GetMethod("MarkEdges", BindingFlags.Instance | BindingFlags.NonPublic);
+            _insertEdgeMethod = typeof(Clipper).GetMethod("InsertEdge", BindingFlags.Instance | BindingFlags.NonPublic);
+            _buildModelMethod = typeof(Clipper).GetMethod("BuildModel", BindingFlags.Instance | BindingFlags.NonPublic);
+            _markEdgesMethod = typeof(Clipper).GetMethod("MarkEdges", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            _edgeSet = typeof(MyClipper).GetField("_edgesSet", BindingFlags.Instance | BindingFlags.NonPublic);
-            _pointsSet = typeof(MyClipper).GetField("_pointsSet", BindingFlags.Instance | BindingFlags.NonPublic);
+            _edgeSet = typeof(Clipper).GetField("_edgesSet", BindingFlags.Instance | BindingFlags.NonPublic);
+            _pointsSet = typeof(Clipper).GetField("_pointsSet", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            _clipper = new MyClipper(_subject, _clipping);
+            _clipper = new Clipper(_subject, _clipping);
 
             _expectedEdgesAfterBuildModel = new HashSet<Edge>
             {
