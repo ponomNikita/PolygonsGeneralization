@@ -26,7 +26,12 @@ namespace PolygonGeneralization.Core
         /// </summary>
         public void Execute()
         {
-            if(_solution == null)
+            BuildModel();
+        }
+
+        private void BuildModel()
+        {
+            if (_solution == null)
                 _solution = new Paths();
 
             if (_pointsSet == null)
@@ -39,11 +44,6 @@ namespace PolygonGeneralization.Core
             _pointsSet.Clear();
             _edgesSet.Clear();
 
-            BuildModel();
-        }
-
-        private void BuildModel()
-        {
             BuildFrom(_subject, true);
             BuildFrom(_clipping, false);
         }
@@ -56,7 +56,6 @@ namespace PolygonGeneralization.Core
                 for (int i = 0; i < size; i++)
                 {
                     _pointsSet.Add(contour[i]);
-
                     var newEdge = i == size - 1
                         ? new Edge(contour[i], contour[0])
                         : new Edge(contour[i], contour[i + 1]);
@@ -100,6 +99,8 @@ namespace PolygonGeneralization.Core
             if (success)
             {
                 _edgesSet.Add(newEdge);
+                _pointsSet.Add(newEdge.A);
+                _pointsSet.Add(newEdge.B);
             }
         }
     }
@@ -242,6 +243,12 @@ namespace PolygonGeneralization.Core
 
     public class Edge
     {
+        public Edge(PointD a, PointD b, bool isFromSubject, bool isFromClipping)
+            : this(a, b)
+        {
+            IsFromClipping = isFromClipping;
+            IsFromSubject = isFromSubject;
+        }
         public Edge(PointD a, PointD b)
         {
             A = a;
