@@ -4,34 +4,27 @@ namespace PolygonGeneralization.Core
 {
     public class Polygon
     {
-        public Polygon(List<List<IntPoint>> contours)
+        public Polygon(List<List<PointD>> contours)
         {
             _contours = contours;
         }
         public Polygon()
         {
-            _contours = new List<List<IntPoint>>();
+            _contours = new List<List<PointD>>();
         }
 
-        private readonly List<List<IntPoint>> _contours;
+        private readonly List<List<PointD>> _contours;
 
         public int ContoursCount => _contours.Count;
 
-        public List<List<IntPoint>> GetContours()
+        public List<List<PointD>> GetContours()
         {
             return _contours;
         }
 
         public Polygon Union(Polygon clipping)
         {
-            var clipper = new Clipper();
-            clipper.AddPaths(_contours, PolyType.ptSubject, true);
-            clipper.AddPaths(clipping.GetContours(), PolyType.ptClip, true);
-
-            var solution = new Polygon();
-            clipper.Execute(ClipType.ctUnion, solution.GetContours(), PolyFillType.pftNonZero);
-
-            return solution;
+            return new Polygon();
         }
     }
 }
