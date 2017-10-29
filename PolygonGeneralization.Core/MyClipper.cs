@@ -161,7 +161,7 @@ namespace PolygonGeneralization.Core
             }
         }
 
-        public bool IsInside(Path contour)
+        public bool IsInside(Path contour, bool includeBorders = true)
         {
             int i, j;
             bool isInside = false;
@@ -170,12 +170,37 @@ namespace PolygonGeneralization.Core
             for (i = 0, j = size - 1; i < size; j = i++)
             {
                 if (IsOnEdge(contour[j], contour[i]))
-                    return true;
+                    return includeBorders;
 
                 if (((contour[i].Y > Y) != (contour[j].Y > Y)) && (X < (contour[j].X - contour[i].X) * (Y - contour[i].Y) / (contour[j].Y - contour[i].Y) + contour[i].X))
                     isInside = !isInside;
             }
             return isInside;
+        }
+
+        public bool IsInside(Paths contours)
+        {
+            if (contours == null || contours.Count == 0)
+            {
+                throw new ArgumentException(nameof(contours));
+            }
+
+            bool isInOuterContour = IsInside(contours[0]);
+            bool isInInnerContour = false;
+
+            if (contours.Count > 1)
+            {
+                for (int i = 1; i < contours.Count; i++)
+                {
+                    if (IsInside(contours[i], false))
+                    {
+                        isInInnerContour = true;
+                        break;
+                    }
+                }
+            }
+
+            return isInOuterContour && !isInInnerContour;
         }
 
         public bool IsOnEdge(Edge edge)
@@ -185,11 +210,19 @@ namespace PolygonGeneralization.Core
 
         public bool IsOnEdge(PointD a, PointD b)
         {
+            if (a == b)
+            {
+                throw new ArgumentException("Points a and b must be not equal");
+            }
+
             var isOnLine = Math.Abs((X - a.X)*(b.Y - a.Y) - 
                 (Y - a.Y)*(b.X - a.X)) < Double.Epsilon;
 
-            return isOnLine && (X >= a.X && X <= b.X && a.X < b.X ||
-                   Y >= a.Y && Y <= b.Y && a.Y < b.Y);
+            return isOnLine && 
+                (X >= a.X && X <= b.X && a.X < b.X || 
+                X <= a.X && X >= b.X && a.X > b.X ||
+                Y >= a.Y && Y <= b.Y && a.Y < b.Y ||
+                Y <= a.Y && Y >= b.Y && a.Y > b.Y);
         }
     }
 
