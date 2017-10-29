@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PolygonGeneralization.Core
 {
@@ -20,6 +21,9 @@ namespace PolygonGeneralization.Core
             _clipping = clipping;
         }
 
+        /// <summary>
+        /// Only union implemented now
+        /// </summary>
         public void Execute()
         {
             if(_solution == null)
@@ -69,9 +73,19 @@ namespace PolygonGeneralization.Core
         {
             bool success = true;
 
-            foreach (var existing in _edgesSet)
+            var edgesList = _edgesSet.ToList();
+
+            foreach (var existing in edgesList)
             {
-                Tuple<Edge, Edge> subdivision = newEdge.GetSubdivision(existing);
+                var subdivision = newEdge.GetSubdivision(existing);
+
+                var existingEdgeSubdivision = existing.GetSubdivision(newEdge);
+                if (existingEdgeSubdivision.Item2 != null)
+                {
+                    _edgesSet.Remove(existing);
+                    _edgesSet.Add(existingEdgeSubdivision.Item1);
+                    _edgesSet.Add(existingEdgeSubdivision.Item2);
+                }
 
                 if (subdivision.Item2 != null)
                 {
