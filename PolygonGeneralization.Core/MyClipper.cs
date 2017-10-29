@@ -27,6 +27,21 @@ namespace PolygonGeneralization.Core
         public void Execute()
         {
             BuildModel();
+            MarkEdges();
+        }
+
+        private void MarkEdges()
+        {
+            foreach (var edge in _edgesSet)
+            {
+                if (edge.IsFromSubject && !edge.IsFromClipping && !edge.IsInside(_clipping) ||
+                    edge.IsFromClipping && !edge.IsFromSubject && !edge.IsInside(_subject))
+                {
+                    edge.IsResult = true;
+                }
+            }
+
+            _edgesSet.RemoveWhere(e => !e.IsResult);
         }
 
         private void BuildModel()
@@ -81,6 +96,11 @@ namespace PolygonGeneralization.Core
                 var existingEdgeSubdivision = existing.GetSubdivision(newEdge);
                 if (existingEdgeSubdivision.Item2 != null)
                 {
+                    existingEdgeSubdivision.Item1.IsFromSubject = existing.IsFromSubject;
+                    existingEdgeSubdivision.Item1.IsFromClipping = existing.IsFromClipping;
+                    existingEdgeSubdivision.Item2.IsFromSubject = existing.IsFromSubject;
+                    existingEdgeSubdivision.Item2.IsFromClipping = existing.IsFromClipping;
+
                     _edgesSet.Remove(existing);
                     _edgesSet.Add(existingEdgeSubdivision.Item1);
                     _edgesSet.Add(existingEdgeSubdivision.Item2);
@@ -88,6 +108,11 @@ namespace PolygonGeneralization.Core
 
                 if (subdivision.Item2 != null)
                 {
+                    subdivision.Item1.IsFromSubject = newEdge.IsFromSubject;
+                    subdivision.Item1.IsFromClipping = newEdge.IsFromClipping;
+                    subdivision.Item2.IsFromSubject = newEdge.IsFromSubject;
+                    subdivision.Item2.IsFromClipping = newEdge.IsFromClipping;
+
                     InsertEdge(subdivision.Item1);
                     InsertEdge(subdivision.Item2);
 

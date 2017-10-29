@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 
@@ -15,9 +16,11 @@ namespace PolygonGeneralization.Core.Tests
 
         private MethodInfo _insertEdgeMethod;
         private MethodInfo _buildModelMethod;
+        private MethodInfo _markEdgesMethod;
         private FieldInfo _edgeSet;
         private FieldInfo _pointsSet;
-
+        private HashSet<Edge> _expectedEdgesAfterBuildModel;
+        
         [SetUp]
         public void SetUp()
         {
@@ -53,11 +56,40 @@ namespace PolygonGeneralization.Core.Tests
 
             _insertEdgeMethod = typeof(MyClipper).GetMethod("InsertEdge", BindingFlags.Instance | BindingFlags.NonPublic);
             _buildModelMethod = typeof(MyClipper).GetMethod("BuildModel", BindingFlags.Instance | BindingFlags.NonPublic);
+            _markEdgesMethod = typeof(MyClipper).GetMethod("MarkEdges", BindingFlags.Instance | BindingFlags.NonPublic);
 
             _edgeSet = typeof(MyClipper).GetField("_edgesSet", BindingFlags.Instance | BindingFlags.NonPublic);
             _pointsSet = typeof(MyClipper).GetField("_pointsSet", BindingFlags.Instance | BindingFlags.NonPublic);
 
             _clipper = new MyClipper(_subject, _clipping);
+
+            _expectedEdgesAfterBuildModel = new HashSet<Edge>
+            {
+                new Edge(new PointD(6, 6), new PointD(3, 6), true, false),
+                new Edge(new PointD(3, 6), new PointD(0, 6), true, false),
+                new Edge(new PointD(0, 6), new PointD(0, 0), true, false),
+                new Edge(new PointD(0, 0), new PointD(6, 0), true, false),
+                new Edge(new PointD(6, 0), new PointD(6, 3), true, false),
+                new Edge(new PointD(6, 3), new PointD(6, 6), true, false),
+
+                new Edge(new PointD(4, 4), new PointD(4, 3), true, false),
+                new Edge(new PointD(4, 3), new PointD(4, 2), true, false),
+                new Edge(new PointD(4, 2), new PointD(2, 2), true, false),
+                new Edge(new PointD(2, 2), new PointD(2, 4), true, false),
+                new Edge(new PointD(2, 4), new PointD(3, 4), true, false),
+                new Edge(new PointD(3, 4), new PointD(4, 4), true, false),
+
+
+                new Edge(new PointD(9, 9), new PointD(3, 9), false, true),
+                new Edge(new PointD(3, 9), new PointD(3, 6), false, true),
+                new Edge(new PointD(3, 6), new PointD(3, 4), false, true),
+                new Edge(new PointD(3, 4), new PointD(3, 3), false, true),
+                new Edge(new PointD(3, 3), new PointD(4, 3), false, true),
+                new Edge(new PointD(4, 3), new PointD(6, 3), false, true),
+                new Edge(new PointD(6, 3), new PointD(9, 3), false, true),
+                new Edge(new PointD(9, 3), new PointD(9, 9), false, true),
+
+            };
         }
 
         #region InsertEdgeTests
@@ -258,33 +290,7 @@ namespace PolygonGeneralization.Core.Tests
         [Test]
         public void BuildModelTest()
         {
-            var expectedEdgesList = new List<Edge>
-            {
-                new Edge(new PointD(6, 6), new PointD(3, 6), true, false),
-                new Edge(new PointD(3, 6), new PointD(0, 6), true, false),
-                new Edge(new PointD(0, 6), new PointD(0, 0), true, false),
-                new Edge(new PointD(0, 0), new PointD(6, 0), true, false),
-                new Edge(new PointD(6, 0), new PointD(6, 3), true, false),
-                new Edge(new PointD(6, 3), new PointD(6, 6), true, false),
-
-                new Edge(new PointD(4, 4), new PointD(4, 3), true, false),
-                new Edge(new PointD(4, 3), new PointD(4, 2), true, false),
-                new Edge(new PointD(4, 2), new PointD(2, 2), true, false),
-                new Edge(new PointD(2, 2), new PointD(2, 4), true, false),
-                new Edge(new PointD(2, 4), new PointD(3, 4), true, false),
-                new Edge(new PointD(3, 4), new PointD(4, 4), true, false),
-
-
-                new Edge(new PointD(9, 9), new PointD(3, 9), false, true),
-                new Edge(new PointD(3, 9), new PointD(3, 6), false, true),
-                new Edge(new PointD(3, 6), new PointD(3, 4), false, true),
-                new Edge(new PointD(3, 4), new PointD(3, 3), false, true),
-                new Edge(new PointD(3, 3), new PointD(4, 3), false, true),
-                new Edge(new PointD(4, 3), new PointD(6, 3), false, true),
-                new Edge(new PointD(6, 3), new PointD(9, 3), false, true),
-                new Edge(new PointD(9, 3), new PointD(9, 9), false, true),
-
-            };
+            var expectedEdgesList = _expectedEdgesAfterBuildModel.ToList();
 
             _buildModelMethod.Invoke(_clipper, new object[0]);
 
@@ -298,9 +304,59 @@ namespace PolygonGeneralization.Core.Tests
 
             foreach (var expectedEdge in expectedEdgesList)
             {
-                Assert.True(edgesAfterBuild.Contains(expectedEdge));
-                // TODO isFromSubject/isFromClipping equals needed
+                var edge = edgesAfterBuild.FirstOrDefault(e => e.Equals(expectedEdge));
+
+                Assert.NotNull(edge);
+                Assert.AreEqual(expectedEdge.IsFromSubject, edge.IsFromSubject, $"edge[({edge.A.X},{edge.A.Y}); ({edge.B.X},{edge.B.Y})]");
+                Assert.AreEqual(expectedEdge.IsFromClipping, edge.IsFromClipping, $"edge[({edge.A.X},{edge.A.Y}); ({edge.B.X},{edge.B.Y})]");
             }
+        }
+
+        [Test]
+        public void MarkEdgesTest()
+        {
+            var expectedEdgesList = new List<Edge>
+            {
+                new Edge(new PointD(3, 6), new PointD(0, 6), true, false) { IsResult = true },
+                new Edge(new PointD(0, 6), new PointD(0, 0), true, false) { IsResult = true },
+                new Edge(new PointD(0, 0), new PointD(6, 0), true, false) { IsResult = true },
+                new Edge(new PointD(6, 0), new PointD(6, 3), true, false) { IsResult = true },
+                
+                new Edge(new PointD(4, 3), new PointD(4, 2), true, false) { IsResult = true },
+                new Edge(new PointD(4, 2), new PointD(2, 2), true, false) { IsResult = true },
+                new Edge(new PointD(2, 2), new PointD(2, 4), true, false) { IsResult = true },
+                new Edge(new PointD(2, 4), new PointD(3, 4), true, false) { IsResult = true },
+
+
+                new Edge(new PointD(9, 9), new PointD(3, 9), false, true) { IsResult = true },
+                new Edge(new PointD(3, 9), new PointD(3, 6), false, true) { IsResult = true },
+                new Edge(new PointD(3, 4), new PointD(3, 3), false, true) { IsResult = true },
+                new Edge(new PointD(3, 3), new PointD(4, 3), false, true) { IsResult = true },
+                new Edge(new PointD(6, 3), new PointD(9, 3), false, true) { IsResult = true },
+                new Edge(new PointD(9, 3), new PointD(9, 9), false, true) { IsResult = true },
+
+            };
+
+            _edgeSet.SetValue(_clipper, _expectedEdgesAfterBuildModel);
+
+            _markEdgesMethod.Invoke(_clipper, new object[0]);
+
+            var edgesAfterMarking = (HashSet<Edge>)_edgeSet.GetValue(_clipper);
+
+            Assert.AreEqual(14, edgesAfterMarking.Count);
+            Assert.AreEqual(expectedEdgesList.Count, edgesAfterMarking.Count);
+
+            foreach (var expectedEdge in expectedEdgesList)
+            {
+                var edge = edgesAfterMarking.FirstOrDefault(e => e.Equals(expectedEdge));
+
+                Assert.NotNull(edge);
+                Assert.AreEqual(expectedEdge.IsFromSubject, edge.IsFromSubject, $"edge[({edge.A.X},{edge.A.Y}); ({edge.B.X},{edge.B.Y})]");
+                Assert.AreEqual(expectedEdge.IsFromClipping, edge.IsFromClipping, $"edge[({edge.A.X},{edge.A.Y}); ({edge.B.X},{edge.B.Y})]");
+                Assert.AreEqual(expectedEdge.IsResult, edge.IsResult, $"edge[({edge.A.X},{edge.A.Y}); ({edge.B.X},{edge.B.Y})]");
+            }
+
+            Assert.True(expectedEdgesList.All(e => e.IsResult));
         }
 
         #endregion
