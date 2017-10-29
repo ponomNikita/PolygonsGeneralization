@@ -1,5 +1,6 @@
 ﻿
 
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace PolygonGeneralization.Core.Tests
@@ -7,6 +8,20 @@ namespace PolygonGeneralization.Core.Tests
     [TestFixture]
     public class EdgesTests
     {
+        private List<PointD> _polygon;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _polygon = new List<PointD>
+            {
+                new PointD(3, 3),
+                new PointD(0, 0),
+                new PointD(-3, 3),
+                new PointD(-3, -3),
+                new PointD(3, -3),
+            };
+        }
 
         #region GetIntersectionTests
 
@@ -197,6 +212,31 @@ namespace PolygonGeneralization.Core.Tests
 
             Assert.AreEqual(new Edge(new PointD(-1, 0), new PointD(0, 0)), subdivision.Item1);
             Assert.AreEqual(new Edge(new PointD(0, 0), new PointD(1, 0)), subdivision.Item2);
+        }
+
+        #endregion
+
+        #region IsInsideTests
+
+        [TestCase(-1, -1, 1, -1, Category = "IsInsideWhenEdgeIsInside", TestName = "1) For edge{(-1, -1), (1, -1)}")]
+        [TestCase(-3, -3, 0, 0, Category = "IsInsideWhenEdgeIsInside", TestName = "2) For edge{(-3, -3), (0, 0)}")]
+        [TestCase(-3, -3, -3, 0, Category = "IsInsideWhenEdgeIsInside", TestName = "3) For edge{(-3, -3), (-3, 0)}")]
+        public void IsInsideWhenEdgeIsInside(double x1, double y1, double x2, double y2)
+        {
+            var edge = new Edge(new PointD(x1, y1), new PointD(x2, y2));
+
+            Assert.True(edge.IsInside(_polygon));
+        }
+
+        [TestCase(-5, -1, 5, -1, Category = "IsInsideWhenEdgeIsOutside", TestName = "1) For edge{(-5, -1), (5, -1)}")]
+        [TestCase(0, 0, 0, 10, Category = "IsInsideWhenEdgeIsOutside", TestName = "2) For edge{(0, 0), (0, 10)}")]
+        [TestCase(0, 1, 0, 10, Category = "IsInsideWhenEdgeIsOutside", TestName = "3) For edge{(0, 1), (0, 10)}")]
+        [TestCase(0, -1, 0, 10, Category = "IsInsideWhenEdgeIsOutside", TestName = "4) For edge{(0, -1), (0, 10)}")]
+        public void IsInsideWhenEdgeIsOutside(double x1, double y1, double x2, double y2)
+        {
+            var edge = new Edge(new PointD(x1, y1), new PointD(x2, y2));
+
+            Assert.False(edge.IsInside(_polygon));
         }
 
         #endregion

@@ -260,6 +260,7 @@ namespace PolygonGeneralization.Core
 
         public bool IsFromSubject { get; set; }
         public bool IsFromClipping { get; set; }
+        public bool IsResult { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -331,6 +332,23 @@ namespace PolygonGeneralization.Core
             var u = firstSegmentStart / (firstSegmentStart - firstSegmentEnd);
             
             return A + (dir1 * u);
+        }
+
+        /// <summary>
+        /// Метод проверяет лежит ли ребро внутри контура. 
+        /// В методе  нет проверки на пересечение отрезком дырки или выпуклости, 
+        /// так как после построения модели нет пересекающихся ребер.
+        /// </summary>
+        /// <param name="contour"></param>
+        /// <returns></returns>
+        public bool IsInside(Paths contour)
+        {
+            return A.IsInside(contour) && B.IsInside(contour);
+        }
+
+        public bool IsInside(Path contour)
+        {
+            return A.IsInside(contour) && B.IsInside(contour);
         }
     }
 }
