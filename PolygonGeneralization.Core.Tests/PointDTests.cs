@@ -229,21 +229,27 @@ namespace PolygonGeneralization.Core.Tests
 
         #region IsInsidePolygonWithHolesTests
 
-        [TestCase(0.0, 0.0, ExpectedResult = true, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (0, 0) inside of polygon with holes")]
-        [TestCase(-8.5, 7.0, ExpectedResult = true, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (-8.5, 7) inside of polygon with holes")]
-        [TestCase(0.0, 5.0, ExpectedResult = true, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (0, 5) inside of polygon with holes")]
-        [TestCase(0.0, 3.0, ExpectedResult = true, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (0, 3) inside of polygon with holes")]
-        [TestCase(-8.0, 8.0, ExpectedResult = true, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (-8, 8) inside of polygon with holes")]
-        [TestCase(8.0, 3.0, ExpectedResult = true, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (8, 3) inside of polygon with holes")]
-        [TestCase(9.0, 9.0, ExpectedResult = true, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (9, 9) inside of polygon with holes")]
-        [TestCase(3.0, 3.0, ExpectedResult = true, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (3, 3) inside of polygon with holes")]
-        [TestCase(5.0, 5.0, ExpectedResult = false, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (5, 5) inside of polygon with holes")]
-        [TestCase(-5.0, 5.0, ExpectedResult = false, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (-5, 5) inside of polygon with holes")]
-        [TestCase(0.0, 8.0, ExpectedResult = false, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (0, 8) inside of polygon with holes")]
-        public bool IsInsidePolygonWithHolesTests(double x, double y)
+        [TestCase(0.0, 0.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (0, 0) inside of polygon with holes")]
+        [TestCase(-8.5, 7.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (-8.5, 7) inside of polygon with holes")]
+        [TestCase(0.0, 5.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (0, 5) inside of polygon with holes")]
+        [TestCase(0.0, 3.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (0, 3) inside of polygon with holes")]
+        [TestCase(-8.0, 8.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (-8, 8) inside of polygon with holes")]
+        [TestCase(8.0, 3.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (8, 3) inside of polygon with holes")]
+        [TestCase(9.0, 9.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (9, 9) inside of polygon with holes")]
+        [TestCase(3.0, 3.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (3, 3) inside of polygon with holes")]
+        public void IsInsidePolygonWithHolesSuccessTests(double x, double y)
         {
             var point = new PointD(x, y);
-            return point.IsInside(_polygonWithHoles);
+            Assert.True(point.IsInside(_polygonWithHoles));
+        }
+
+        [TestCase(5.0, 5.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (5, 5) inside of polygon with holes")]
+        [TestCase(-5.0, 5.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (-5, 5) inside of polygon with holes")]
+        [TestCase(0.0, 8.0, Category = "IsInsidePolygonWithHolesTests", TestName = "Is Point (0, 8) inside of polygon with holes")]
+        public void IsInsidePolygonWithHolesFailureTests(double x, double y)
+        {
+            var point = new PointD(x, y);
+            Assert.False(point.IsInside(_polygonWithHoles));
         }
 
         #endregion
