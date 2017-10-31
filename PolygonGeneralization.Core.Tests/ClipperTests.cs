@@ -17,6 +17,7 @@ namespace PolygonGeneralization.Core.Tests
         private MethodInfo _insertEdgeMethod;
         private MethodInfo _buildModelMethod;
         private MethodInfo _markEdgesMethod;
+        private MethodInfo _sortByAntiClockWiseOrderMethod;
         private FieldInfo _edgeSet;
         private FieldInfo _pointsSet;
         private HashSet<Edge> _expectedEdgesAfterBuildModel;
@@ -57,6 +58,7 @@ namespace PolygonGeneralization.Core.Tests
             _insertEdgeMethod = typeof(Clipper).GetMethod("InsertEdge", BindingFlags.Instance | BindingFlags.NonPublic);
             _buildModelMethod = typeof(Clipper).GetMethod("BuildModel", BindingFlags.Instance | BindingFlags.NonPublic);
             _markEdgesMethod = typeof(Clipper).GetMethod("MarkEdges", BindingFlags.Instance | BindingFlags.NonPublic);
+            _sortByAntiClockWiseOrderMethod = typeof(Clipper).GetMethod("SortPointsByAntiClockwiseOrder", BindingFlags.Instance | BindingFlags.NonPublic);
 
             _edgeSet = typeof(Clipper).GetField("_edgesSet", BindingFlags.Instance | BindingFlags.NonPublic);
             _pointsSet = typeof(Clipper).GetField("_pointsSet", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -357,6 +359,93 @@ namespace PolygonGeneralization.Core.Tests
             }
 
             Assert.True(expectedEdgesList.All(e => e.IsResult));
+        }
+
+        #endregion
+
+        //TODO Needed more tests for sorting points by angle
+        #region SortByAntiClockWiseOrderTests
+
+        [Test]
+        public void SortByAntiClockWiseOrderTest1()
+        {
+            var point0 = new PointD(2, 1);
+            var point1 = new PointD(2.5, 2);
+            var point2 = new PointD(0, 2);
+            var point3 = new PointD(-1, -1);
+
+            var edge = new Edge(new PointD(0, 0), new PointD(0, 1));
+            var points = new List<PointD> {point2, point1, point0, point3};
+
+            _sortByAntiClockWiseOrderMethod.Invoke(_clipper, new object[] {edge, points });
+
+            Assert.AreEqual(point0, points[0]);
+            Assert.AreEqual(point1, points[1]);
+            Assert.AreEqual(point2, points[2]);
+            Assert.AreEqual(point3, points[3]);
+        }
+
+        [Test]
+        public void SortByAntiClockWiseOrderTest2()
+        {
+            var point0 = new PointD(1, 0);
+            var point1 = new PointD(2, 0);
+            var point2 = new PointD(4, 1);
+            var point3 = new PointD(6, 5);
+            var point4 = new PointD(1, 4);
+            var point5 = new PointD(-2, 0);
+
+            var edge = new Edge(new PointD(0, 0), new PointD(3, 2));
+            var points = new List<PointD> { point2, point1, point0, point3, point5, point4 };
+
+            _sortByAntiClockWiseOrderMethod.Invoke(_clipper, new object[] { edge, points });
+
+            Assert.AreEqual(point0, points[0]);
+            Assert.AreEqual(point1, points[1]);
+            Assert.AreEqual(point2, points[2]);
+            Assert.AreEqual(point3, points[3]);
+            Assert.AreEqual(point4, points[4]);
+            Assert.AreEqual(point5, points[5]);
+        }
+
+        [Test]
+        public void SortByAntiClockWiseOrderTest3()
+        {
+            var point0 = new PointD(4, 7);
+            var point1 = new PointD(3, 6);
+            var point2 = new PointD(2, 5);
+            var point3 = new PointD(4, 4);
+            var point4 = new PointD(6, 7);
+            var point5 = new PointD(7, 8);
+
+            var edge = new Edge(new PointD(5, 7), new PointD(3, 5));
+            var points = new List<PointD> { point2, point1, point0, point3, point5, point4 };
+
+            _sortByAntiClockWiseOrderMethod.Invoke(_clipper, new object[] { edge, points });
+
+            Assert.AreEqual(point0, points[0]);
+            Assert.AreEqual(point1, points[1]);
+            Assert.AreEqual(point2, points[2]);
+            Assert.AreEqual(point3, points[3]);
+            Assert.AreEqual(point4, points[4]);
+            Assert.AreEqual(point5, points[5]);
+        }
+
+        [Test]
+        public void SortByAntiClockWiseOrderWhenTwoPointsOnLine()
+        {
+            var point0 = new PointD(6, 3);
+            var point1 = new PointD(4, 6);
+            var point2 = new PointD(4, 4);
+
+            var edge = new Edge(new PointD(2, 1), new PointD(4, 2));
+            var points = new List<PointD> { point2, point0, point1,};
+
+            _sortByAntiClockWiseOrderMethod.Invoke(_clipper, new object[] { edge, points });
+
+            Assert.AreEqual(point0, points[0]);
+            Assert.AreEqual(point1, points[1]);
+            Assert.AreEqual(point2, points[2]);
         }
 
         #endregion
