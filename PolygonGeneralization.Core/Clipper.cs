@@ -33,6 +33,15 @@ namespace PolygonGeneralization.Core
 
         private void BuildSolution()
         {
+            while (_edgesSet.Count > 0)
+            {
+                // Строим контуры начиная с внешнего
+                BuildContour();
+            }
+        }
+
+        private void BuildContour()
+        {
             
         }
 
