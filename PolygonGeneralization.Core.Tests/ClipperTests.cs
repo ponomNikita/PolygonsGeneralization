@@ -449,5 +449,62 @@ namespace PolygonGeneralization.Core.Tests
         }
 
         #endregion
+
+        #region Union contours tests
+
+        [Test]
+        public void UnionTwoSquares()
+        {
+            var subject = new List<List<PointD>>
+            {
+                new List<PointD>
+                {
+                    new PointD(4, 4),
+                    new PointD(0, 4),
+                    new PointD(0, 0),
+                    new PointD(4, 0),
+                }
+            };
+
+            var clipping = new List<List<PointD>>
+            {
+                new List<PointD>
+                {
+                    new PointD(6, 6),
+                    new PointD(2, 6),
+                    new PointD(2, 2),
+                    new PointD(6, 2),
+                }
+            };
+
+            var expected = new List<List<PointD>>
+            {
+                new List<PointD>
+                {
+                    new PointD(0, 0),
+                    new PointD(4, 0),
+                    new PointD(4, 2),
+                    new PointD(6, 2),
+                    new PointD(6, 6),
+                    new PointD(2, 6),
+                    new PointD(2, 4),
+                    new PointD(0, 4),
+                }
+            };
+
+            _clipper = new Clipper(subject, clipping);
+            _clipper.Execute();
+
+            var actual = _clipper.GetSolution();
+
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            for (int i = 0; i < expected[0].Count; i++)
+            {
+                Assert.AreEqual(expected[0][i], actual[0][i]);
+            }
+        }
+
+        #endregion
     }
 }

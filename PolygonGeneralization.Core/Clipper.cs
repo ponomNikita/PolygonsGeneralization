@@ -12,6 +12,7 @@ namespace PolygonGeneralization.Core
         private Paths _clipping;
         private Paths _solution;
 
+        // TODO Make hash structure with access to element by two keys (pointA, pointB)
         private HashSet<PointD> _pointsSet;
         private HashSet<Edge> _edgesSet;
        
@@ -31,6 +32,11 @@ namespace PolygonGeneralization.Core
             BuildSolution();
         }
 
+        public Paths GetSolution()
+        {
+            return _solution;
+        }
+
         private void BuildSolution()
         {
             while (_edgesSet.Count > 0)
@@ -44,17 +50,19 @@ namespace PolygonGeneralization.Core
         {
             var initial = _edgesSet.OrderBy(e => e.A.X).ThenBy(e => e.A.Y).First();
             
-            Path contour = new Path { initial.A };
+            Path contour = new Path();
 
             Edge current = initial;
 
-            while (!current.B.Equals(initial.A))
+            while (true)
             {
-                current = GetNextRightEdge(current, _edgesSet);
-
                 _edgesSet.Remove(current);
-
                 contour.Add(current.A);
+
+                if (current.B.Equals(initial.A))
+                    break;
+
+                current = GetNextRightEdge(current, _edgesSet);
             }
 
             _solution.Add(contour);
@@ -63,11 +71,10 @@ namespace PolygonGeneralization.Core
         private Edge GetNextRightEdge(Edge edge, HashSet<Edge> edgesSet)
         {
             var pointsForSortByClockwise = _edgesSet.Where(e => e.A == edge.B).Select(e => e.B).ToList();
-            pointsForSortByClockwise.Add(edge.A);
 
             SortPointsByAntiClockwiseOrder(edge, pointsForSortByClockwise);
 
-            var mostRightPoint = pointsForSortByClockwise.Last();
+            var mostRightPoint = pointsForSortByClockwise.First();
 
             return edgesSet.FirstOrDefault(e => e.B == mostRightPoint);
         }
