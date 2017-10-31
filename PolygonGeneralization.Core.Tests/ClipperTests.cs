@@ -450,6 +450,7 @@ namespace PolygonGeneralization.Core.Tests
 
         #endregion
 
+        //TODO Needed more tests for union polygons
         #region Union contours tests
 
         [Test]
@@ -502,6 +503,49 @@ namespace PolygonGeneralization.Core.Tests
             for (int i = 0; i < expected[0].Count; i++)
             {
                 Assert.AreEqual(expected[0][i], actual[0][i]);
+            }
+        }
+
+        [Test]
+        public void UnionSquareWithHoleWithOtherSquare()
+        {
+            var expected = new List<List<PointD>>
+            {
+                new List<PointD>
+                {
+                    new PointD(0, 0),
+                    new PointD(6, 0),
+                    new PointD(6, 3),
+                    new PointD(9, 3),
+                    new PointD(9, 9),
+                    new PointD(3, 9),
+                    new PointD(3, 6),
+                    new PointD(0, 6),
+                },
+                new List<PointD>
+                {
+                    new PointD(2, 2),
+                    new PointD(2, 4),
+                    new PointD(3, 4),
+                    new PointD(3, 3),
+                    new PointD(4, 3),
+                    new PointD(4, 2),
+                }
+            };
+
+            _clipper.Execute();
+
+            var actual = _clipper.GetSolution();
+
+            Assert.AreEqual(expected.Count, actual.Count);
+            
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i].Count, actual[i].Count);
+                for (int j = 0; j < expected[i].Count; j++)
+                {
+                    Assert.AreEqual(expected[i][j], actual[i][j]);
+                }
             }
         }
 
