@@ -12,7 +12,7 @@ namespace PolygonGeneralization.Core
         private Paths _solution;
 
         // TODO Make hash structure with access to element by two keys (pointA, pointB)
-        private HashSet<PointD> _pointsSet;
+        private HashSet<PointD> _pointsSet; //TODO remove unusefull?
         private HashSet<Edge> _edgesSet;
        
         public Clipper(Paths subject, Paths clipping)

@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolygonGeneralization.Core"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolygonGeneralization.Core.Tests", "PolygonGeneralization.Core.Tests\PolygonGeneralization.Core.Tests.csproj", "{BEFA7A06-0F30-47C1-8ECA-E011E9037E70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiKeyDictionary", "MultiKeyDictionary\MultiKeyDictionary.csproj", "{2A7BC350-90EF-488F-9D26-C6C38CF6F467}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiKeyDictionary.Tests", "MultiKeyDictionary.Tests\MultiKeyDictionary.Tests.csproj", "{BA43561C-6910-4D1A-9D65-C1AF486BF588}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{BEFA7A06-0F30-47C1-8ECA-E011E9037E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEFA7A06-0F30-47C1-8ECA-E011E9037E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEFA7A06-0F30-47C1-8ECA-E011E9037E70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7BC350-90EF-488F-9D26-C6C38CF6F467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A7BC350-90EF-488F-9D26-C6C38CF6F467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7BC350-90EF-488F-9D26-C6C38CF6F467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A7BC350-90EF-488F-9D26-C6C38CF6F467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA43561C-6910-4D1A-9D65-C1AF486BF588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA43561C-6910-4D1A-9D65-C1AF486BF588}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA43561C-6910-4D1A-9D65-C1AF486BF588}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA43561C-6910-4D1A-9D65-C1AF486BF588}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
