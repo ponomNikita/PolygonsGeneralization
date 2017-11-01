@@ -587,6 +587,95 @@ namespace PolygonGeneralization.Core.Tests
         }
 
 
+        [Test]
+        public void UnionTwoSquaresWithSquareHoles()
+        {
+            var subject = new List<List<PointD>>
+            {
+                new List<PointD>()
+                {
+                    new PointD(9, 9),
+                    new PointD(0, 9),
+                    new PointD(0, 0),
+                    new PointD(9, 0),
+                },
+
+                new List<PointD>()
+                {
+                    new PointD(1, 1),
+                    new PointD(1, 8),
+                    new PointD(8, 8),
+                    new PointD(8, 1),
+                }
+            };
+
+            var clipping = new List<List<PointD>>
+            {
+                new List<PointD>()
+                {
+                    new PointD(4, 4),
+                    new PointD(14, 4),
+                    new PointD(14, 14),
+                    new PointD(4, 14),
+                },
+
+                new List<PointD>()
+                {
+                    new PointD(5, 5),
+                    new PointD(5, 13),
+                    new PointD(13, 13),
+                    new PointD(13, 5),
+                }
+            };
+
+            var expected = new List<List<PointD>>
+            {
+                new List<PointD>
+                {
+                    new PointD(0, 0),
+                    new PointD(9, 0),
+                    new PointD(9, 4),
+                    new PointD(14, 4),
+                    new PointD(14, 14),
+                    new PointD(4, 14),
+                    new PointD(4, 9),
+                    new PointD(0, 9),
+                },
+                new List<PointD>
+                {
+                    new PointD(1, 1),
+                    new PointD(1, 8),
+                    new PointD(4, 8),
+                    new PointD(4, 4),
+                    new PointD(8, 4),
+                    new PointD(8, 1),
+                },
+                new List<PointD>
+                {
+                    new PointD(5, 5),
+                    new PointD(5, 8),
+                    new PointD(8, 8),
+                    new PointD(8, 5),
+                },
+                new List<PointD>
+                {
+                    new PointD(5, 9),
+                    new PointD(5, 13),
+                    new PointD(13, 13),
+                    new PointD(13, 5),
+                    new PointD(9, 5),
+                    new PointD(9, 9),
+                },
+            };
+
+            _clipper = new Clipper(subject, clipping);
+            _clipper.Execute();
+
+            var actual = _clipper.GetSolution();
+
+            AssertPolygonsAreSame(expected, actual);
+        }
+
 
         #endregion
 
