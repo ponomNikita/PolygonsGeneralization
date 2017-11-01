@@ -498,12 +498,7 @@ namespace PolygonGeneralization.Core.Tests
 
             var actual = _clipper.GetSolution();
 
-            Assert.AreEqual(expected.Count, actual.Count);
-
-            for (int i = 0; i < expected[0].Count; i++)
-            {
-                Assert.AreEqual(expected[0][i], actual[0][i]);
-            }
+            AssertPolygonsAreSame(expected, actual);
         }
 
         [Test]
@@ -537,16 +532,7 @@ namespace PolygonGeneralization.Core.Tests
 
             var actual = _clipper.GetSolution();
 
-            Assert.AreEqual(expected.Count, actual.Count);
-            
-            for (int i = 0; i < expected.Count; i++)
-            {
-                Assert.AreEqual(expected[i].Count, actual[i].Count);
-                for (int j = 0; j < expected[i].Count; j++)
-                {
-                    Assert.AreEqual(expected[i][j], actual[i][j]);
-                }
-            }
+            AssertPolygonsAreSame(expected, actual);
         }
 
         [Test]
@@ -597,6 +583,15 @@ namespace PolygonGeneralization.Core.Tests
 
             var actual = _clipper.GetSolution();
 
+            AssertPolygonsAreSame(expected, actual);
+        }
+
+
+
+        #endregion
+
+        private void AssertPolygonsAreSame(List<List<PointD>> expected, List<List<PointD>> actual)
+        {
             Assert.AreEqual(expected.Count, actual.Count);
 
             for (int i = 0; i < expected.Count; i++)
@@ -608,9 +603,5 @@ namespace PolygonGeneralization.Core.Tests
                 }
             }
         }
-
-
-
-        #endregion
     }
 }
