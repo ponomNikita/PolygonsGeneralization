@@ -586,6 +586,95 @@ namespace PolygonGeneralization.Core.Tests
             AssertPolygonsAreSame(expected, actual);
         }
 
+        [Test]
+        public void UnionTwoOtherUnconvexPolygonWithoutHolesWhenSolutionHasHole()
+        {
+            var subject = new List<List<PointD>>
+            {
+                new List<PointD>()
+                {
+                    new PointD(0, 3),
+                    new PointD(3, 0),
+                    new PointD(1, 3),
+                    new PointD(3, 6),
+                }
+            };
+
+            var clipping = new List<List<PointD>>
+            {
+                new List<PointD>()
+                {
+                    new PointD(3, 0),
+                    new PointD(6, 3),
+                    new PointD(3, 6),
+                    new PointD(5, 3),
+                }
+            };
+
+            var expected = new List<List<PointD>>
+            {
+                new List<PointD>
+                {
+                    new PointD(0, 3),
+                    new PointD(3, 0),
+                    new PointD(6, 3),
+                    new PointD(3, 6),
+                },
+                new List<PointD>
+                {
+                    new PointD(1, 3),
+                    new PointD(3, 6),
+                    new PointD(5, 3),
+                    new PointD(3, 0),
+                }
+            };
+
+            _clipper = new Clipper(subject, clipping);
+            _clipper.Execute();
+
+            var actual = _clipper.GetSolution();
+
+            AssertPolygonsAreSame(expected, actual);
+        }
+
+        [Test]
+        public void UnionSolutionIsSameAfterReplacingSubjectAndClipping()
+        {
+            var subject = new List<List<PointD>>
+            {
+                new List<PointD>()
+                {
+                    new PointD(0, 3),
+                    new PointD(3, 0),
+                    new PointD(1, 3),
+                    new PointD(3, 6),
+                }
+            };
+
+            var clipping = new List<List<PointD>>
+            {
+                new List<PointD>()
+                {
+                    new PointD(3, 0),
+                    new PointD(6, 3),
+                    new PointD(3, 6),
+                    new PointD(5, 3),
+                }
+            };
+
+            _clipper = new Clipper(subject, clipping);
+            _clipper.Execute();
+
+            var expected = _clipper.GetSolution();
+
+            _clipper = new Clipper(clipping, subject);
+            _clipper.Execute();
+
+            var actual = _clipper.GetSolution();
+
+            AssertPolygonsAreSame(expected, actual);
+        }
+
 
         [Test]
         public void UnionTwoSquaresWithSquareHoles()
