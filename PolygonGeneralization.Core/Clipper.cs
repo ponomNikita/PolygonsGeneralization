@@ -48,7 +48,10 @@ namespace PolygonGeneralization.Core
 
         private void BuildContour()
         {
-            var initial = _edgesSet.OrderBy(e => e.A.X).ThenBy(e => e.A.Y).First();
+            var initialPoint = _edgesSet.OrderBy(e => e.A.X).ThenBy(e => e.A.Y).First().A;
+
+            var initial = GetNextRightEdge(new Edge(new PointD(initialPoint.X, initialPoint.Y + 1), initialPoint),
+                _edgesSet);
             
             Path contour = new Path();
 
@@ -76,7 +79,7 @@ namespace PolygonGeneralization.Core
 
             var mostRightPoint = pointsForSortByClockwise.First();
 
-            return edgesSet.FirstOrDefault(e => e.B == mostRightPoint);
+            return edgesSet.FirstOrDefault(e => e.A == edge.B && e.B == mostRightPoint);
         }
 
         private void SortPointsByAntiClockwiseOrder(Edge edge, List<PointD> points)

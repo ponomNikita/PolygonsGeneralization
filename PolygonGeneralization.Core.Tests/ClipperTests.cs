@@ -549,6 +549,68 @@ namespace PolygonGeneralization.Core.Tests
             }
         }
 
+        [Test]
+        public void UnionTwoUnconvexPolygonWithoutHolesWhenSolutionHasHole()
+        {
+            var subject = new List<List<PointD>>
+            {
+                new List<PointD>()
+                {
+                    new PointD(3, 6),
+                    new PointD(0, 3),
+                    new PointD(3, 4),
+                    new PointD(6, 3),
+                }
+            };
+
+            var clipping = new List<List<PointD>>
+            {
+                new List<PointD>()
+                {
+                    new PointD(6, 3),
+                    new PointD(3, 1),
+                    new PointD(0, 3),
+                    new PointD(3, 0),
+                }
+            };
+
+            var expected = new List<List<PointD>>
+            {
+                new List<PointD>
+                {
+                    new PointD(0, 3),
+                    new PointD(3, 0),
+                    new PointD(6, 3),
+                    new PointD(3, 6),
+                },
+                new List<PointD>
+                {
+                    new PointD(0, 3),
+                    new PointD(3, 4),
+                    new PointD(6, 3),
+                    new PointD(3, 1),
+                }
+            };
+
+            _clipper = new Clipper(subject, clipping);
+            _clipper.Execute();
+
+            var actual = _clipper.GetSolution();
+
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            for (int i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i].Count, actual[i].Count);
+                for (int j = 0; j < expected[i].Count; j++)
+                {
+                    Assert.AreEqual(expected[i][j], actual[i][j]);
+                }
+            }
+        }
+
+
+
         #endregion
     }
 }
