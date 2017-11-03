@@ -1,4 +1,5 @@
 ﻿using Ninject;
+using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Infrastructure.Services;
 
@@ -11,6 +12,7 @@ namespace PolygonGeneralization.WinForms.Ninject
             var kernel = new StandardKernel();
 
             kernel.Bind<IClipper>().To<PolygonGeneralizationCoreClipper>();
+            kernel.Bind<IGisDataReader>().To<SharpMapGisDataReader>();
 
             return kernel;
         }

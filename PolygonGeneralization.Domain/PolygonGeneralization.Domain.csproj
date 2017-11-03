@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IGisDataReader.cs" />
     <Compile Include="Interfaces\IClipper.cs" />
     <Compile Include="Models\Point.cs" />
     <Compile Include="Models\Path.cs" />
