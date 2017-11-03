@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("PolygonGeneralization.DataReader")]
+[assembly: AssemblyTitle("PolygonGeneralization.WinForms")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PolygonGeneralization.DataReader")]
+[assembly: AssemblyProduct("PolygonGeneralization.WinForms")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("b88d7fbe-05f4-4c1b-8ee6-579f0590e2bc")]
+[assembly: Guid("9e60a942-51f1-488e-ab45-6e7ee94d2c98")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //
