@@ -14,6 +14,9 @@ namespace PolygonGeneralization.Core
         // TODO Make hash structure with access to element by two keys (pointA, pointB)
         private HashSet<PointD> _pointsSet;
         private HashSet<Edge> _edgesSet;
+
+        private readonly object _clipperLock = new object();
+        private bool _isInProgress;
        
         public Clipper(Paths subject, Paths clipping)
         {
@@ -21,14 +24,30 @@ namespace PolygonGeneralization.Core
             _clipping = clipping;
         }
 
+        public Clipper()
+        {
+        }
+
+        public bool IsInProgress()
+        {
+            return _isInProgress;
+        }
+
         /// <summary>
         /// Only union implemented now
         /// </summary>
         public void Execute()
         {
-            BuildModel();
-            MarkEdges();
-            BuildSolution();
+            lock (_clipperLock)
+            {
+                _isInProgress = true;
+
+                BuildModel();
+                MarkEdges();
+                BuildSolution();
+
+                _isInProgress = false;
+            }
         }
 
         public void SetSubject(Paths subject)
