@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolygonGeneralization.Infra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolygonGeneralization.WinForms", "PolygonGeneralization.WinForms\PolygonGeneralization.WinForms.csproj", "{9E60A942-51F1-488E-AB45-6E7EE94D2C98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolygonGeneralization.WinForms.Tests", "PolygonGeneralization.WinForms.Tests\PolygonGeneralization.WinForms.Tests.csproj", "{F236F88A-02F3-4E58-83FB-872CB2343850}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{9E60A942-51F1-488E-AB45-6E7EE94D2C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E60A942-51F1-488E-AB45-6E7EE94D2C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E60A942-51F1-488E-AB45-6E7EE94D2C98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F236F88A-02F3-4E58-83FB-872CB2343850}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F236F88A-02F3-4E58-83FB-872CB2343850}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F236F88A-02F3-4E58-83FB-872CB2343850}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F236F88A-02F3-4E58-83FB-872CB2343850}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

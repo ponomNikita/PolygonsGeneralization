@@ -2,6 +2,7 @@
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Infrastructure.Services;
+using PolygonGeneralization.WinForms.Interfaces;
 
 namespace PolygonGeneralization.WinForms.Ninject
 {
@@ -13,6 +14,7 @@ namespace PolygonGeneralization.WinForms.Ninject
 
             kernel.Bind<IClipper>().To<PolygonGeneralizationCoreClipper>();
             kernel.Bind<IGisDataReader>().To<JsonGisDataReader>();
+            kernel.Bind<IDrawer>().To<Drawer>();
 
             return kernel;
         }

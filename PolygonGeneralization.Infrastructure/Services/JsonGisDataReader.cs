@@ -64,7 +64,8 @@ namespace PolygonGeneralization.Infrastructure.Services
 
                 var polygons = geoJson.Features
                     .Select(f => f.Geometry)
-                    .Select(g => g != null ? new Polygon(g.Coordinates) : null)
+                    .Select(g => g != null ? new Polygon(g.Coordinates) : null) 
+                    // TODO убрать последнюю точку в контуре (дублирует начальную)
                     .Where(p => p != null)
                     .ToArray();
 

@@ -8,3 +8,4 @@ install:
 script:    # the following commands are just examples, use whatever your build process requires
   - xbuild /p:Configuration=Debug PolygonGeneralization.sln
   - nunit-console PolygonGeneralization.Core.Tests/bin/Debug/PolygonGeneralization.Core.Tests.dll
+  - nunit-console PolygonGeneralization.Core.Tests/bin/Debug/PolygonGeneralization.WinForms.Tests.dll
