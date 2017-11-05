@@ -7,7 +7,7 @@ namespace PolygonGeneralization.WinForms.Forms
     {
         public MainForm(IGisDataReader dataReader)
         {
-            var polygons = dataReader.ReadFromFile("Building_Footprint_2016.shp");
+            var polygons = dataReader.ReadFromFile("nizhniy-novgorod_russia_osm_polygon.geojson");
             InitializeComponent();
         }
     }

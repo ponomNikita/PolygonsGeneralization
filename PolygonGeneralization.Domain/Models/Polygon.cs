@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using PolygonGeneralization.Domain.Interfaces;
 
 namespace PolygonGeneralization.Domain.Models
@@ -12,6 +13,16 @@ namespace PolygonGeneralization.Domain.Models
             if (paths?.Length == 0)
             {
                 Paths = new Collection<Path>();
+            }
+        }
+
+        public Polygon(double[][][] polygon)
+        {
+            Paths = new Collection<Path>();
+            foreach (var contour in polygon)
+            {
+                var path = new Path(contour.Select(c => new Point(c[0], c[1])).ToArray());
+                Paths.Add(path);
             }
         }
 

@@ -12,7 +12,7 @@ namespace PolygonGeneralization.WinForms.Ninject
             var kernel = new StandardKernel();
 
             kernel.Bind<IClipper>().To<PolygonGeneralizationCoreClipper>();
-            kernel.Bind<IGisDataReader>().To<SharpMapGisDataReader>();
+            kernel.Bind<IGisDataReader>().To<JsonGisDataReader>();
 
             return kernel;
         }
