@@ -1,4 +1,5 @@
-﻿using PolygonGeneralization.Domain.Models;
+﻿using System.Linq;
+using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.WinForms.Interfaces;
 
 namespace PolygonGeneralization.WinForms.Models
@@ -39,7 +40,6 @@ namespace PolygonGeneralization.WinForms.Models
 
         public void Draw()
         {
-            
         }
     }
 }

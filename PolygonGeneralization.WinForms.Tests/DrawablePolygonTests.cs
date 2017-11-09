@@ -13,9 +13,9 @@ namespace PolygonGeneralization.WinForms.Tests
         [SetUp]
         public void SetUp()
         {
-            var geometry = new Polygon(new double[][][]
+            var geometry = new Polygon(new[]
             {
-                new double[][]
+                new[]
                 {
                     new [] { 0.0, 0.0},
                     new [] { 0.0, 10.0 },
