@@ -1,23 +1,22 @@
-﻿using System.Linq;
-using PolygonGeneralization.Domain.Models;
+﻿using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.WinForms.Interfaces;
 
 namespace PolygonGeneralization.WinForms.Models
 {
     public class DrawablePolygon : IDrawable
     {
-        public DrawablePolygon(Polygon geometry, ScreenInfo screenInfo, IDrawer drawer)
+        public DrawablePolygon(Polygon geometry, ScreenInfo screenInfo, IDrawerFactory drawerFactory)
         {
             Geometry = geometry;
             _screenInfo = screenInfo;
-            _drawer = drawer;
+            _drawerFactory = drawerFactory;
         }
 
         public Polygon Geometry { get; }
 
         private readonly ScreenInfo _screenInfo;
 
-        private IDrawer _drawer;
+        private readonly IDrawerFactory _drawerFactory;
 
         public bool IsVisible()
         {
@@ -40,6 +39,10 @@ namespace PolygonGeneralization.WinForms.Models
 
         public void Draw()
         {
+            using (var drawer = _drawerFactory.CreateDrawer())
+            {
+                //drawer.FillPolygon();
+            }
         }
     }
 }

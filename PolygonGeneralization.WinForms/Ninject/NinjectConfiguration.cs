@@ -14,7 +14,7 @@ namespace PolygonGeneralization.WinForms.Ninject
 
             kernel.Bind<IClipper>().To<PolygonGeneralizationCoreClipper>();
             kernel.Bind<IGisDataReader>().To<JsonGisDataReader>();
-            kernel.Bind<IDrawer>().To<Drawer>();
+            kernel.Bind<IDrawerFactory>().To<DrawerFactory>();
 
             return kernel;
         }
