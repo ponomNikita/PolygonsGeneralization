@@ -8,7 +8,7 @@ namespace PolygonGeneralization.WinForms.Tests
     public class DrawablePolygonTests
     {
         private DrawablePolygon drawable;
-        private ScreenInfo screenInfo;
+        private ScreenAdapter _screenAdapter;
 
         [SetUp]
         public void SetUp()
@@ -24,35 +24,9 @@ namespace PolygonGeneralization.WinForms.Tests
                 }
             });
 
-            screenInfo = new ScreenInfo()
-            {
-                Height = 480,
-                Width = 640,
-            };
-
-            drawable = new DrawablePolygon(geometry, screenInfo, null);
+            drawable = new DrawablePolygon(geometry, _screenAdapter, null);
         }
 
-        [TestCase(0.0, 0.0, 1.0, TestName = "IsVisible = true when screenWorldPosition = Point(0.0, 0.0), Scale = 1")]
-        [TestCase(0.0, 0.0, 100.0, TestName = "IsVisible = true when screenWorldPosition = Point(0.0, 0.0), Scale = 100")]
-        [TestCase(5.0, 6.0, 100.0, TestName = "IsVisible = true when screenWorldPosition = Point(5.0, 6.0), Scale = 100")]
-        public void IsVisibleTrue(double x, double y, double scale)
-        {
-            screenInfo.WorldPosition = new Point(x, y);
-            screenInfo.Scale = scale;
-
-            Assert.True(drawable.IsVisible());
-        }
-
-        [TestCase(11.0, 11.0, 1.0, TestName = "IsVisible = false when screenWorldPosition = Point(11.0, 11.0), Scale = 1")]
-        [TestCase(11.0, 11.0, 100.0, TestName = "IsVisible = false when screenWorldPosition = Point(11.0, 11.0), Scale = 100")]
-        [TestCase(5.0, 6.0, 1000.0, TestName = "IsVisible = true when screenWorldPosition = Point(5.0, 6.0), Scale = 1000")]
-        public void IsVisibleFalse(double x, double y, double scale)
-        {
-            screenInfo.WorldPosition = new Point(x, y);
-            screenInfo.Scale = scale;
-
-            Assert.False(drawable.IsVisible());
-        }
+        
     }
 }

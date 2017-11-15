@@ -12,6 +12,11 @@ namespace PolygonGeneralization.WinForms
             _graphics = graphics;
         }
 
+        public void SetGraphics(Graphics graphics)
+        {
+            _graphics = graphics;
+        }
+
         public IDrawer CreateDrawer()
         {
             return new Drawer(_graphics);

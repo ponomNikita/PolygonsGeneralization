@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="DrawablePolygonTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenAdapterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

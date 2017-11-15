@@ -5,6 +5,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Domain.Models;
 using Polygon = PolygonGeneralization.Domain.Models.Polygon;
 
 namespace PolygonGeneralization.Infrastructure.Services
@@ -68,6 +69,11 @@ namespace PolygonGeneralization.Infrastructure.Services
                     // TODO убрать последнюю точку в контуре (дублирует начальную)
                     .Where(p => p != null)
                     .ToArray();
+
+                foreach (var polygon in polygons)
+                {
+                    polygon.TransformToR3();
+                }
 
                 return polygons;
             }

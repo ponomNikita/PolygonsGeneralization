@@ -2,6 +2,9 @@
 {
     public class Point
     {
+
+        /// <param name="x">Longitude</param>
+        /// <param name="y">Latitude</param>
         public Point(double x, double y)
         {
             X = x;
@@ -20,8 +23,8 @@
         }
         public static Point EmptyPoint { get; }
 
-        public double X { get; }
-        public double Y { get; }
+        public double X { get; } // Longitude
+        public double Y { get; } // Latitude
 
         public static bool operator ==(Point a, Point b)
         {

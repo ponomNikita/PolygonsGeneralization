@@ -23,5 +23,10 @@ namespace PolygonGeneralization.WinForms.Forms
         {
             _viewModel.OpenFile();
         }
+
+        private void Canvas_Paint(object sender, PaintEventArgs e)
+        {
+            _viewModel.Paint(e);
+        }
     }
 }

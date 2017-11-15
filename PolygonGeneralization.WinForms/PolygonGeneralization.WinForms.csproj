@@ -64,7 +64,7 @@
     <Compile Include="Models\DrawablePolygon.cs" />
     <Compile Include="Interfaces\IDrawer.cs" />
     <Compile Include="Models\Point2D.cs" />
-    <Compile Include="ScreenInfo.cs" />
+    <Compile Include="ScreenAdapter.cs" />
     <Compile Include="Ninject\NinjectConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using PolygonGeneralization.Domain.Interfaces;
 
 namespace PolygonGeneralization.Domain.Models
 {
@@ -31,6 +30,14 @@ namespace PolygonGeneralization.Domain.Models
         public void AddPath(Path path)
         {
             Paths.Add(path);
+        }
+
+        public void TransformToR3()
+        {
+            foreach (var path in Paths)
+            {
+                path.TransformToR3();
+            }
         }
     }
 }

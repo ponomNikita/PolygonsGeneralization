@@ -26,11 +26,5 @@ namespace PolygonGeneralization.WinForms
         {
             _graphics.FillPolygon(_brash, points.Select(p => new Point(p.X, p.Y)).ToArray());
         }
-
-        public void Dispose()
-        {
-            _graphics.Dispose();
-            _brash.Dispose();
-        }
     }
 }

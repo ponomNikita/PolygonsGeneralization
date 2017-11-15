@@ -1,48 +1,51 @@
-﻿using PolygonGeneralization.Domain.Models;
+﻿using System.Linq;
+using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.WinForms.Interfaces;
 
 namespace PolygonGeneralization.WinForms.Models
 {
     public class DrawablePolygon : IDrawable
     {
-        public DrawablePolygon(Polygon geometry, ScreenInfo screenInfo, IDrawerFactory drawerFactory)
+        public DrawablePolygon(Polygon geometry, ScreenAdapter _screenAdapter, IDrawerFactory drawerFactory)
         {
             Geometry = geometry;
-            _screenInfo = screenInfo;
+            this._screenAdapter = _screenAdapter;
             _drawerFactory = drawerFactory;
         }
 
         public Polygon Geometry { get; }
 
-        private readonly ScreenInfo _screenInfo;
+        private readonly ScreenAdapter _screenAdapter;
 
         private readonly IDrawerFactory _drawerFactory;
 
         public bool IsVisible()
         {
-            foreach (var path in Geometry.Paths)
-            {
-                foreach (var point in path.Points)
-                {
-                    if (point.X >= _screenInfo.WorldPosition.X &&
-                        point.X < _screenInfo.WorldPosition.X + _screenInfo.ScaledWidth &&
-                        point.Y >= _screenInfo.WorldPosition.Y &&
-                        point.Y < _screenInfo.WorldPosition.Y + _screenInfo.ScaledHeight)
-                    {
-                        return true;
-                    }
-                }
-            }
+            //foreach (var path in Geometry.Paths)
+            //{
+            //    foreach (var point in path.Points)
+            //    {
+            //        if (point.X >= _screenAdapter.WorldPosition.X &&
+            //            point.X < _screenAdapter.WorldPosition.X + _screenAdapter.ScaledWidth &&
+            //            point.Y >= _screenAdapter.WorldPosition.Y &&
+            //            point.Y < _screenAdapter.WorldPosition.Y + _screenAdapter.ScaledHeight)
+            //        {
+            //            return true;
+            //        }
+            //    }
+            //}
 
             return false;
         }
 
         public void Draw()
         {
-            using (var drawer = _drawerFactory.CreateDrawer())
-            {
-                //drawer.FillPolygon();
-            }
+            var drawer = _drawerFactory.CreateDrawer();
+            var points = Geometry.Paths.SelectMany(p => p.Points)
+                .Select(p => _screenAdapter.ToPixel(p))
+                .ToArray();
+
+            drawer.FillPolygon(points);
         }
     }
 }
