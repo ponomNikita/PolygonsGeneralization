@@ -21,8 +21,8 @@ namespace PolygonGeneralization.Domain.Models
 
         private Point LanLonToR3(Point p)
         {
-            double lonRad = 180 * p.X / Math.PI; // Перевод градусов в радианы
-            double latRad = 180 * p.Y / Math.PI;
+            double lonRad = Math.PI * p.X / 180; // Перевод градусов в радианы
+            double latRad = Math.PI * p.Y / 180;
 
             double b2 = 40409707439405.6373723;
             double a2 = 40682009280025.00;
