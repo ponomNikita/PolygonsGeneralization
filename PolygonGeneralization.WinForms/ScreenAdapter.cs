@@ -11,11 +11,21 @@ namespace PolygonGeneralization.WinForms
             RightTop = rightTop;
         }
 
+        public bool HasPoint(Point point)
+        {
+            return point.X >= LeftDown.X &&
+                   point.X <= RightTop.X &&
+                   point.Y >= LeftDown.Y &&
+                   point.Y <= RightTop.Y;
+        }
+
         public Point LeftDown { get; }
         public Point RightTop { get; }
     }
     public class ScreenAdapter
     {
+        private const double SCALE = 25;
+
         public ScreenAdapter(int mapWidth, int mapHeight, Point[] points)
         {
             MapWidth = mapWidth;
@@ -38,7 +48,7 @@ namespace PolygonGeneralization.WinForms
         /// <returns></returns>
         public Point2D ToPixel(Point point)
         {
-            return new Point2D((int)((point.X - ZeroPoint.X) / Zoom), (int)((point.Y - ZeroPoint.Y) / Zoom));
+            return new Point2D((int)((point.X - Bbox.LeftDown.X) / Zoom), (int)((point.Y - Bbox.LeftDown.Y) / Zoom));
         }
 
         /// <summary>
@@ -65,16 +75,21 @@ namespace PolygonGeneralization.WinForms
 
             var factor = maxX - minX > maxY - minY ? (double)MapWidth / MapHeight : (double)MapHeight / MapWidth;
 
+            var height = (maxX - minX) / factor / SCALE;
+            var width = (maxY - minY) / factor / SCALE;
+            var widthDelta = (maxX - minX - width) / 2;
+            var heightDelta = (maxY - minY - height) / 2;
+
             if (maxX - minX > maxY - minY)
             {
-                var height = (maxX - minX)/factor;
-                Bbox = new BBox(new Point(minX, minY), new Point(maxX, minY + height));
+                Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
+                    new Point(minX + widthDelta, minY + heightDelta + height));
                 Zoom = height/MapHeight;
             }
             else
             {
-                var width = (maxY - minY)/factor;
-                Bbox = new BBox(new Point(minX, minY), new Point(minX + width, maxY));
+                Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
+                    new Point(minX + widthDelta + width, maxY + heightDelta));
                 Zoom = width/MapWidth;
             }
         }

@@ -34,18 +34,19 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Canvas = new System.Windows.Forms.Panel();
+            this.Meta = new System.Windows.Forms.Panel();
             this.TopMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // TopMenu
             // 
-            this.TopMenu.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.TopMenu.BackColor = System.Drawing.SystemColors.Control;
             this.TopMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.TopMenu.Location = new System.Drawing.Point(0, 0);
             this.TopMenu.Name = "TopMenu";
-            this.TopMenu.Size = new System.Drawing.Size(784, 24);
+            this.TopMenu.Size = new System.Drawing.Size(994, 24);
             this.TopMenu.TabIndex = 0;
             this.TopMenu.Text = "TopMenu";
             // 
@@ -80,22 +81,42 @@
             // 
             // Canvas
             // 
-            this.Canvas.BackColor = System.Drawing.SystemColors.Window;
+            this.Canvas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Canvas.AutoSize = true;
+            this.Canvas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
             this.Canvas.Location = new System.Drawing.Point(12, 40);
+            this.Canvas.MinimumSize = new System.Drawing.Size(760, 509);
             this.Canvas.Name = "Canvas";
             this.Canvas.Size = new System.Drawing.Size(760, 509);
             this.Canvas.TabIndex = 1;
             this.Canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.Canvas_Paint);
             // 
+            // Meta
+            // 
+            this.Meta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Meta.AutoSize = true;
+            this.Meta.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Meta.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Meta.Location = new System.Drawing.Point(789, 40);
+            this.Meta.MinimumSize = new System.Drawing.Size(193, 509);
+            this.Meta.Name = "Meta";
+            this.Meta.Size = new System.Drawing.Size(193, 509);
+            this.Meta.TabIndex = 2;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(994, 561);
+            this.Controls.Add(this.Meta);
             this.Controls.Add(this.Canvas);
             this.Controls.Add(this.TopMenu);
             this.MainMenuStrip = this.TopMenu;
+            this.MinimumSize = new System.Drawing.Size(1010, 600);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.TopMenu.ResumeLayout(false);
@@ -113,5 +134,6 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Panel Canvas;
+        private System.Windows.Forms.Panel Meta;
     }
 }

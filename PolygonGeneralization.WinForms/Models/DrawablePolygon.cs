@@ -21,19 +21,16 @@ namespace PolygonGeneralization.WinForms.Models
 
         public bool IsVisible()
         {
-            //foreach (var path in Geometry.Paths)
-            //{
-            //    foreach (var point in path.Points)
-            //    {
-            //        if (point.X >= _screenAdapter.WorldPosition.X &&
-            //            point.X < _screenAdapter.WorldPosition.X + _screenAdapter.ScaledWidth &&
-            //            point.Y >= _screenAdapter.WorldPosition.Y &&
-            //            point.Y < _screenAdapter.WorldPosition.Y + _screenAdapter.ScaledHeight)
-            //        {
-            //            return true;
-            //        }
-            //    }
-            //}
+            foreach (var path in Geometry.Paths)
+            {
+                foreach (var point in path.Points)
+                {
+                    if (_screenAdapter.Bbox.HasPoint(point))
+                    {
+                        return true;
+                    }
+                }
+            }
 
             return false;
         }
