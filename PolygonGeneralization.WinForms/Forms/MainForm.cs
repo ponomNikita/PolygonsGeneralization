@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.WinForms.ViewModels;
 
@@ -16,6 +17,29 @@ namespace PolygonGeneralization.WinForms.Forms
             _viewModel = new MainFormViewModel(Canvas, dataReader);
 
             InitializeMetaSection();
+        }
+
+        public sealed override Rectangle DisplayRectangle => base.DisplayRectangle;
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            switch (e.KeyCode)
+            {
+                case Keys.Up:
+                    _viewModel.MoveUp();
+                    break;
+                case Keys.Down:
+                    _viewModel.ModeDown();
+                    break;
+                case Keys.Left:
+                    _viewModel.MoveLeft();
+                    break;
+                case Keys.Right:
+                    _viewModel.MoveRight();
+                    break;
+            }
         }
 
         private void InitializeMetaSection()
@@ -53,5 +77,6 @@ namespace PolygonGeneralization.WinForms.Forms
         {
             _viewModel.Paint(e);
         }
+        
     }
 }

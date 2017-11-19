@@ -5,6 +5,8 @@ namespace PolygonGeneralization.WinForms
 {
     public struct BBox
     {
+        private const double MOVING_STEP = 10;
+
         public BBox(Point leftDown, Point rightTop)
         {
             LeftDown = leftDown;
@@ -21,15 +23,40 @@ namespace PolygonGeneralization.WinForms
 
         public Point LeftDown { get; }
         public Point RightTop { get; }
+
+        public void MoveUp()
+        {
+            LeftDown.Y += MOVING_STEP;
+            RightTop.Y += MOVING_STEP;
+        }
+
+        public void ModeDown()
+        {
+            LeftDown.Y -= MOVING_STEP;
+            RightTop.Y -= MOVING_STEP;
+        }
+
+        public void MoveLeft()
+        {
+            LeftDown.X -= MOVING_STEP;
+            RightTop.X -= MOVING_STEP;
+        }
+
+        public void MoveRight()
+        {
+            LeftDown.X += MOVING_STEP;
+            RightTop.X += MOVING_STEP;
+        }
     }
     public class ScreenAdapter
     {
-        private const double SCALE = 25;
+        private readonly double _scale;
 
-        public ScreenAdapter(int mapWidth, int mapHeight, Point[] points)
+        public ScreenAdapter(int mapWidth, int mapHeight, Point[] points, double scale = 25)
         {
             MapWidth = mapWidth;
             MapHeight = mapHeight;
+            _scale = scale;
 
             Initialize(points);
         }
@@ -75,8 +102,8 @@ namespace PolygonGeneralization.WinForms
 
             var factor = maxX - minX > maxY - minY ? (double)MapWidth / MapHeight : (double)MapHeight / MapWidth;
 
-            var height = (maxX - minX) / factor / SCALE;
-            var width = (maxY - minY) / factor / SCALE;
+            var height = (maxX - minX) / factor / _scale;
+            var width = (maxY - minY) / factor / _scale;
             var widthDelta = (maxX - minX - width) / 2;
             var heightDelta = (maxY - minY - height) / 2;
 

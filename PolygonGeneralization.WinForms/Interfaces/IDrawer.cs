@@ -6,6 +6,6 @@ namespace PolygonGeneralization.WinForms.Interfaces
     public interface IDrawer
     {
         void DrawLine(Point2D a, Point2D b);
-        void FillPolygon(Point2D[] points);
+        void DrawPolygon(Point2D[] points);
     }
 }

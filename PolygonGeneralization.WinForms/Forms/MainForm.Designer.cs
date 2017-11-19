@@ -86,6 +86,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Canvas.AutoSize = true;
             this.Canvas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.Canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Canvas.Location = new System.Drawing.Point(12, 40);
             this.Canvas.MinimumSize = new System.Drawing.Size(760, 509);
             this.Canvas.Name = "Canvas";

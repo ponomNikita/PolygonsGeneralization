@@ -23,8 +23,8 @@
         }
         public static Point EmptyPoint { get; }
 
-        public double X { get; } // Longitude
-        public double Y { get; } // Latitude
+        public double X { get; set; } // Longitude
+        public double Y { get; set; } // Latitude
 
         public static bool operator ==(Point a, Point b)
         {

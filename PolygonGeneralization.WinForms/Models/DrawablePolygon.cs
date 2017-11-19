@@ -42,7 +42,7 @@ namespace PolygonGeneralization.WinForms.Models
                 .Select(p => _screenAdapter.ToPixel(p))
                 .ToArray();
 
-            drawer.FillPolygon(points);
+            drawer.DrawPolygon(points);
         }
     }
 }

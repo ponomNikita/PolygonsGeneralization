@@ -69,18 +69,47 @@ namespace PolygonGeneralization.WinForms.ViewModels
             {
                 _drawerFactory.SetGraphics(paintEventArgs.Graphics);
 
-                // TODO сделать нахождение IsVisible полигонов и их отрисовку в одном цикле
-                var visiblePolygons = _drawablePolygons.Where(p => p.IsVisible()).ToList();
+                _meta.VisiblePolygonsCount = 0;
 
-                visiblePolygons.ForEach(p => p.Draw());
+                foreach (var polygon in _drawablePolygons)
+                {
+                    if (polygon.IsVisible())
+                    {
+                        _meta.VisiblePolygonsCount++;
+                        polygon.Draw();
+                    }
+                }
 
                 _meta.TotalPolygonsCount = _drawablePolygons.Count;
                 _meta.InMemoryPolygonsCount = _drawablePolygons.Count;
-                _meta.VisiblePolygonsCount = visiblePolygons.Count;
                 _meta.Zoom = _screenAdapter.Zoom;
 
                 MetaChangedEvent?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        public void MoveUp()
+        {
+            _screenAdapter.Bbox.MoveUp();
+            _canvas.Invalidate();
+        }
+
+        public void ModeDown()
+        {
+            _screenAdapter.Bbox.ModeDown();
+            _canvas.Invalidate();
+        }
+
+        public void MoveLeft()
+        {
+            _screenAdapter.Bbox.MoveLeft();
+            _canvas.Invalidate();
+        }
+
+        public void MoveRight()
+        {
+            _screenAdapter.Bbox.MoveRight();
+            _canvas.Invalidate();
         }
     }
 }
