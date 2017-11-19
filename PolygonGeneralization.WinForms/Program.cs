@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Ninject;
+using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.WinForms.Forms;
 using PolygonGeneralization.WinForms.Ninject;
 
@@ -22,6 +23,9 @@ namespace PolygonGeneralization.WinForms
             _kernel = NinjectConfiguration.GetKernel();
 
             var mainForm = _kernel.Get<MainForm>();
+
+            var dbService = _kernel.Get<IDbService>();
+            dbService.InitializeDataBase("Polygons");
 
             Application.Run(mainForm);
         }

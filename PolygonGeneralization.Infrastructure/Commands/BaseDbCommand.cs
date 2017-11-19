@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Configuration;
 using System.Data;
-using System.Data.Common;
 using System.Data.SQLite;
 using PolygonGeneralization.Domain.Interfaces;
 
@@ -21,25 +20,20 @@ namespace PolygonGeneralization.Infrastructure.Commands
         {
             SQLiteConnection.CreateFile(_dbName);
 
-            SQLiteFactory factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+            var connectionString = ConfigurationManager.ConnectionStrings[_dbName].ConnectionString;
 
-            using (var connection = (SQLiteConnection)factory.CreateConnection())
+            using (var connection = new SQLiteConnection(connectionString))
             {
-                if (connection == null)
-                {
-                    throw new Exception("Could not create connetion");
-                }
-
-                connection.ConnectionString = $"Data Source = {_dbName}";
                 connection.Open();
 
                 using (var command = new SQLiteCommand(connection))
                 {
                     command.CommandText = CommandText;
-
                     command.CommandType = CommandType.Text;
                     command.ExecuteNonQuery();
                 }
+
+                connection.Close();
             }
         }
     }
