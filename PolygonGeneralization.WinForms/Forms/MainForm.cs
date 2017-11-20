@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.WinForms.ViewModels;
 
 namespace PolygonGeneralization.WinForms.Forms
@@ -9,12 +10,13 @@ namespace PolygonGeneralization.WinForms.Forms
     {
         private readonly MainFormViewModel _viewModel;
         private BindingSource _metaBinding;
+        private Label _metaTextLabel;
 
-        public MainForm(IGisDataReader dataReader)
+        public MainForm(IGisDataReader dataReader, IDbService dbService, ILogger logger)
         {
             InitializeComponent();
 
-            _viewModel = new MainFormViewModel(Canvas, dataReader);
+            _viewModel = new MainFormViewModel(Canvas, dataReader, dbService, logger);
 
             InitializeMetaSection();
         }
@@ -44,23 +46,28 @@ namespace PolygonGeneralization.WinForms.Forms
 
         private void InitializeMetaSection()
         {
-            var metaTextLabel = new Label();
-            metaTextLabel.AutoSize = true;
-            metaTextLabel.Height = Meta.Height;
-            metaTextLabel.Width = Meta.Width;
+            _metaTextLabel = new Label();
+            _metaTextLabel.AutoSize = true;
+            _metaTextLabel.Height = Meta.Height;
+            _metaTextLabel.Width = Meta.Width;
 
             _metaBinding = new BindingSource();
             _metaBinding.DataSource = _viewModel;
-            metaTextLabel.DataBindings.Add("Text", _metaBinding, "Meta");
+            _metaTextLabel.DataBindings.Add("Text", _metaBinding, "Meta");
 
-            Meta.Controls.Add(metaTextLabel);
+            Meta.Controls.Add(_metaTextLabel);
 
-            _viewModel.MetaChangedEvent += MetaChangedHandler;
+            _viewModel.AddHandler(MetaChangedHandler);
         }
 
         private void MetaChangedHandler(object sender, System.EventArgs e)
         {
-            _metaBinding.ResetBindings(false);
+            MethodInvoker inv = delegate
+            {
+                _metaBinding.ResetBindings(false);
+            };
+
+            Invoke(inv);
         }
 
         private void exitToolStripMenuItem_Click(object sender, System.EventArgs e)

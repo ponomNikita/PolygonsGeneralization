@@ -24,9 +24,6 @@ namespace PolygonGeneralization.WinForms
 
             var mainForm = _kernel.Get<MainForm>();
 
-            var dbService = _kernel.Get<IDbService>();
-            dbService.InitializeDataBase("Polygons");
-
             Application.Run(mainForm);
         }
     }

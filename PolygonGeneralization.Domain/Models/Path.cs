@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PolygonGeneralization.Domain.Models
 {
-    public class Path
+    public class Path : Entity
     {
         public Path(params Point[] points)
         {
             Points = points;
         }
 
-        public Point[] Points { get; }
+        public virtual ICollection<Point> Points { get; }
 
         public void TransformToR3()
         {
-            for (int i = 0; i < Points.Length; i++)
+            var points = Points.ToList();
+            for (int i = 0; i < points.Count; i++)
             {
-                Points[i] = LanLonToR3(Points[i]);
+                points[i] = LanLonToR3(points[i]);
             }
         }
 

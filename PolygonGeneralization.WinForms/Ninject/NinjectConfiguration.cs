@@ -1,6 +1,9 @@
-﻿using Ninject;
+﻿using System.Data.Entity;
+using Ninject;
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Infrastructure;
+using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.Infrastructure.Services;
 using PolygonGeneralization.WinForms.Interfaces;
 
@@ -16,6 +19,8 @@ namespace PolygonGeneralization.WinForms.Ninject
             kernel.Bind<IGisDataReader>().To<JsonGisDataReader>();
             kernel.Bind<IDrawerFactory>().To<DrawerFactory>();
             kernel.Bind<IDbService>().To<DbService>().InSingletonScope();
+            kernel.Bind<DbContext>().To<DataBaseContext>();
+            kernel.Bind<ILogger>().To<Logger>().InSingletonScope();
 
             return kernel;
         }

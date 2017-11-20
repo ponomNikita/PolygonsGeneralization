@@ -4,8 +4,12 @@ using System.Linq;
 
 namespace PolygonGeneralization.Domain.Models
 {
-    public class Polygon
+    public class Polygon : Entity
     {
+        protected Polygon()
+        {
+            Paths = new Collection<Path>();
+        }
         public Polygon(params Path[] paths)
         {
             Paths = paths;
@@ -25,7 +29,8 @@ namespace PolygonGeneralization.Domain.Models
             }
         }
 
-        public ICollection<Path> Paths { get; }
+        public virtual Map Map { get; set; }
+        public virtual ICollection<Path> Paths { get; }
 
         public void AddPath(Path path)
         {

@@ -1,6 +1,6 @@
 ﻿namespace PolygonGeneralization.Domain.Models
 {
-    public class Point
+    public class Point : Entity
     {
 
         /// <param name="x">Longitude</param>

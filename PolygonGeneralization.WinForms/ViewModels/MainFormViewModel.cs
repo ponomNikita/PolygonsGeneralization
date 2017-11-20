@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Domain.Models;
+using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.WinForms.Interfaces;
 using PolygonGeneralization.WinForms.Models;
 using PolygonGeneralization.WinForms.Properties;
-using Point = System.Drawing.Point;
 
 namespace PolygonGeneralization.WinForms.ViewModels
 {
@@ -22,18 +22,28 @@ namespace PolygonGeneralization.WinForms.ViewModels
         private readonly IDrawerFactory _drawerFactory;
         private List<DrawablePolygon> _drawablePolygons;
         private readonly MetaInfo _meta;
+        private readonly IDbService _dbService;
+        private readonly ILogger _logger;
 
-        public MainFormViewModel(Panel canvas, IGisDataReader dataReader)
+        public MainFormViewModel(Panel canvas, 
+            IGisDataReader dataReader,
+            IDbService dbService,
+            ILogger logger)
         {
+            _dbService = dbService;
             _canvas = canvas;
             _dataReader = dataReader;
             _drawerFactory = new DrawerFactory(canvas.CreateGraphics());
             _meta = new MetaInfo();
+            _logger = logger;
         }
 
-        public string Meta => _meta.ToString();
+        public void AddHandler(EventHandler handler)
+        {
+            _logger.AddEventHandler(handler);
+        }
 
-        public event EventHandler MetaChangedEvent;
+        public string Meta => $"{_meta}\n\n{_logger.GetLog()}";
 
         public void Exit()
         {
@@ -50,15 +60,31 @@ namespace PolygonGeneralization.WinForms.ViewModels
 
                 if (result == DialogResult.OK)
                 {
-                    _mapFileName = dialog.FileName;
-                    _polygons = _dataReader.ReadFromFile(_mapFileName);
+                    var filename = dialog.FileName;
 
-                    var allPoints = _polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray();
+                    Task.Run(() => {
+                        _mapFileName = filename;
+                        _logger.Log("Reading map from file...");
+                        _polygons = _dataReader.ReadFromFile(_mapFileName);
+                        _logger.Log("Done");
 
-                    _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, allPoints);
+                        var allPoints = _polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray();
 
-                    _drawablePolygons = _polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
-                   _canvas.Invalidate();
+                        _logger.Log("Initialize screen adapter...");
+                        _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, allPoints);
+                        _logger.Log("Done");
+
+                        var map = new Map($"NN_{DateTime.Now}");
+                        map.Polygons = _polygons;
+
+                        _logger.Log("Saving into database...");
+                        _dbService.SaveMap(map);
+                        _logger.Log("Done");
+
+                        _drawablePolygons = _polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
+                        _canvas.Invalidate();
+                    });
+                    
                 }
             }
         }
@@ -67,6 +93,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             if (_drawablePolygons != null)
             {
+                _logger.Log("Drawing....");
                 _drawerFactory.SetGraphics(paintEventArgs.Graphics);
 
                 _meta.VisiblePolygonsCount = 0;
@@ -79,12 +106,10 @@ namespace PolygonGeneralization.WinForms.ViewModels
                         polygon.Draw();
                     }
                 }
-
                 _meta.TotalPolygonsCount = _drawablePolygons.Count;
                 _meta.InMemoryPolygonsCount = _drawablePolygons.Count;
                 _meta.Zoom = _screenAdapter.Zoom;
-
-                MetaChangedEvent?.Invoke(this, EventArgs.Empty);
+                _logger.Log("Done");
             }
         }
 
