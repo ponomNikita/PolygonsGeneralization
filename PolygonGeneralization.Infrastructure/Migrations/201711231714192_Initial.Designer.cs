@@ -13,7 +13,7 @@ namespace PolygonGeneralization.Infrastructure.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201711191737076_Initial"; }
+            get { return "201711231714192_Initial"; }
         }
         
         string IMigrationMetadata.Source

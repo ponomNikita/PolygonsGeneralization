@@ -65,18 +65,16 @@ namespace PolygonGeneralization.WinForms.ViewModels
                     Task.Run(() => {
                         _mapFileName = filename;
                         _logger.Log("Reading map from file...");
-                        _polygons = _dataReader.ReadFromFile(_mapFileName);
+                        var map = _dataReader.ReadFromFile(_mapFileName);
+                        //_polygons = map.Polygons.ToArray();
                         _logger.Log("Done");
 
-                        var allPoints = _polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray();
+                        //var allPoints = _polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray();
 
                         _logger.Log("Initialize screen adapter...");
-                        _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, allPoints);
+                        //_screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, allPoints);
                         _logger.Log("Done");
-
-                        var map = new Map($"NN_{DateTime.Now}");
-                        map.Polygons = _polygons;
-
+                        
                         _logger.Log("Saving into database...");
                         _dbService.SaveMap(map);
                         _logger.Log("Done");

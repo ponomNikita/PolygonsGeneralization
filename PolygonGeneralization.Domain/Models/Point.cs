@@ -1,4 +1,6 @@
-﻿namespace PolygonGeneralization.Domain.Models
+﻿using System;
+
+namespace PolygonGeneralization.Domain.Models
 {
     public class Point : Entity
     {
@@ -22,6 +24,10 @@
             EmptyPoint = new Point(double.NaN, double.NaN);
         }
         public static Point EmptyPoint { get; }
+
+        public virtual Path Path { get; set; }
+
+        public Guid PathId { get; set; }
 
         public double X { get; set; } // Longitude
         public double Y { get; set; } // Latitude

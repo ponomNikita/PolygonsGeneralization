@@ -54,8 +54,10 @@ namespace PolygonGeneralization.Infrastructure.Services
     }
     public class JsonGisDataReader : IGisDataReader
     {
-        public Polygon[] ReadFromFile(string filename)
+        public Map ReadFromFile(string filename)
         {
+            var result = new Map(filename);
+
             var serializer = new JsonSerializer();
 
             using (var file = File.OpenText(filename))
@@ -73,9 +75,11 @@ namespace PolygonGeneralization.Infrastructure.Services
                 foreach (var polygon in polygons)
                 {
                     polygon.TransformToR3();
+                    polygon.MapId = result.Id;
+                    result.Polygons.Add(polygon);
                 }
 
-                return polygons;
+                return result;
             }
         }
     }

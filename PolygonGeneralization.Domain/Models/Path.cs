@@ -8,10 +8,14 @@ namespace PolygonGeneralization.Domain.Models
     {
         public Path(params Point[] points)
         {
-            Points = points;
+            Points = points.Select(p => new Point(p) {PathId = Id}).ToList();
         }
 
         public virtual ICollection<Point> Points { get; }
+
+        public virtual Polygon Polygon { get; set; }
+
+        public Guid PolygonId { get; set; }
 
         public void TransformToR3()
         {

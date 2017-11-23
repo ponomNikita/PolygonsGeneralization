@@ -101,12 +101,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\BulkInsertCommand.cs" />
+    <Compile Include="Commands\PathsBulkInsertCommand.cs" />
+    <Compile Include="Commands\PointsBulkInsertCommand.cs" />
+    <Compile Include="Commands\PolygonsBulkInsertCommand.cs" />
+    <Compile Include="Commands\SaveMapMetaCommand.cs" />
     <Compile Include="DataBaseContext.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\Logger.cs" />
-    <Compile Include="Migrations\201711191737076_Initial.cs" />
-    <Compile Include="Migrations\201711191737076_Initial.Designer.cs">
-      <DependentUpon>201711191737076_Initial.cs</DependentUpon>
+    <Compile Include="Logger\LoggerFactory.cs" />
+    <Compile Include="Migrations\201711231714192_Initial.cs" />
+    <Compile Include="Migrations\201711231714192_Initial.Designer.cs">
+      <DependentUpon>201711231714192_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -130,8 +137,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201711191737076_Initial.resx">
-      <DependentUpon>201711191737076_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201711231714192_Initial.resx">
+      <DependentUpon>201711231714192_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

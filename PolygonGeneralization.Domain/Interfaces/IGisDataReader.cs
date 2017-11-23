@@ -4,6 +4,6 @@ namespace PolygonGeneralization.Domain.Interfaces
 {
     public interface IGisDataReader
     {
-        Polygon[] ReadFromFile(string filename);
+        Map ReadFromFile(string filename);
     }
 }

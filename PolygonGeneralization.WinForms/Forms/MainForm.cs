@@ -10,7 +10,7 @@ namespace PolygonGeneralization.WinForms.Forms
     {
         private readonly MainFormViewModel _viewModel;
         private BindingSource _metaBinding;
-        private Label _metaTextLabel;
+        private TextBox _metaControl;
 
         public MainForm(IGisDataReader dataReader, IDbService dbService, ILogger logger)
         {
@@ -46,18 +46,35 @@ namespace PolygonGeneralization.WinForms.Forms
 
         private void InitializeMetaSection()
         {
-            _metaTextLabel = new Label();
-            _metaTextLabel.AutoSize = true;
-            _metaTextLabel.Height = Meta.Height;
-            _metaTextLabel.Width = Meta.Width;
+            _metaControl = new TextBox();
+            _metaControl.AutoSize = true;
+            _metaControl.Height = Meta.Height;
+            _metaControl.Width = Meta.Width;
+            _metaControl.TextChanged += MetaTextChangedEventHandler;
+            _metaControl.ReadOnly = true;
+            _metaControl.WordWrap = true;
+            _metaControl.Multiline = true;
+            _metaControl.ScrollBars = ScrollBars.Vertical;
+            _metaControl.HideSelection = true;
 
             _metaBinding = new BindingSource();
             _metaBinding.DataSource = _viewModel;
-            _metaTextLabel.DataBindings.Add("Text", _metaBinding, "Meta");
+            _metaControl.DataBindings.Add("Text", _metaBinding, "Meta");
 
-            Meta.Controls.Add(_metaTextLabel);
+            Meta.Controls.Add(_metaControl);
 
             _viewModel.AddHandler(MetaChangedHandler);
+        }
+
+        private void MetaTextChangedEventHandler(object sender, System.EventArgs e)
+        {
+            MethodInvoker inv = delegate
+            {
+                _metaControl.SelectionStart = _metaControl.TextLength;
+                _metaControl.ScrollToCaret();
+            };
+
+            Invoke(inv);
         }
 
         private void MetaChangedHandler(object sender, System.EventArgs e)

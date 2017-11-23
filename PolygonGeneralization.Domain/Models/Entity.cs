@@ -1,7 +1,13 @@
-﻿namespace PolygonGeneralization.Domain.Models
+﻿using System;
+
+namespace PolygonGeneralization.Domain.Models
 {
     public class Entity
     {
-        public long Id { get; set; }
+        public Entity()
+        {
+            Id = Guid.NewGuid();
+        }
+        public Guid Id { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -24,12 +25,13 @@ namespace PolygonGeneralization.Domain.Models
             Paths = new Collection<Path>();
             foreach (var contour in polygon)
             {
-                var path = new Path(contour.Select(c => new Point(c[0], c[1])).ToArray());
+                var path = new Path(contour.Select(c => new Point(c[0], c[1])).ToArray()) {PolygonId = Id};
                 Paths.Add(path);
             }
         }
 
         public virtual Map Map { get; set; }
+        public Guid MapId { get; set; }
         public virtual ICollection<Path> Paths { get; }
 
         public void AddPath(Path path)
