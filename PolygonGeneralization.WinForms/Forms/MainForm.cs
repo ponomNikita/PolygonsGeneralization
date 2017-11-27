@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Infrastructure.Logger;
+using PolygonGeneralization.WinForms.Controls;
 using PolygonGeneralization.WinForms.ViewModels;
 
 namespace PolygonGeneralization.WinForms.Forms
@@ -19,6 +20,53 @@ namespace PolygonGeneralization.WinForms.Forms
             _viewModel = new MainFormViewModel(Canvas, dataReader, dbService, logger);
 
             InitializeMetaSection();
+
+            InitializeMenu();
+
+            _viewModel.MapsUpdatedEvent += MapsUpdatedEventHandler;
+
+        }
+
+        private void InitializeMenu()
+        {
+            var importFromFileToolStrip = new ToolStripMenuItem();
+            var exitToolStrip = new ToolStripMenuItem();
+
+            fileToolStripMenuItem.DropDownItems.Clear();
+            fileToolStripMenuItem.DropDownItems.Add(importFromFileToolStrip);
+
+            if (_viewModel != null)
+            {
+                var maps = _viewModel.GetAvailableMaps();
+                foreach (var map in maps)
+                {
+                    var openMapToolStrip = new ToolStripMenuItemWithId() {Id = map.Key};
+                    openMapToolStrip.Size = new Size(103, 22);
+                    openMapToolStrip.Text = $"Open \"{map.Value}\"";
+                    openMapToolStrip.Click += (sender, args) =>
+                    {
+                        var item = sender as ToolStripMenuItemWithId;
+                        if (item != null)
+                        {
+                            _viewModel.OpenMap(item.Id);
+                        }
+                    };
+
+                    fileToolStripMenuItem.DropDownItems.Add(openMapToolStrip);
+                }
+            }
+
+            fileToolStripMenuItem.DropDownItems.Add(exitToolStrip);
+
+            importFromFileToolStrip.Name = "importFromFileToolStripMenuItem";
+            importFromFileToolStrip.Size = new Size(103, 22);
+            importFromFileToolStrip.Text = "Import from file...";
+            importFromFileToolStrip.Click += openToolStripMenuItem_Click;
+
+            exitToolStrip.Name = "exitToolStripMenuItem";
+            exitToolStrip.Size = new System.Drawing.Size(103, 22);
+            exitToolStrip.Text = "Exit";
+            exitToolStrip.Click += exitToolStripMenuItem_Click;
         }
 
         public sealed override Rectangle DisplayRectangle => base.DisplayRectangle;
@@ -94,13 +142,20 @@ namespace PolygonGeneralization.WinForms.Forms
 
         private void openToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            _viewModel.OpenFile();
+            _viewModel.ImportMap();
         }
 
         private void Canvas_Paint(object sender, PaintEventArgs e)
         {
             _viewModel.Paint(e);
         }
-        
+
+        private void MapsUpdatedEventHandler(object sender, System.EventArgs e)
+        {
+            MethodInvoker inv = InitializeMenu;
+
+            Invoke(inv);
+        }
+
     }
 }

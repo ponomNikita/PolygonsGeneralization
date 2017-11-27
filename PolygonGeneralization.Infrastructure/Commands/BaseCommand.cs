@@ -8,7 +8,7 @@ namespace PolygonGeneralization.Infrastructure.Commands
     {
         private readonly ILogger _logger = LoggerFactory.Create();
         private readonly Stopwatch _stopWatch = new Stopwatch();
-        private double _time;
+        private string _time;
 
         public void Handle()
         {
@@ -21,15 +21,15 @@ namespace PolygonGeneralization.Infrastructure.Commands
             HandleImpl();
 
             _stopWatch.Stop();
-            _time = _stopWatch.ElapsedMilliseconds/100.0;
+            _time = _stopWatch.Elapsed.ToString("mm\\:ss\\.ff");
 
             if (UseLogging)
-                _logger.Log($"Done {_time} sec");
+                _logger.Log($"Done {_time}");
         }
 
         public abstract string CommandName { get; }
         public virtual bool UseLogging => true;
-        public virtual double Time => _time;
+        public virtual string Time => _time;
         protected abstract void HandleImpl();
     }
 }

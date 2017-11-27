@@ -19,6 +19,9 @@ namespace PolygonGeneralization.Domain.Models
             Y = pt.Y;
         }
 
+        protected Point()
+        { }
+
         static Point()
         {
             EmptyPoint = new Point(double.NaN, double.NaN);

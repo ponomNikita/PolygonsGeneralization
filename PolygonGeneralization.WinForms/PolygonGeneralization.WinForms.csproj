@@ -109,6 +109,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ToolStripMenuItemWithId.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Drawer.cs" />
     <Compile Include="DrawerFactory.cs" />
     <Compile Include="Forms\MainForm.cs">

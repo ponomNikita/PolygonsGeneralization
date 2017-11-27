@@ -37,6 +37,8 @@ namespace PolygonGeneralization.WinForms.ViewModels
             _meta = new MetaInfo();
             _logger = logger;
         }
+        
+        public event EventHandler MapsUpdatedEvent;
 
         public void AddHandler(EventHandler handler)
         {
@@ -50,7 +52,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
             Application.Exit();
         }
 
-        public void OpenFile()
+        public void ImportMap()
         {
             using (var dialog = new OpenFileDialog())
             {
@@ -69,20 +71,41 @@ namespace PolygonGeneralization.WinForms.ViewModels
                         _logger.Log("Reading map from file...");
                         var map = _dataReader.ReadFromFile(_mapFileName);
                         _logger.Log("Done");
-
-                        _logger.Log("Initialize screen adapter...");
-                        _logger.Log("Done");
                         
                         _logger.Log("Saving into database...");
                         _dbService.SaveMap(map);
+                        MapsUpdatedEvent?.Invoke(this, EventArgs.Empty);
                         _logger.Log("Done");
 
-                        //_drawablePolygons = _polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
-                        //_canvas.Invalidate();
+                        DrawMap(map);
                     });
                     
                 }
             }
+        }
+
+        public void OpenMap(Guid mapId)
+        {
+            Task.Run(() =>
+            {
+                var map = _dbService.GetMap(mapId);
+
+                DrawMap(map);
+            });
+        }
+
+        private void DrawMap(Map map)
+        {
+            // TODO Убрать в комманду
+            _logger.Log("Initialize screen adapter...");
+            // TODO Сделать заполнение ScreenAdapter в хранимой процедуре
+            _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height,
+                map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray());
+            _logger.Log("Done");
+
+            _drawablePolygons = map.Polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
+
+            _canvas.Invalidate();
         }
 
         public void Paint(PaintEventArgs paintEventArgs)
@@ -131,6 +154,13 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             _screenAdapter.Bbox.MoveRight();
             _canvas.Invalidate();
+        }
+
+        public IDictionary<Guid, string> GetAvailableMaps()
+        {
+            var maps = _dbService.GetMaps();
+
+            return maps.ToDictionary(m => m.Id, m => m.Name);
         }
     }
 }

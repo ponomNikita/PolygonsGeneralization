@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.Infrastructure.Commands;
@@ -31,6 +33,20 @@ namespace PolygonGeneralization.Infrastructure.Services
             polygonsInsertCommand.Handle();
             pathsInsertCommand.Handle();
             pointsInsertCommand.Handle();
+        }
+
+        public IEnumerable<Map> GetMaps()
+        {
+            return _context.Set<Map>().AsEnumerable();
+        }
+
+        public Map GetMap(Guid mapId)
+        {
+            return _context.Set<Map>()
+                .Include(m => m.Polygons)
+                .Include(m => m.Polygons.Select(p => p.Paths))
+                .Include(m => m.Polygons.Select(p => p.Paths.Select(path => path.Points)))
+                .First(m => m.Id == mapId);
         }
     }
 }

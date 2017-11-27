@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace PolygonGeneralization.Domain.Models
 {
     public class Path : Entity
     {
+        protected Path()
+        {
+            Points = new Collection<Point>();
+        }
         public Path(params Point[] points)
         {
             Points = points.Select(p => new Point(p) {PathId = Id}).ToList();
