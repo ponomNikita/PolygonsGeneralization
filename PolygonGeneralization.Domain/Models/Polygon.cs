@@ -25,7 +25,13 @@ namespace PolygonGeneralization.Domain.Models
             Paths = new Collection<Path>();
             foreach (var contour in polygon)
             {
-                var path = new Path(contour.Select(c => new Point(c[0], c[1])).ToArray()) {PolygonId = Id};
+                var points = contour.Select(c => new Point(c[0], c[1])).ToList();
+                if (points.Count > 1 && points[0] == points[points.Count - 1])
+                {
+                    points.RemoveAt(points.Count - 1);
+                }
+
+                var path = new Path(points.ToArray()) {PolygonId = Id};
                 Paths.Add(path);
             }
         }

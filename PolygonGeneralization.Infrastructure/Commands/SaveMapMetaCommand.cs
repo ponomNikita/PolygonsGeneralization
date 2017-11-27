@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Data.SqlClient;
+using System.Text;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Infrastructure.Commands
@@ -17,7 +18,7 @@ namespace PolygonGeneralization.Infrastructure.Commands
         public override string CommandName => "Saving meta information";
         protected override void HandleImpl()
         {
-            var commandText = $"Insert into dbo.Maps Values('{_map.Id}', '{_map.Name}')";
+             var commandText = $"Insert into dbo.Maps Values('{_map.Id}', '{_map.Name}')";
             var connection = new SqlConnection(_connectionString);
 
             try

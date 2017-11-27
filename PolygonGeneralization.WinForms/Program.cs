@@ -20,6 +20,19 @@ namespace PolygonGeneralization.WinForms
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            Application.ThreadException += (sender, args) =>
+            {
+                var result = DialogResult.Cancel;
+
+                MessageBox.Show("Opps", args.Exception.ToString(),
+                    MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);
+
+                if (result == DialogResult.Abort)
+                {
+                    Application.Exit();
+                }
+            };
+
             _kernel = NinjectConfiguration.GetKernel();
 
             var mainForm = _kernel.Get<MainForm>();

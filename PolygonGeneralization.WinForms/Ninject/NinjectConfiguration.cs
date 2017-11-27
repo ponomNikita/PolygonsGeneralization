@@ -1,6 +1,5 @@
 ﻿using System.Data.Entity;
 using Ninject;
-using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Infrastructure;
 using PolygonGeneralization.Infrastructure.Logger;
@@ -20,7 +19,7 @@ namespace PolygonGeneralization.WinForms.Ninject
             kernel.Bind<IDrawerFactory>().To<DrawerFactory>();
             kernel.Bind<IDbService>().To<DbService>().InSingletonScope();
             kernel.Bind<DbContext>().To<DataBaseContext>();
-            kernel.Bind<ILogger>().To<Logger>().InSingletonScope();
+            kernel.Bind<ILogger>().ToConstant(LoggerFactory.Create()).InSingletonScope();
 
             return kernel;
         }

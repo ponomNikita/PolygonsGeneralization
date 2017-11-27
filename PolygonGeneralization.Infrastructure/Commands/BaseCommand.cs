@@ -6,8 +6,8 @@ namespace PolygonGeneralization.Infrastructure.Commands
 {
     public abstract class BaseCommand : ICommand
     {
-        private ILogger _logger = LoggerFactory.Create();
-        private Stopwatch _stopWatch = new Stopwatch();
+        private readonly ILogger _logger = LoggerFactory.Create();
+        private readonly Stopwatch _stopWatch = new Stopwatch();
         private double _time;
 
         public void Handle()
@@ -24,7 +24,7 @@ namespace PolygonGeneralization.Infrastructure.Commands
             _time = _stopWatch.ElapsedMilliseconds/100.0;
 
             if (UseLogging)
-                _logger.Log($"Done{_time} sec");
+                _logger.Log($"Done {_time} sec");
         }
 
         public abstract string CommandName { get; }

@@ -60,27 +60,25 @@ namespace PolygonGeneralization.WinForms.ViewModels
 
                 if (result == DialogResult.OK)
                 {
-                    var filename = dialog.FileName;
+                    var filename = dialog.SafeFileName;
 
                     Task.Run(() => {
+
                         _mapFileName = filename;
+
                         _logger.Log("Reading map from file...");
                         var map = _dataReader.ReadFromFile(_mapFileName);
-                        //_polygons = map.Polygons.ToArray();
                         _logger.Log("Done");
 
-                        //var allPoints = _polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray();
-
                         _logger.Log("Initialize screen adapter...");
-                        //_screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, allPoints);
                         _logger.Log("Done");
                         
                         _logger.Log("Saving into database...");
                         _dbService.SaveMap(map);
                         _logger.Log("Done");
 
-                        _drawablePolygons = _polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
-                        _canvas.Invalidate();
+                        //_drawablePolygons = _polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
+                        //_canvas.Invalidate();
                     });
                     
                 }

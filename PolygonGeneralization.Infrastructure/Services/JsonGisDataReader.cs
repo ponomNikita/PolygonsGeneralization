@@ -40,7 +40,7 @@ namespace PolygonGeneralization.Infrastructure.Services
             if ((string)obj["type"] == "Polygon")
             {
                 var geometry = obj.ToObject<Geometry>();
-
+                
                 return geometry;
             }
             
@@ -67,8 +67,7 @@ namespace PolygonGeneralization.Infrastructure.Services
 
                 var polygons = geoJson.Features
                     .Select(f => f.Geometry)
-                    .Select(g => g != null ? new Polygon(g.Coordinates) : null) 
-                    // TODO убрать последнюю точку в контуре (дублирует начальную)
+                    .Select(g => g != null ? new Polygon(g.Coordinates) : null)
                     .Where(p => p != null)
                     .ToArray();
 
