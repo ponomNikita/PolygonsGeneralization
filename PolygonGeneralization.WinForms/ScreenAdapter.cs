@@ -1,4 +1,5 @@
-﻿using PolygonGeneralization.Domain.Models;
+﻿using System;
+using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.WinForms.Models;
 
 namespace PolygonGeneralization.WinForms
@@ -52,13 +53,26 @@ namespace PolygonGeneralization.WinForms
     {
         private readonly double _scale;
 
+        public ScreenAdapter(int mapWidth, int mapHeight, double[] extrimalValues, double scale = 25)
+            :this(mapWidth, mapHeight, scale)
+        {
+            if (extrimalValues == null || extrimalValues.Length != 4)
+            {
+                throw new ArgumentNullException(nameof(extrimalValues));
+            }
+
+            Initialize(extrimalValues);
+        }
+
         public ScreenAdapter(int mapWidth, int mapHeight, Point[] points, double scale = 25)
+            : this(mapWidth, mapHeight, GetExtrimalValues(points), scale)
+        { }
+        
+        public ScreenAdapter(int mapWidth, int mapHeight, double scale = 25)
         {
             MapWidth = mapWidth;
             MapHeight = mapHeight;
             _scale = scale;
-
-            Initialize(points);
         }
 
         public Point ZeroPoint { get; set; }
@@ -82,7 +96,42 @@ namespace PolygonGeneralization.WinForms
         /// Инициализация //TODO Добавить описание
         /// </summary>
         /// <param name="locations">Точки с географическими координатами(широта долгота в градусах)</param>
-        private void Initialize(Point[] points)
+        /// <param name="extrimalValues">Массив экстримальных значений карты</param>
+        private void Initialize(double[] extrimalValues)
+        {
+            var minX = extrimalValues[0];
+            var minY = extrimalValues[1];
+            var maxX = extrimalValues[2];
+            var maxY = extrimalValues[3];
+
+            ZeroPoint = new Point(minX, minY);
+
+            var factor = maxX - minX > maxY - minY ? (double)MapWidth / MapHeight : (double)MapHeight / MapWidth;
+
+            var height = (maxX - minX) / factor / _scale;
+            var width = (maxY - minY) / factor / _scale;
+            var widthDelta = (maxX - minX - width) / 2;
+            var heightDelta = (maxY - minY - height) / 2;
+
+            //Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
+            //        new Point(maxX - widthDelta, maxY - heightDelta));
+            //Zoom = height / MapHeight;
+
+            if (maxX - minX < maxY - minY)
+            {
+                Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
+                    new Point(maxX - widthDelta, minY + heightDelta + height));
+                Zoom = height / MapHeight;
+            }
+            else
+            {
+                Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
+                    new Point(minX + widthDelta + width, maxY + heightDelta));
+                Zoom = width / MapWidth;
+            }
+        }
+        
+        private static double[] GetExtrimalValues(Point[] points)
         {
             var minX = double.MaxValue;
             var minY = double.MaxValue;
@@ -98,27 +147,7 @@ namespace PolygonGeneralization.WinForms
                 maxY = point.Y > maxY ? point.Y : maxY;
             }
 
-            ZeroPoint = new Point(minX, minY);
-
-            var factor = maxX - minX > maxY - minY ? (double)MapWidth / MapHeight : (double)MapHeight / MapWidth;
-
-            var height = (maxX - minX) / factor / _scale;
-            var width = (maxY - minY) / factor / _scale;
-            var widthDelta = (maxX - minX - width) / 2;
-            var heightDelta = (maxY - minY - height) / 2;
-
-            if (maxX - minX > maxY - minY)
-            {
-                Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
-                    new Point(minX + widthDelta, minY + heightDelta + height));
-                Zoom = height/MapHeight;
-            }
-            else
-            {
-                Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
-                    new Point(minX + widthDelta + width, maxY + heightDelta));
-                Zoom = width/MapWidth;
-            }
+            return new[] {minX, minY, maxX, maxY};
         }
     }
 }

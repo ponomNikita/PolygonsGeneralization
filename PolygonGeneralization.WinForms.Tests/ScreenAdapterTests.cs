@@ -22,7 +22,7 @@ namespace PolygonGeneralization.WinForms.Tests
                 new Point(33000, 33000),
             };
 
-            var screenAdapter = new ScreenAdapter(_screenWidth, _screenHeight, points, 1);
+            var screenAdapter = new ScreenAdapter(_screenWidth, _screenHeight, new double[4], 1);
 
             Assert.NotNull(screenAdapter);
             Assert.AreEqual(120, screenAdapter.Zoom);
@@ -42,7 +42,7 @@ namespace PolygonGeneralization.WinForms.Tests
                 new Point(33000, 33000),
             };
 
-            var screenAdapter = new ScreenAdapter(_screenWidth, _screenHeight, points, 1);
+            var screenAdapter = new ScreenAdapter(_screenWidth, _screenHeight, new double[4], 1);
 
             var pixel0 = screenAdapter.ToPixel(points[0]);
             var pixel1 = screenAdapter.ToPixel(points[1]);

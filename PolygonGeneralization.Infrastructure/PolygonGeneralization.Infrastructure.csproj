@@ -102,11 +102,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\BaseSelectCommand.cs" />
     <Compile Include="Commands\BulkInsertCommand.cs" />
     <Compile Include="Commands\PathsBulkInsertCommand.cs" />
     <Compile Include="Commands\PointsBulkInsertCommand.cs" />
     <Compile Include="Commands\PolygonsBulkInsertCommand.cs" />
     <Compile Include="Commands\SaveMapMetaCommand.cs" />
+    <Compile Include="ConnectionStringsProvider.cs" />
     <Compile Include="DataBaseContext.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\Logger.cs" />

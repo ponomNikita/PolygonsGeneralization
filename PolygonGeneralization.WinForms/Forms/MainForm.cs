@@ -30,10 +30,12 @@ namespace PolygonGeneralization.WinForms.Forms
         private void InitializeMenu()
         {
             var importFromFileToolStrip = new ToolStripMenuItem();
+            var openFromFileToolStrip = new ToolStripMenuItem();
             var exitToolStrip = new ToolStripMenuItem();
 
             fileToolStripMenuItem.DropDownItems.Clear();
             fileToolStripMenuItem.DropDownItems.Add(importFromFileToolStrip);
+            fileToolStripMenuItem.DropDownItems.Add(openFromFileToolStrip);
 
             if (_viewModel != null)
             {
@@ -62,6 +64,11 @@ namespace PolygonGeneralization.WinForms.Forms
             importFromFileToolStrip.Size = new Size(103, 22);
             importFromFileToolStrip.Text = "Import from file...";
             importFromFileToolStrip.Click += openToolStripMenuItem_Click;
+
+            openFromFileToolStrip.Name = "openFromFileToolStripMenuItem";
+            openFromFileToolStrip.Size = new Size(103, 22);
+            openFromFileToolStrip.Text = "Open from file...";
+            openFromFileToolStrip.Click += OpenFromFileToolStrip_Click; ;
 
             exitToolStrip.Name = "exitToolStripMenuItem";
             exitToolStrip.Size = new System.Drawing.Size(103, 22);
@@ -143,6 +150,11 @@ namespace PolygonGeneralization.WinForms.Forms
         private void openToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
             _viewModel.ImportMap();
+        }
+
+        private void OpenFromFileToolStrip_Click(object sender, System.EventArgs e)
+        {
+            _viewModel.OpenMap();
         }
 
         private void Canvas_Paint(object sender, PaintEventArgs e)

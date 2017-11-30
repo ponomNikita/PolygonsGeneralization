@@ -7,8 +7,10 @@ namespace PolygonGeneralization.Infrastructure
 {
     public class DataBaseContext : DbContext
     {
+        private const int SQL_TIMEOUT = 240;
         public DataBaseContext() : base("Polygons")
-        { 
+        {
+            this.Database.CommandTimeout = SQL_TIMEOUT;
         }
 
         public DbSet<Map> Maps { get; set; }

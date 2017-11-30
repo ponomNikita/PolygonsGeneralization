@@ -10,7 +10,7 @@ namespace PolygonGeneralization.Infrastructure.Commands
         private readonly Stopwatch _stopWatch = new Stopwatch();
         private string _time;
 
-        public void Handle()
+        public void Execute()
         {
             if (UseLogging)
                 _logger.Log($"{CommandName} started");

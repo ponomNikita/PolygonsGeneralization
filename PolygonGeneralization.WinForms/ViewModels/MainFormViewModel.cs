@@ -64,7 +64,8 @@ namespace PolygonGeneralization.WinForms.ViewModels
                 {
                     var filename = dialog.SafeFileName;
 
-                    Task.Run(() => {
+                    Task.Run(() => 
+                    {
 
                         _mapFileName = filename;
 
@@ -77,9 +78,45 @@ namespace PolygonGeneralization.WinForms.ViewModels
                         MapsUpdatedEvent?.Invoke(this, EventArgs.Empty);
                         _logger.Log("Done");
 
-                        DrawMap(map);
                     });
                     
+                }
+            }
+        }
+
+        public void OpenMap()
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Filter = Resources.FileDialogFilter;
+
+                var result = dialog.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    var filename = dialog.SafeFileName;
+
+                    Task.Run(() =>
+                    {
+
+                        _mapFileName = filename;
+
+                        _logger.Log("Reading map from file...");
+                        var map = _dataReader.ReadFromFile(_mapFileName);
+                        _logger.Log("Done");
+
+                        // TODO убрать в команду
+                        _logger.Log("Initialize screen adapter...");
+                        _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, 
+                            map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray(), 5);
+                        _logger.Log("Done");
+
+                        _drawablePolygons = map.Polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
+
+                        _canvas.Invalidate();
+
+                    });
+
                 }
             }
         }
@@ -88,22 +125,22 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             Task.Run(() =>
             {
-                var map = _dbService.GetMap(mapId);
+                var extrimalPoints = _dbService.GetExtrimalPoints(mapId);
 
-                DrawMap(map);
+                // TODO убрать в команду
+                _logger.Log("Initialize screen adapter...");
+                _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, extrimalPoints);
+                _logger.Log("Done");
+
+                DrawMap(mapId);
             });
         }
 
-        private void DrawMap(Map map)
+        private void DrawMap(Guid mapId)
         {
-            // TODO Убрать в комманду
-            _logger.Log("Initialize screen adapter...");
-            // TODO Сделать заполнение ScreenAdapter в хранимой процедуре
-            _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height,
-                map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray());
-            _logger.Log("Done");
+            var polygons = _dbService.GetPolygons(mapId, _screenAdapter.Bbox.LeftDown, _screenAdapter.Bbox.RightTop);
 
-            _drawablePolygons = map.Polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
+            _drawablePolygons = polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
 
             _canvas.Invalidate();
         }
