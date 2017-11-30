@@ -35,6 +35,8 @@ namespace PolygonGeneralization.Domain.Models
         public double X { get; set; } // Longitude
         public double Y { get; set; } // Latitude
 
+        public int OrderNumber { get; set; }
+
         public static bool operator ==(Point a, Point b)
         {
             return a.X.Equals(b.X) && a.Y.Equals(b.Y);

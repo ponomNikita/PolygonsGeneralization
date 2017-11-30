@@ -86,6 +86,11 @@ namespace PolygonGeneralization.Infrastructure.Services
 
             var paths = query.ToList();
 
+            foreach (var path in paths)
+            {
+                path.Points = path.Points.OrderBy(point => point.OrderNumber).ToArray();
+            }
+
             var result = paths.GroupBy(p => p.Id)
                 .Select(gr => new Polygon(gr.ToArray())).ToArray();
 

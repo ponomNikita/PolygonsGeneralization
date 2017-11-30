@@ -24,6 +24,7 @@ namespace PolygonGeneralization.Infrastructure.Commands
             result.Columns.Add(new DataColumn("PathId", typeof(Guid)));
             result.Columns.Add(new DataColumn("X", typeof(double)));
             result.Columns.Add(new DataColumn("Y", typeof(double)));
+            result.Columns.Add(new DataColumn("OrderNumber", typeof(int)));
 
             var points = _map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToList();
             foreach (var point in points)
@@ -33,6 +34,7 @@ namespace PolygonGeneralization.Infrastructure.Commands
                 row["PathId"] = point.PathId;
                 row["X"] = point.X;
                 row["Y"] = point.Y;
+                row["OrderNumber"] = point.OrderNumber;
 
                 result.Rows.Add(row);
             }

@@ -1,6 +1,5 @@
 namespace PolygonGeneralization.Infrastructure.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
     
     public partial class Initial : DbMigration
@@ -46,6 +45,7 @@ namespace PolygonGeneralization.Infrastructure.Migrations
                         PathId = c.Guid(nullable: false),
                         X = c.Double(nullable: false),
                         Y = c.Double(nullable: false),
+                        OrderNumber = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Paths", t => t.PathId, cascadeDelete: true)

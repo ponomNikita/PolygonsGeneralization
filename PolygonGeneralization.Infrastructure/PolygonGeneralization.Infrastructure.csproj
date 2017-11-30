@@ -113,9 +113,9 @@
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="Logger\LoggerFactory.cs" />
-    <Compile Include="Migrations\201711231714192_Initial.cs" />
-    <Compile Include="Migrations\201711231714192_Initial.Designer.cs">
-      <DependentUpon>201711231714192_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201711301752136_Initial.cs" />
+    <Compile Include="Migrations\201711301752136_Initial.Designer.cs">
+      <DependentUpon>201711301752136_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -139,8 +139,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201711231714192_Initial.resx">
-      <DependentUpon>201711231714192_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201711301752136_Initial.resx">
+      <DependentUpon>201711301752136_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -51,9 +51,10 @@ namespace PolygonGeneralization.WinForms
     }
     public class ScreenAdapter
     {
+        private const double DEFAULT_SCALE = 1;
         private readonly double _scale;
 
-        public ScreenAdapter(int mapWidth, int mapHeight, double[] extrimalValues, double scale = 25)
+        public ScreenAdapter(int mapWidth, int mapHeight, double[] extrimalValues, double scale = DEFAULT_SCALE)
             :this(mapWidth, mapHeight, scale)
         {
             if (extrimalValues == null || extrimalValues.Length != 4)
@@ -64,12 +65,17 @@ namespace PolygonGeneralization.WinForms
             Initialize(extrimalValues);
         }
 
-        public ScreenAdapter(int mapWidth, int mapHeight, Point[] points, double scale = 25)
+        public ScreenAdapter(int mapWidth, int mapHeight, Point[] points, double scale = DEFAULT_SCALE)
             : this(mapWidth, mapHeight, GetExtrimalValues(points), scale)
         { }
         
-        public ScreenAdapter(int mapWidth, int mapHeight, double scale = 25)
+        public ScreenAdapter(int mapWidth, int mapHeight, double scale = DEFAULT_SCALE)
         {
+            if (Math.Abs(scale) < Double.Epsilon)
+            {
+                throw new ArgumentNullException(nameof(scale));
+            }
+
             MapWidth = mapWidth;
             MapHeight = mapHeight;
             _scale = scale;
@@ -126,7 +132,7 @@ namespace PolygonGeneralization.WinForms
             else
             {
                 Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
-                    new Point(minX + widthDelta + width, maxY + heightDelta));
+                    new Point(minX + widthDelta + width, minY + heightDelta + height));
                 Zoom = width / MapWidth;
             }
         }

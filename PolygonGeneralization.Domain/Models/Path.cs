@@ -13,10 +13,11 @@ namespace PolygonGeneralization.Domain.Models
         }
         public Path(params Point[] points)
         {
-            Points = points.Select(p => new Point(p) {PathId = Id}).ToList();
+            var counter = 0;
+            Points = points.Select(p => new Point(p) {PathId = Id, OrderNumber = counter++}).ToList();
         }
 
-        public virtual ICollection<Point> Points { get; }
+        public virtual ICollection<Point> Points { get; set; }
 
         public virtual Polygon Polygon { get; set; }
 
