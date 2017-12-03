@@ -11,6 +11,12 @@ using PolygonGeneralization.WinForms.Properties;
 
 namespace PolygonGeneralization.WinForms.ViewModels
 {
+    public enum ViewType
+    {
+        FROM_FILE,
+        FROM_DATABASE
+    }
+
     public class MainFormViewModel
     {
         private readonly Panel _canvas;
@@ -22,6 +28,8 @@ namespace PolygonGeneralization.WinForms.ViewModels
         private readonly MetaInfo _meta;
         private readonly IDbService _dbService;
         private readonly ILogger _logger;
+        private Guid _currentMapId;
+        private ViewType _viewType;
 
         public MainFormViewModel(Panel canvas, 
             IGisDataReader dataReader,
@@ -34,6 +42,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
             _drawerFactory = new DrawerFactory(canvas.CreateGraphics());
             _meta = new MetaInfo();
             _logger = logger;
+            _drawablePolygons = new List<DrawablePolygon>();
         }
         
         public event EventHandler MapsUpdatedEvent;
@@ -112,11 +121,12 @@ namespace PolygonGeneralization.WinForms.ViewModels
                             map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray());
                         _logger.Log("Done");
 
+                        _drawablePolygons.Clear();
                         _drawablePolygons = map.Polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
 
                         _canvas.Invalidate();
                         IsMapLoaded = true;
-
+                        _viewType = ViewType.FROM_FILE;
                     });
 
                 }
@@ -136,6 +146,8 @@ namespace PolygonGeneralization.WinForms.ViewModels
 
                 DrawMap(mapId);
                 IsMapLoaded = true;
+                _viewType = ViewType.FROM_DATABASE;
+                _currentMapId = mapId;
             });
         }
 
@@ -143,6 +155,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             var polygons = _dbService.GetPolygons(mapId, _screenAdapter.Bbox.LeftDown, _screenAdapter.Bbox.RightTop);
 
+            _drawablePolygons.Clear();
             _drawablePolygons = polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
 
             _canvas.Invalidate();
@@ -150,7 +163,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
 
         public void Paint(PaintEventArgs paintEventArgs)
         {
-            if (_drawablePolygons != null)
+            if (_drawablePolygons.Count != 0)
             {
                 _logger.Log("Drawing....");
                 _drawerFactory.SetGraphics(paintEventArgs.Graphics);
@@ -177,35 +190,59 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             _logger.Log("Moving up");
             _screenAdapter.Bbox.MoveUp();
-            _canvas.Invalidate();
+
+            if (_viewType == ViewType.FROM_DATABASE)
+            {
+                DrawMap(_currentMapId);
+            }
         }
 
         public void ModeDown()
         {
             _logger.Log("Moving down");
             _screenAdapter.Bbox.MoveDown();
-            _canvas.Invalidate();
+
+            if (_viewType == ViewType.FROM_DATABASE)
+            {
+                DrawMap(_currentMapId);
+            }
         }
 
         public void MoveLeft()
         {
             _logger.Log("Moving left");
             _screenAdapter.Bbox.MoveLeft();
-            _canvas.Invalidate();
+
+            if (_viewType == ViewType.FROM_DATABASE)
+            {
+                DrawMap(_currentMapId);
+            }
         }
 
         public void MoveRight()
         {
             _logger.Log("Moving rigth");
             _screenAdapter.Bbox.MoveRight();
-            _canvas.Invalidate();
+
+            if (_viewType == ViewType.FROM_DATABASE)
+            {
+                DrawMap(_currentMapId);
+            }
         }
 
         public void Scroll(int scrollNumber)
         {
-            _logger.Log($"Scroll: {scrollNumber}");
-            _screenAdapter.Scroll(scrollNumber);
-            _canvas.Invalidate();
+            if (IsMapLoaded)
+            {
+                _logger.Log($"Scroll: {scrollNumber}");
+                _screenAdapter.Scroll(scrollNumber);
+
+                // TODO сделать подгрузку полигонов в отдельном потоке
+                if (_viewType == ViewType.FROM_DATABASE)
+                {
+                    DrawMap(_currentMapId);
+                }
+            }
         }
 
         public IDictionary<Guid, string> GetAvailableMaps()

@@ -114,10 +114,7 @@ namespace PolygonGeneralization.WinForms.Forms
 
         private void _scrollTimer_ScrollEvent(object sender, System.EventArgs e)
         {
-            if (_viewModel.IsMapLoaded)
-            {
-                _viewModel.Scroll(_scrollTimer.Result);
-            }
+            _viewModel.Scroll(_scrollTimer.Result);
         }
 
         private void InitializeMetaSection()
