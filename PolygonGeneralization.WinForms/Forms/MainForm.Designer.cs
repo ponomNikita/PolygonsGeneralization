@@ -100,7 +100,7 @@
             this.MainMenuStrip = this.TopMenu;
             this.MinimumSize = new System.Drawing.Size(1010, 600);
             this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Text = "Polygons generalization";
             this.TopMenu.ResumeLayout(false);
             this.TopMenu.PerformLayout();
             this.ResumeLayout(false);

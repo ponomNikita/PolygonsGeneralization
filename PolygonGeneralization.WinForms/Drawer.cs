@@ -8,12 +8,10 @@ namespace PolygonGeneralization.WinForms
     public class Drawer : IDrawer
     {
         private readonly Graphics _graphics;
-        private readonly Brush _brash;
         private readonly Pen _pen;
         public Drawer(Graphics graphics)
         {
             _graphics = graphics;
-            _brash = new SolidBrush(Color.Blue);
             _pen = new Pen(Color.Blue);
         }
 

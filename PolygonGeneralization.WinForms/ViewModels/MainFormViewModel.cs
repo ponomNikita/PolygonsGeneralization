@@ -108,7 +108,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
                         // TODO убрать в команду
                         _logger.Log("Initialize screen adapter...");
                         _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, 
-                            map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray(), 5);
+                            map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray());
                         _logger.Log("Done");
 
                         _drawablePolygons = map.Polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
@@ -162,6 +162,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
                         polygon.Draw();
                     }
                 }
+
                 _meta.TotalPolygonsCount = _drawablePolygons.Count;
                 _meta.InMemoryPolygonsCount = _drawablePolygons.Count;
                 _meta.Zoom = _screenAdapter.Zoom;

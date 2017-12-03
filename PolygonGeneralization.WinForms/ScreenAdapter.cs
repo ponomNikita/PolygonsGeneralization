@@ -51,7 +51,7 @@ namespace PolygonGeneralization.WinForms
     }
     public class ScreenAdapter
     {
-        private const double DEFAULT_SCALE = 10;
+        private const double DEFAULT_SCALE = 1;
         private readonly double _scale;
 
         public ScreenAdapter(int mapWidth, int mapHeight, double[] extrimalValues, double scale = DEFAULT_SCALE)
@@ -114,27 +114,26 @@ namespace PolygonGeneralization.WinForms
 
             var factor = maxX - minX < maxY - minY ? (double)MapWidth / MapHeight : (double)MapHeight / MapWidth;
 
-            var height = (maxY - minY) / factor / _scale;
-            var width = (maxX - minX) / factor / _scale;
-            var widthDelta = (maxX - minX - width) / 2;
-            var heightDelta = (maxY - minY - height) / 2;
-
-            //Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
-            //        new Point(maxX - widthDelta, maxY - heightDelta));
-            //Zoom = height / MapHeight;
+            double width;
+            double height;
 
             if (maxX - minX < maxY - minY)
             {
-                Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
-                    new Point(maxX - widthDelta, minY + heightDelta + height));
-                Zoom = height / MapHeight;
+                height = (maxY - minY) * _scale;
+                width = height * factor;
             }
             else
             {
-                Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
-                    new Point(minX + widthDelta + width, minY + heightDelta + height));
-                Zoom = width / MapWidth;
+                width = (maxX - minX)*_scale;
+                height = width * factor;
             }
+
+            var widthDelta = (maxX - minX - width) / 2;
+            var heightDelta = (maxY - minY - height) / 2;
+
+            Bbox = new BBox(new Point(minX + widthDelta, minY + heightDelta),
+                new Point(maxX - widthDelta, maxY - heightDelta));
+            Zoom = width / MapWidth;
         }
         
         private static double[] GetExtrimalValues(Point[] points)
