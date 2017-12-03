@@ -38,11 +38,12 @@ namespace PolygonGeneralization.WinForms.Models
         public void Draw()
         {
             var drawer = _drawerFactory.CreateDrawer();
-            var points = Geometry.Paths.SelectMany(p => p.Points)
+            var points = Geometry.Paths.SelectMany(p => p.Points).OrderBy(p => p.OrderNumber)
                 .Select(p => _screenAdapter.ToPixel(p))
                 .ToArray();
 
-            drawer.DrawPolygon(points);
+            if (points.Length > 2)
+                drawer.DrawPolygon(points);
         }
     }
 }

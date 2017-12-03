@@ -8,15 +8,25 @@ namespace PolygonGeneralization.Infrastructure.Commands
     {
         private readonly string _commandText;
 
+        protected BaseSelectCommand()
+        {
+            LoggingOn = true;
+            Result = new DataTable();
+        }
+
         public BaseSelectCommand(string commandText, string commandName)
+            : this()
         {
             _commandText = commandText;
             CommandName = commandName;
-            Result = new DataTable();
         }
 
         public override string CommandName { get; }
         public virtual DataTable Result { get; }
+
+        public override bool UseLogging => LoggingOn;
+
+        public bool LoggingOn { get; set; }
 
         protected override void HandleImpl()
         {

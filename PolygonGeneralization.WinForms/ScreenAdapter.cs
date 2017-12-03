@@ -51,7 +51,7 @@ namespace PolygonGeneralization.WinForms
     }
     public class ScreenAdapter
     {
-        private const double DEFAULT_SCALE = 1;
+        private const double DEFAULT_SCALE = 10;
         private readonly double _scale;
 
         public ScreenAdapter(int mapWidth, int mapHeight, double[] extrimalValues, double scale = DEFAULT_SCALE)
@@ -112,10 +112,10 @@ namespace PolygonGeneralization.WinForms
 
             ZeroPoint = new Point(minX, minY);
 
-            var factor = maxX - minX > maxY - minY ? (double)MapWidth / MapHeight : (double)MapHeight / MapWidth;
+            var factor = maxX - minX < maxY - minY ? (double)MapWidth / MapHeight : (double)MapHeight / MapWidth;
 
-            var height = (maxX - minX) / factor / _scale;
-            var width = (maxY - minY) / factor / _scale;
+            var height = (maxY - minY) / factor / _scale;
+            var width = (maxX - minX) / factor / _scale;
             var widthDelta = (maxX - minX - width) / 2;
             var heightDelta = (maxY - minY - height) / 2;
 
