@@ -12,6 +12,7 @@ namespace PolygonGeneralization.WinForms.Forms
         private readonly MainFormViewModel _viewModel;
         private BindingSource _metaBinding;
         private TextBox _metaControl;
+        private ScrollTimer _scrollTimer;
 
         public MainForm(IGisDataReader dataReader, IDbService dbService, ILogger logger)
         {
@@ -24,6 +25,9 @@ namespace PolygonGeneralization.WinForms.Forms
             InitializeMenu();
 
             _viewModel.MapsUpdatedEvent += MapsUpdatedEventHandler;
+
+            _scrollTimer = new ScrollTimer();
+            _scrollTimer.ScrollEvent += _scrollTimer_ScrollEvent;
         }
 
         private void InitializeMenu()
@@ -98,6 +102,21 @@ namespace PolygonGeneralization.WinForms.Forms
                 case Keys.Right:
                     _viewModel.MoveRight();
                     break;
+            }
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            _scrollTimer.Reset(e.Delta > 0 ? 1 : -1);
+        }
+
+        private void _scrollTimer_ScrollEvent(object sender, System.EventArgs e)
+        {
+            if (_viewModel.IsMapLoaded)
+            {
+                _viewModel.Scroll(_scrollTimer.Result);
             }
         }
 

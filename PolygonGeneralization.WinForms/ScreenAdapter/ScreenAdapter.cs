@@ -2,59 +2,13 @@
 using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.WinForms.Models;
 
-namespace PolygonGeneralization.WinForms
+namespace PolygonGeneralization.WinForms.ScreenAdapter
 {
-    public struct BBox
-    {
-        private const double MOVING_STEP_FACTOR = 0.1; // 10% от видимого
-        private readonly double _movingStep;
-
-        public BBox(Point leftDown, Point rightTop)
-        {
-            LeftDown = leftDown;
-            RightTop = rightTop;
-            _movingStep = (rightTop.X - leftDown.X)*MOVING_STEP_FACTOR;
-        }
-
-        public bool HasPoint(Point point)
-        {
-            return point.X >= LeftDown.X &&
-                   point.X <= RightTop.X &&
-                   point.Y >= LeftDown.Y &&
-                   point.Y <= RightTop.Y;
-        }
-
-        public Point LeftDown { get; }
-        public Point RightTop { get; }
-
-        public void MoveUp()
-        {
-            LeftDown.Y -= _movingStep;
-            RightTop.Y -= _movingStep;
-        }
-
-        public void MoveDown()
-        {
-            LeftDown.Y += _movingStep;
-            RightTop.Y += _movingStep;
-        }
-
-        public void MoveLeft()
-        {
-            LeftDown.X -= _movingStep;
-            RightTop.X -= _movingStep;
-        }
-
-        public void MoveRight()
-        {
-            LeftDown.X += _movingStep;
-            RightTop.X += _movingStep;
-        }
-    }
     public class ScreenAdapter
     {
         private const double DEFAULT_SCALE = 0.07;
-        private readonly double _scale;
+        private double _scale;
+        private double[] _extrimalValues;
 
         public ScreenAdapter(int mapWidth, int mapHeight, double[] extrimalValues, double scale = DEFAULT_SCALE)
             :this(mapWidth, mapHeight, scale)
@@ -64,7 +18,10 @@ namespace PolygonGeneralization.WinForms
                 throw new ArgumentNullException(nameof(extrimalValues));
             }
 
-            Initialize(extrimalValues);
+            _extrimalValues = new double[extrimalValues.Length];
+            extrimalValues.CopyTo(_extrimalValues, 0);
+
+            Setup(extrimalValues);
         }
 
         public ScreenAdapter(int mapWidth, int mapHeight, Point[] points, double scale = DEFAULT_SCALE)
@@ -100,12 +57,18 @@ namespace PolygonGeneralization.WinForms
             return new Point2D((int)((point.X - Bbox.LeftDown.X) / Zoom), (int)((point.Y - Bbox.LeftDown.Y) / Zoom));
         }
 
+        public void Scroll(int scrollNumber)
+        {
+            _scale -= (double)scrollNumber/100;
+            Setup(_extrimalValues);
+        }
+
         /// <summary>
         /// Инициализация //TODO Добавить описание
         /// </summary>
         /// <param name="locations">Точки с географическими координатами(широта долгота в градусах)</param>
         /// <param name="extrimalValues">Массив экстримальных значений карты</param>
-        private void Initialize(double[] extrimalValues)
+        private void Setup(double[] extrimalValues)
         {
             var minX = extrimalValues[0];
             var minY = extrimalValues[1];

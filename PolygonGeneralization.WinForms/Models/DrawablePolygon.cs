@@ -6,7 +6,7 @@ namespace PolygonGeneralization.WinForms.Models
 {
     public class DrawablePolygon : IDrawable
     {
-        public DrawablePolygon(Polygon geometry, ScreenAdapter _screenAdapter, IDrawerFactory drawerFactory)
+        public DrawablePolygon(Polygon geometry, ScreenAdapter.ScreenAdapter _screenAdapter, IDrawerFactory drawerFactory)
         {
             Geometry = geometry;
             this._screenAdapter = _screenAdapter;
@@ -15,7 +15,7 @@ namespace PolygonGeneralization.WinForms.Models
 
         public Polygon Geometry { get; }
 
-        private readonly ScreenAdapter _screenAdapter;
+        private readonly ScreenAdapter.ScreenAdapter _screenAdapter;
 
         private readonly IDrawerFactory _drawerFactory;
 

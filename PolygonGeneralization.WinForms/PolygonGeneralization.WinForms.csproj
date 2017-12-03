@@ -109,6 +109,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ScrollTimer.cs" />
     <Compile Include="Controls\ToolStripMenuItemWithId.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -127,7 +128,8 @@
     <Compile Include="Models\DrawablePolygon.cs" />
     <Compile Include="Interfaces\IDrawer.cs" />
     <Compile Include="Models\Point2D.cs" />
-    <Compile Include="ScreenAdapter.cs" />
+    <Compile Include="ScreenAdapter\BBox.cs" />
+    <Compile Include="ScreenAdapter\ScreenAdapter.cs" />
     <Compile Include="Ninject\NinjectConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

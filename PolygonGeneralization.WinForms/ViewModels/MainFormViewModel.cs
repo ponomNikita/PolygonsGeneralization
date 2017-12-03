@@ -16,7 +16,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
         private readonly Panel _canvas;
         private string _mapFileName;
         private readonly IGisDataReader _dataReader;
-        private ScreenAdapter _screenAdapter;
+        private ScreenAdapter.ScreenAdapter _screenAdapter;
         private readonly IDrawerFactory _drawerFactory;
         private List<DrawablePolygon> _drawablePolygons;
         private readonly MetaInfo _meta;
@@ -108,7 +108,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
 
                         // TODO убрать в команду
                         _logger.Log("Initialize screen adapter...");
-                        _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, 
+                        _screenAdapter = new ScreenAdapter.ScreenAdapter(_canvas.Width, _canvas.Height, 
                             map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray());
                         _logger.Log("Done");
 
@@ -131,7 +131,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
 
                 // TODO убрать в команду
                 _logger.Log("Initialize screen adapter...");
-                _screenAdapter = new ScreenAdapter(_canvas.Width, _canvas.Height, extrimalPoints);
+                _screenAdapter = new ScreenAdapter.ScreenAdapter(_canvas.Width, _canvas.Height, extrimalPoints);
                 _logger.Log("Done");
 
                 DrawMap(mapId);
@@ -175,25 +175,36 @@ namespace PolygonGeneralization.WinForms.ViewModels
 
         public void MoveUp()
         {
+            _logger.Log("Moving up");
             _screenAdapter.Bbox.MoveUp();
             _canvas.Invalidate();
         }
 
         public void ModeDown()
         {
+            _logger.Log("Moving down");
             _screenAdapter.Bbox.MoveDown();
             _canvas.Invalidate();
         }
 
         public void MoveLeft()
         {
+            _logger.Log("Moving left");
             _screenAdapter.Bbox.MoveLeft();
             _canvas.Invalidate();
         }
 
         public void MoveRight()
         {
+            _logger.Log("Moving rigth");
             _screenAdapter.Bbox.MoveRight();
+            _canvas.Invalidate();
+        }
+
+        public void Scroll(int scrollNumber)
+        {
+            _logger.Log($"Scroll: {scrollNumber}");
+            _screenAdapter.Scroll(scrollNumber);
             _canvas.Invalidate();
         }
 

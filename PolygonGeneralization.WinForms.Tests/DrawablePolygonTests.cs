@@ -8,7 +8,7 @@ namespace PolygonGeneralization.WinForms.Tests
     public class DrawablePolygonTests
     {
         private DrawablePolygon drawable;
-        private ScreenAdapter _screenAdapter;
+        private ScreenAdapter.ScreenAdapter _screenAdapter;
 
         [SetUp]
         public void SetUp()
