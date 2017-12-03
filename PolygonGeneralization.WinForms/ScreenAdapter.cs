@@ -6,12 +6,14 @@ namespace PolygonGeneralization.WinForms
 {
     public struct BBox
     {
-        private const double MOVING_STEP = 10;
+        private const double MOVING_STEP_FACTOR = 0.1; // 10% от видимого
+        private readonly double _movingStep;
 
         public BBox(Point leftDown, Point rightTop)
         {
             LeftDown = leftDown;
             RightTop = rightTop;
+            _movingStep = (rightTop.X - leftDown.X)*MOVING_STEP_FACTOR;
         }
 
         public bool HasPoint(Point point)
@@ -27,26 +29,26 @@ namespace PolygonGeneralization.WinForms
 
         public void MoveUp()
         {
-            LeftDown.Y += MOVING_STEP;
-            RightTop.Y += MOVING_STEP;
+            LeftDown.Y -= _movingStep;
+            RightTop.Y -= _movingStep;
         }
 
-        public void ModeDown()
+        public void MoveDown()
         {
-            LeftDown.Y -= MOVING_STEP;
-            RightTop.Y -= MOVING_STEP;
+            LeftDown.Y += _movingStep;
+            RightTop.Y += _movingStep;
         }
 
         public void MoveLeft()
         {
-            LeftDown.X -= MOVING_STEP;
-            RightTop.X -= MOVING_STEP;
+            LeftDown.X -= _movingStep;
+            RightTop.X -= _movingStep;
         }
 
         public void MoveRight()
         {
-            LeftDown.X += MOVING_STEP;
-            RightTop.X += MOVING_STEP;
+            LeftDown.X += _movingStep;
+            RightTop.X += _movingStep;
         }
     }
     public class ScreenAdapter

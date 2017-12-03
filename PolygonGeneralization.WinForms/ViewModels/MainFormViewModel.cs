@@ -181,7 +181,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
 
         public void ModeDown()
         {
-            _screenAdapter.Bbox.ModeDown();
+            _screenAdapter.Bbox.MoveDown();
             _canvas.Invalidate();
         }
 
