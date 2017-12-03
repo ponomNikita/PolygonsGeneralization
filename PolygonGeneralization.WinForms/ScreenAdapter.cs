@@ -51,7 +51,7 @@ namespace PolygonGeneralization.WinForms
     }
     public class ScreenAdapter
     {
-        private const double DEFAULT_SCALE = 1;
+        private const double DEFAULT_SCALE = 0.07;
         private readonly double _scale;
 
         public ScreenAdapter(int mapWidth, int mapHeight, double[] extrimalValues, double scale = DEFAULT_SCALE)

@@ -24,7 +24,6 @@ namespace PolygonGeneralization.WinForms.Forms
             InitializeMenu();
 
             _viewModel.MapsUpdatedEvent += MapsUpdatedEventHandler;
-
         }
 
         private void InitializeMenu()
@@ -81,6 +80,9 @@ namespace PolygonGeneralization.WinForms.Forms
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
+
+            if (!_viewModel.IsMapLoaded)
+                return;
 
             switch (e.KeyCode)
             {

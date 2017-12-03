@@ -97,6 +97,7 @@
             this.Controls.Add(this.Meta);
             this.Controls.Add(this.Canvas);
             this.Controls.Add(this.TopMenu);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.TopMenu;
             this.MinimumSize = new System.Drawing.Size(1010, 600);
             this.Name = "MainForm";

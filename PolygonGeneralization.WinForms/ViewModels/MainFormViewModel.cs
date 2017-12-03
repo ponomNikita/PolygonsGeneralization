@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PolygonGeneralization.Domain.Interfaces;
-using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.WinForms.Interfaces;
 using PolygonGeneralization.WinForms.Models;
@@ -17,7 +16,6 @@ namespace PolygonGeneralization.WinForms.ViewModels
         private readonly Panel _canvas;
         private string _mapFileName;
         private readonly IGisDataReader _dataReader;
-        private Polygon[] _polygons;
         private ScreenAdapter _screenAdapter;
         private readonly IDrawerFactory _drawerFactory;
         private List<DrawablePolygon> _drawablePolygons;
@@ -46,6 +44,9 @@ namespace PolygonGeneralization.WinForms.ViewModels
         }
 
         public string Meta => $"{_meta}\n\n{_logger.GetLog()}";
+
+
+        public bool IsMapLoaded { get; private set; }
 
         public void Exit()
         {
@@ -114,6 +115,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
                         _drawablePolygons = map.Polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
 
                         _canvas.Invalidate();
+                        IsMapLoaded = true;
 
                     });
 
@@ -133,6 +135,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
                 _logger.Log("Done");
 
                 DrawMap(mapId);
+                IsMapLoaded = true;
             });
         }
 
