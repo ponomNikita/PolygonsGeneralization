@@ -28,11 +28,11 @@ namespace PolygonGeneralization.Domain.Models
             var points = Points.ToList();
             for (int i = 0; i < points.Count; i++)
             {
-                points[i] = LanLonToR3(points[i]);
+                LanLonToR3(points[i]);
             }
         }
 
-        private Point LanLonToR3(Point p)
+        private void LanLonToR3(Point p)
         {
             double lonRad = Math.PI * p.X / 180; // Перевод градусов в радианы
             double latRad = Math.PI * p.Y / 180;
@@ -51,7 +51,8 @@ namespace PolygonGeneralization.Domain.Models
             double x = (a2cob * col) / pp;
             double y = (a2cob * sil) / pp;
 
-            return new Point(x, y);
+            p.X = x;
+            p.Y = y;
         }
     }
 }
