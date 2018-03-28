@@ -9,7 +9,7 @@ namespace PolygonGeneralization.Domain.Models
     {
         protected Path()
         {
-            Points = new Collection<Point>();
+            Points = new List<Point>();
         }
         public Path(params Point[] points)
         {
@@ -17,7 +17,7 @@ namespace PolygonGeneralization.Domain.Models
             Points = points.Select(p => new Point(p) {PathId = Id, OrderNumber = counter++}).ToList();
         }
 
-        public virtual ICollection<Point> Points { get; set; }
+        public virtual List<Point> Points { get; set; }
 
         public virtual Polygon Polygon { get; set; }
 
@@ -25,11 +25,21 @@ namespace PolygonGeneralization.Domain.Models
 
         public void TransformToR3()
         {
-            var points = Points.ToList();
-            for (int i = 0; i < points.Count; i++)
+            foreach (var point in Points)
             {
-                LanLonToR3(points[i]);
+                LanLonToR3(point);
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Path;
+            if (other != null)
+            {
+                return !Points.Where((t, i) => !t.Equals(other.Points[i])).Any();
+            }
+
+            return false;
         }
 
         private void LanLonToR3(Point p)

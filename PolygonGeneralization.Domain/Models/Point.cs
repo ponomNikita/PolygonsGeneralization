@@ -72,6 +72,7 @@ namespace PolygonGeneralization.Domain.Models
 
             return false;
         }
+        
         public bool Equals(Point other)
         {
             return X.Equals(other.X) && Y.Equals(other.Y);

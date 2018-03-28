@@ -9,20 +9,20 @@ namespace PolygonGeneralization.Domain.Models
     {
         protected Polygon()
         {
-            Paths = new Collection<Path>();
+            Paths = new List<Path>();
         }
         public Polygon(params Path[] paths)
         {
-            Paths = paths;
+            Paths = paths.ToList();
             if (paths?.Length == 0)
             {
-                Paths = new Collection<Path>();
+                Paths = new List<Path>();
             }
         }
 
         public Polygon(double[][][] polygon)
         {
-            Paths = new Collection<Path>();
+            Paths = new List<Path>();
             foreach (var contour in polygon)
             {
                 var points = contour.Select(c => new Point(c[0], c[1])).ToList();
@@ -38,7 +38,7 @@ namespace PolygonGeneralization.Domain.Models
 
         public virtual Map Map { get; set; }
         public Guid MapId { get; set; }
-        public virtual ICollection<Path> Paths { get; }
+        public virtual List<Path> Paths { get; }
 
         public void AddPath(Path path)
         {

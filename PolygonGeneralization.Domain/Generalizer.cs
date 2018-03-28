@@ -8,9 +8,9 @@ namespace PolygonGeneralization.Domain
 {
     public class Generalizer : IGeneralizer
     {
-        public List<Polygon> Generalize(Polygon[] polygons, double pxForMeter)
+        public List<Polygon> Generalize(List<Polygon> polygons, double minDistance)
         {
-            throw new System.NotImplementedException();
+            return polygons;
         }
 
         public Polygon GetConvexHull(params Polygon[] polygons)
@@ -20,7 +20,7 @@ namespace PolygonGeneralization.Domain
             points.Sort(new PointsByXComparator());
 
             int n = points.Count, k = 0;
-            Point[] convexHull = new Point[2 * n];
+            var convexHull = new Point[2 * n];
 
             // Build lower hull
             for (int i = 0; i < n; ++i)
