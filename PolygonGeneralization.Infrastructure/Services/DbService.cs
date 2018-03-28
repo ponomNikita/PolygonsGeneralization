@@ -74,29 +74,6 @@ namespace PolygonGeneralization.Infrastructure.Services
             return result;
         }
 
-        //public Polygon[] GetPolygons(Guid mapId, Point leftDown, Point rightTop)
-        //{
-        //    var query = _context.Set<Path>()
-        //        .Include(p => p.Points)
-        //        .Where(path => path.Points.Any(p =>
-        //            p.X >= leftDown.X &&
-        //            p.X <= rightTop.X &&
-        //            p.Y >= leftDown.Y &&
-        //            p.Y <= rightTop.Y));
-
-        //    var paths = query.ToList();
-
-        //    foreach (var path in paths)
-        //    {
-        //        path.Points = path.Points.OrderBy(point => point.OrderNumber).ToArray();
-        //    }
-
-        //    var result = paths.GroupBy(p => p.PolygonId)
-        //        .Select(gr => new Polygon(gr.ToArray())).ToArray();
-
-        //    return result;
-        //}
-
         public Polygon[] GetPolygons(Guid mapId, Point leftDown, Point rightTop)
         {
             var command = new GetPolygonsByBboxCommand(mapId, leftDown, rightTop);
