@@ -14,11 +14,14 @@ namespace PolygonGeneralization.WinForms.Forms
         private TextBox _metaControl;
         private ScrollTimer _scrollTimer;
 
-        public MainForm(IGisDataReader dataReader, IDbService dbService, ILogger logger)
+        public MainForm(IGisDataReader dataReader, 
+            IDbService dbService, 
+            ILogger logger, 
+            IGeneralizer generalizer)
         {
             InitializeComponent();
 
-            _viewModel = new MainFormViewModel(Canvas, dataReader, dbService, logger);
+            _viewModel = new MainFormViewModel(Canvas, dataReader, dbService, logger, generalizer);
 
             InitializeMetaSection();
 

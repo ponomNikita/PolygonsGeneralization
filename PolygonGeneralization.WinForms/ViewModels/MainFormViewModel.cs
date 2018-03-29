@@ -30,11 +30,12 @@ namespace PolygonGeneralization.WinForms.ViewModels
         private readonly ILogger _logger;
         private Guid _currentMapId;
         private ViewType _viewType;
+        private IGeneralizer _generalizer;
 
         public MainFormViewModel(Panel canvas, 
             IGisDataReader dataReader,
             IDbService dbService,
-            ILogger logger)
+            ILogger logger, IGeneralizer generalizer)
         {
             _dbService = dbService;
             _canvas = canvas;
@@ -42,6 +43,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
             _drawerFactory = new DrawerFactory(canvas.CreateGraphics());
             _meta = new MetaInfo();
             _logger = logger;
+            _generalizer = generalizer;
             _drawablePolygons = new List<DrawablePolygon>();
         }
         
@@ -155,6 +157,8 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             var polygons = _dbService.GetPolygons(mapId, _screenAdapter.Bbox.LeftDown, _screenAdapter.Bbox.RightTop);
 
+            //_generalizer.Generalize(polygons, );
+            
             _drawablePolygons.Clear();
             _drawablePolygons = polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
 

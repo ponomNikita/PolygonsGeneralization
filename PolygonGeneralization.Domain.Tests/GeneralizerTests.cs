@@ -1,6 +1,8 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using NUnit.Framework;
 using PolygonGeneralization.Domain.Models;
 
@@ -171,9 +173,12 @@ namespace PolygonGeneralization.Domain.Tests
                 })), 
             };
 
+            var expected = new Polygon[polygons.Count];
+            polygons.CopyTo(expected);
+
             var result = _generalizer.Generalize(polygons, 1);
 
-            AssertEquals(result, polygons);
+            AssertEquals(result, expected.ToList());
         }
         
         [Test]
@@ -181,28 +186,48 @@ namespace PolygonGeneralization.Domain.Tests
         {
             var polygons = new List<Polygon>
             {
-                new Polygon(new Path(new []
+                // First claster
+                new Polygon(new Path(new []    
                 {
-                    new Point(4, 4),
-                    new Point(0, 4),
                     new Point(0, 0),
-                    new Point(4, 0),
+                    new Point(0, 1),
+                    new Point(1, 0),
                 })), 
                 
                 new Polygon(new Path(new []
                 {
-                    new Point(8, 8),
-                    new Point(7, 8),
-                    new Point(7, 7),
-                    new Point(8, 7),
+                    new Point(2, 2),
+                    new Point(2, 4),
+                    new Point(4, 2),
                 })), 
                 
                 new Polygon(new Path(new []
                 {
-                    new Point(4, 6),
-                    new Point(4, 5),
-                    new Point(0, 5),
-                    new Point(0, 6),
+                    new Point(5, 0),
+                    new Point(5, 2),
+                    new Point(7, 0),
+                })), 
+                
+                // Second claster
+                new Polygon(new Path(new []    
+                {
+                    new Point(50, 50),
+                    new Point(50, 52),
+                    new Point(52, 50),
+                })), 
+                
+                new Polygon(new Path(new []    
+                {
+                    new Point(55, 55),
+                    new Point(55, 57),
+                    new Point(57, 55),
+                })), 
+                
+                new Polygon(new Path(new []    
+                {
+                    new Point(60, 60),
+                    new Point(60, 62),
+                    new Point(62, 60),
                 })), 
             };
             
@@ -210,22 +235,23 @@ namespace PolygonGeneralization.Domain.Tests
             {
                 new Polygon(new Path(new []
                 {
-                    new Point(4, 6),
-                    new Point(0, 6),
-                    new Point(0, 0),
-                    new Point(4, 0),
-                })), 
-                
+                    new Point(50, 50),
+                    new Point(52, 50),
+                    new Point(62, 60),
+                    new Point(60, 62),
+                    new Point(50, 52),
+                })),
                 new Polygon(new Path(new []
                 {
-                    new Point(8, 8),
-                    new Point(7, 8),
-                    new Point(7, 7),
-                    new Point(8, 7),
+                    new Point(0, 0),
+                    new Point(7, 0),
+                    new Point(5, 2),
+                    new Point(2, 4),
+                    new Point(0, 1),
                 }))
             };
 
-            var result = _generalizer.Generalize(polygons, 2);
+            var result = _generalizer.Generalize(polygons, 10);
 
             AssertEquals(result, expected);
         }
@@ -236,13 +262,9 @@ namespace PolygonGeneralization.Domain.Tests
         {
             Assert.AreEqual(actual.Count, expected.Count);
 
-            for (var i = 0; i < actual.Count; i++)
+            foreach (var p in actual)
             {
-                Assert.AreEqual(actual[i].Paths.Count, expected[i].Paths.Count);
-                for (var j = 0; j < actual[i].Paths.Count; j++)
-                {
-                    Assert.AreEqual(actual[i].Paths[j], expected[i].Paths[j]);
-                }
+                Assert.True(expected.Any(e => e.Equals(p)));
             }
         }
     }
