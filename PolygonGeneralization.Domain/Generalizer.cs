@@ -58,6 +58,14 @@ namespace PolygonGeneralization.Domain
 
         public Polygon GetConvexHull(params Polygon[] polygons)
         {
+            if (polygons == null || polygons.Length == 0)
+            {
+                throw new ArgumentNullException(nameof(polygons));
+            }
+            
+            if (polygons.Length == 1)
+                return polygons.First();
+            
             var points = polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToList();
 
             points.Sort(new PointsByXComparator());

@@ -21,7 +21,7 @@ namespace PolygonGeneralization.WinForms.Ninject
             kernel.Bind<IDbService>().To<DbService>().InSingletonScope();
             kernel.Bind<DbContext>().To<DataBaseContext>();
             kernel.Bind<ILogger>().ToConstant(LoggerFactory.Create()).InSingletonScope();
-            kernel.Bind<IGeneralizer, Generalizer>();
+            kernel.Bind<IGeneralizer>().To<Generalizer>();
 
             return kernel;
         }

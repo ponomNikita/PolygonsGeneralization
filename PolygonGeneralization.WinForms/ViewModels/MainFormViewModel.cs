@@ -157,10 +157,21 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             var polygons = _dbService.GetPolygons(mapId, _screenAdapter.Bbox.LeftDown, _screenAdapter.Bbox.RightTop);
 
-            //_generalizer.Generalize(polygons, );
+            foreach (var polygon in polygons)
+            {
+                polygon.CalculateMassCenter();
+            }
+            
+            _logger.Log("Generalizing....");
+            var generalizedPolygons = _generalizer.Generalize(polygons.ToList(), 30);
+
+            _meta.PolygonsCountAfterGeneralization = generalizedPolygons.Count;
+            _meta.TotalPolygonsCount = polygons.Length;
+            _meta.InMemoryPolygonsCount = polygons.Length;
             
             _drawablePolygons.Clear();
-            _drawablePolygons = polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
+            _drawablePolygons = generalizedPolygons
+                .Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
 
             _canvas.Invalidate();
         }
@@ -182,9 +193,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
                         polygon.Draw();
                     }
                 }
-
-                _meta.TotalPolygonsCount = _drawablePolygons.Count;
-                _meta.InMemoryPolygonsCount = _drawablePolygons.Count;
+                
                 _meta.Zoom = _screenAdapter.Zoom;
                 _logger.Log("Done");
             }

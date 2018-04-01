@@ -6,9 +6,9 @@ namespace PolygonGeneralization.WinForms.ScreenAdapter
 {
     public class ScreenAdapter
     {
-        private const double DEFAULT_SCALE = 0.07;
+        private const double DEFAULT_SCALE = 0.04;
         private double _scale;
-        private double[] _extrimalValues;
+        private readonly double[] _extrimalValues;
 
         public ScreenAdapter(int mapWidth, int mapHeight, double[] extrimalValues, double scale = DEFAULT_SCALE)
             :this(mapWidth, mapHeight, scale)

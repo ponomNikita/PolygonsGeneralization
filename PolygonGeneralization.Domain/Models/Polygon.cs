@@ -22,15 +22,6 @@ namespace PolygonGeneralization.Domain.Models
             MassCenter = GetMassCenter();
         }
 
-        private Point GetMassCenter()
-        {
-            var allPoints = Paths.SelectMany(p => p.Points).ToList();
-            var x = allPoints.Sum(p => p.X) / allPoints.Count();
-            var y = allPoints.Sum(p => p.Y) / allPoints.Count();
-            
-            return new Point(x, y);
-        }
-
         public Polygon(double[][][] polygon)
         {
             Paths = new List<Path>();
@@ -51,7 +42,7 @@ namespace PolygonGeneralization.Domain.Models
         public virtual Map Map { get; set; }
         public Guid MapId { get; set; }
         public virtual List<Path> Paths { get; }
-        public Point MassCenter { get; }
+        public Point MassCenter { get; private set; }
 
         public void AddPath(Path path)
         {
@@ -64,6 +55,11 @@ namespace PolygonGeneralization.Domain.Models
             {
                 path.TransformToR3();
             }
+        }
+
+        public void CalculateMassCenter()
+        {
+            MassCenter = GetMassCenter();
         }
 
         public override bool Equals(object obj)
@@ -84,6 +80,15 @@ namespace PolygonGeneralization.Domain.Models
             }
             
             return false;
+        }
+
+        private Point GetMassCenter()
+        {
+            var allPoints = Paths.SelectMany(p => p.Points).ToList();
+            var x = allPoints.Sum(p => p.X) / allPoints.Count();
+            var y = allPoints.Sum(p => p.Y) / allPoints.Count();
+            
+            return new Point(x, y);
         }
     }
 }
