@@ -11,7 +11,9 @@ namespace PolygonGeneralization.Domain.Tests
     [TestFixture]
     public class GeneralizerTests
     {
-        private readonly Generalizer _generalizer = new Generalizer();
+        private readonly Generalizer _generalizer = new Generalizer(new ConvexHullGeneralizationStrategy());
+        private readonly ConvexHullGeneralizationStrategy _convexHullGeneralizationStrategy = 
+            new ConvexHullGeneralizationStrategy();
 
         #region GetConvexHull tests
         
@@ -42,7 +44,7 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(0, 4),
             };
 
-            var actual = _generalizer.GetConvexHull(polygonA, polygonB);
+            var actual = _convexHullGeneralizationStrategy.GetConvexHull(polygonA, polygonB);
 
             var actualPointsArray = actual.Paths.SelectMany(p => p.Points).ToArray();
 
@@ -96,7 +98,7 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(0, 3),
             };
 
-            var actual = _generalizer.GetConvexHull(polygonA, polygonB, polygonC, polygonD);
+            var actual = _convexHullGeneralizationStrategy.GetConvexHull(polygonA, polygonB, polygonC, polygonD);
 
             var actualPointsArray = actual.Paths.SelectMany(p => p.Points).ToArray();
 
@@ -132,7 +134,7 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(0, 4)
             };
 
-            var actual = _generalizer.GetConvexHull(polygonA, polygonB);
+            var actual = _convexHullGeneralizationStrategy.GetConvexHull(polygonA, polygonB);
 
             var actualPointsArray = actual.Paths.SelectMany(p => p.Points).ToArray();
 

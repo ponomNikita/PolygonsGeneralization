@@ -76,7 +76,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Claster.cs" />
+    <Compile Include="ConvexHullGeneralizationStrategy.cs" />
     <Compile Include="Exceptions\PolygonGeneralizationException.cs" />
+    <Compile Include="IGeneralizePolygonStrategy.cs" />
     <Compile Include="Generalizer.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Interfaces\IDbService.cs" />
