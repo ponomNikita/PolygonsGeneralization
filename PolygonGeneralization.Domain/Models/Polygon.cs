@@ -42,6 +42,7 @@ namespace PolygonGeneralization.Domain.Models
         public virtual Map Map { get; set; }
         public Guid MapId { get; set; }
         public virtual List<Path> Paths { get; }
+        public Path EpsilonArea { get; private set; }
         public Point MassCenter { get; private set; }
 
         public void AddPath(Path path)
@@ -64,6 +65,17 @@ namespace PolygonGeneralization.Domain.Models
         public void PreparePolygon(double coeff)
         {
             CalculateMassCenter();
+            
+            var points = new List<Point>();
+            foreach (var point in Paths[0].Points)
+            {
+                var modifiedPoint = new Point(MassCenter.X + (point.X - MassCenter.X) * coeff,
+                    MassCenter.Y + (point.Y - MassCenter.Y) * coeff);
+                
+                points.Add(modifiedPoint);
+            }
+            
+            EpsilonArea = new Path(points.ToArray());
         }
 
         private void CalculateMassCenter()
