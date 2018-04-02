@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Infrastructure.Commands;
 using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.WinForms.Interfaces;
 using PolygonGeneralization.WinForms.Models;
@@ -161,9 +162,11 @@ namespace PolygonGeneralization.WinForms.ViewModels
             {
                 polygon.CalculateMassCenter();
             }
+
+            var command = new GeneralizePolygonsCommand(_generalizer, polygons.ToList(), 30);
+            command.Execute();
             
-            _logger.Log("Generalizing....");
-            var generalizedPolygons = _generalizer.Generalize(polygons.ToList(), 30);
+            var generalizedPolygons = command.Result;
 
             _meta.PolygonsCountAfterGeneralization = generalizedPolygons.Count;
             _meta.TotalPolygonsCount = polygons.Length;

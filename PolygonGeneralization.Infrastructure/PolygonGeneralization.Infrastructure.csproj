@@ -104,6 +104,7 @@
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\BaseSelectCommand.cs" />
     <Compile Include="Commands\BulkInsertCommand.cs" />
+    <Compile Include="Commands\GeneralizePolygonsCommand.cs" />
     <Compile Include="Commands\GetPolygonsByBboxCommand.cs" />
     <Compile Include="Commands\PathsBulkInsertCommand.cs" />
     <Compile Include="Commands\PointsBulkInsertCommand.cs" />
