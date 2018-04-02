@@ -25,6 +25,11 @@ namespace PolygonGeneralization.Infrastructure.Commands
         
         protected override void HandleImpl()
         {
+            foreach (var polygon in _polygons)
+            {
+                polygon.PreparePolygon(1);
+            }
+            
             Result = _generalizer.Generalize(_polygons, _minDistance);
         }
     }

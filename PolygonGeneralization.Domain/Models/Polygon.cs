@@ -56,8 +56,17 @@ namespace PolygonGeneralization.Domain.Models
                 path.TransformToR3();
             }
         }
+        
+        /// <summary>
+        /// Вычисление центра масс. Построение эпсилон окресности полигона.
+        /// </summary>
+        /// <param name="coeff">Коэфицент увеличения полигона</param>
+        public void PreparePolygon(double coeff)
+        {
+            CalculateMassCenter();
+        }
 
-        public void CalculateMassCenter()
+        private void CalculateMassCenter()
         {
             MassCenter = GetMassCenter();
         }

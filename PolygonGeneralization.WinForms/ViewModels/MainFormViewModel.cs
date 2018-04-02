@@ -158,11 +158,6 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             var polygons = _dbService.GetPolygons(mapId, _screenAdapter.Bbox.LeftDown, _screenAdapter.Bbox.RightTop);
 
-            foreach (var polygon in polygons)
-            {
-                polygon.CalculateMassCenter();
-            }
-
             var command = new GeneralizePolygonsCommand(_generalizer, polygons.ToList(), 30);
             command.Execute();
             
