@@ -30,7 +30,6 @@ namespace PolygonGeneralization.Infrastructure
             modelBuilder.Entity<Polygon>().Property(e => e.Id)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             modelBuilder.Entity<Polygon>().Ignore(e => e.MassCenter);
-            modelBuilder.Entity<Polygon>().Ignore(e => e.EpsilonArea);
 
             modelBuilder.Entity<Path>().HasKey(e => e.Id);
             modelBuilder.Entity<Path>().Property(e => e.Id)

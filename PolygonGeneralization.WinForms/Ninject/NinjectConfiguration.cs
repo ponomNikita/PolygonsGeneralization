@@ -2,6 +2,7 @@
 using Ninject;
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Domain.SimpleClipper;
 using PolygonGeneralization.Infrastructure;
 using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.Infrastructure.Services;
@@ -15,7 +16,7 @@ namespace PolygonGeneralization.WinForms.Ninject
         {
             var kernel = new StandardKernel();
 
-            kernel.Bind<IClipper>().To<PolygonGeneralizationCoreClipper>();
+            kernel.Bind<IClipper>().To<SimpleClipper>();
             kernel.Bind<IGisDataReader>().To<JsonGisDataReader>();
             kernel.Bind<IDrawerFactory>().To<DrawerFactory>();
             kernel.Bind<IDbService>().To<DbService>().InSingletonScope();

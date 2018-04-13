@@ -27,10 +27,10 @@ namespace PolygonGeneralization.Infrastructure.Commands
         {
             foreach (var polygon in _polygons)
             {
-                polygon.PreparePolygon(1);
+                polygon.CalculateMassCenter();
             }
             
-            Result = _generalizer.Generalize(_polygons, _minDistance);
+            Result = _generalizer.Generalize(_polygons, _minDistance).Result;
         }
     }
 }

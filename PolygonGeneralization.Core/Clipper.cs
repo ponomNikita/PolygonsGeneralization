@@ -67,7 +67,7 @@ namespace PolygonGeneralization.Core
 
         private void BuildSolution()
         {
-            while (_edgesSet.Count > 0)
+            while (_edgesSet.Count > 2)
             {
                 // Строим контуры начиная с внешнего
                 BuildContour();
@@ -85,7 +85,7 @@ namespace PolygonGeneralization.Core
 
             Edge current = initial;
 
-            while (true)
+            while (current != null)
             {
                 _edgesSet.Remove(current);
                 contour.Add(current.A);
@@ -102,6 +102,9 @@ namespace PolygonGeneralization.Core
         private Edge GetNextRightEdge(Edge edge, HashSet<Edge> edgesSet)
         {
             var pointsForSortByClockwise = _edgesSet.Where(e => e.A == edge.B).Select(e => e.B).ToList();
+
+            if (pointsForSortByClockwise.Count == 0)
+                return null;
 
             SortPointsByAntiClockwiseOrder(edge, pointsForSortByClockwise);
 

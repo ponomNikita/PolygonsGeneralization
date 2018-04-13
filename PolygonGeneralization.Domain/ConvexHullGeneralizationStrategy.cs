@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Domain
 {
     public class ConvexHullGeneralizationStrategy : IGeneralizePolygonStrategy
     {
-        public List<Polygon> Generalize(List<Claster> clasters, double minDistance)
+        public Task<List<Polygon>> Generalize(List<Claster> clasters, double minDistance)
         {
             var resultPolygons = new List<Polygon>();
             foreach (var claster in clasters)
@@ -15,7 +16,7 @@ namespace PolygonGeneralization.Domain
                 resultPolygons.Add(GetConvexHull(claster.Polygons.ToArray()));
             }
 
-            return resultPolygons;
+            return Task.FromResult(resultPolygons);
         }
 
         public Polygon GetConvexHull(params Polygon[] polygons)
@@ -55,6 +56,29 @@ namespace PolygonGeneralization.Domain
                 convexHull = convexHull.Take(k - 1).ToArray();
 
             return new Polygon(new Path(convexHull));
+        }
+
+        public Polygon GetNonConvexHull(List<Polygon> polygons)
+        {
+            if (polygons.Count == 1)
+            {
+                return polygons.First();
+            }
+
+            var result = polygons.First();
+            polygons.Remove(result);
+            
+            while (polygons.Any())
+            {
+                
+            }
+
+            return result;
+        }
+
+        public Polygon Union(Polygon a, Polygon b)
+        {
+            return null;
         }
 
         private double Cross(Point o, Point a, Point b)

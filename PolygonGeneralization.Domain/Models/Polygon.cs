@@ -42,7 +42,6 @@ namespace PolygonGeneralization.Domain.Models
         public virtual Map Map { get; set; }
         public Guid MapId { get; set; }
         public virtual List<Path> Paths { get; }
-        public Path EpsilonArea { get; private set; }
         public Point MassCenter { get; private set; }
 
         public void AddPath(Path path)
@@ -59,26 +58,28 @@ namespace PolygonGeneralization.Domain.Models
         }
         
         /// <summary>
-        /// Вычисление центра масс. Построение эпсилон окресности полигона.
+        /// Построение эпсилон окресности полигона.
         /// </summary>
-        /// <param name="coeff">Коэфицент увеличения полигона</param>
-        public void PreparePolygon(double coeff)
+        /// <param name="delta">Дельта, на которую увеличится расстояние от цетра масс до вершин</param>
+        public Polygon GetIncreasePolygon(double delta)
         {
-            CalculateMassCenter();
-            
             var points = new List<Point>();
             foreach (var point in Paths[0].Points)
             {
+                var length = Math.Sqrt((point.X - MassCenter.X) * (point.X - MassCenter.X) +
+                             (point.Y - MassCenter.Y) * (point.Y - MassCenter.Y));
+
+                var coeff = (delta + length) / length;
                 var modifiedPoint = new Point(MassCenter.X + (point.X - MassCenter.X) * coeff,
                     MassCenter.Y + (point.Y - MassCenter.Y) * coeff);
                 
                 points.Add(modifiedPoint);
             }
             
-            EpsilonArea = new Path(points.ToArray());
+            return new Polygon(new []{new Path(points.ToArray())}.Union(Paths.Skip(1)).ToArray());
         }
 
-        private void CalculateMassCenter()
+        public void CalculateMassCenter()
         {
             MassCenter = GetMassCenter();
         }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Domain
 {
-    public partial class Generalizer : IGeneralizer
+    public class Generalizer : IGeneralizer
     {
         private readonly IGeneralizePolygonStrategy _generalizationStrategy;
 
@@ -17,10 +18,8 @@ namespace PolygonGeneralization.Domain
             _generalizationStrategy = generalizationStrategy;
         }
 
-        public List<Polygon> Generalize(List<Polygon> polygons, double minDistance)
+        public async Task<List<Polygon>> Generalize(List<Polygon> polygons, double minDistance)
         {
-            var minSqrDistance = minDistance * minDistance;
-            
             var clasters = new List<Claster>();
 
             while (polygons.Any())
@@ -35,7 +34,7 @@ namespace PolygonGeneralization.Domain
                 clasters.Add(claster);
             }
 
-            return _generalizationStrategy.Generalize(clasters, minDistance);
+            return await _generalizationStrategy.Generalize(clasters, minDistance);
         }
 
         private bool FindNeighbor(List<Polygon> polygons, Claster claster, double minSqrDistance)

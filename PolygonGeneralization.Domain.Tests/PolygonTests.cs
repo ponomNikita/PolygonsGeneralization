@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Domain.Tests
@@ -7,14 +8,14 @@ namespace PolygonGeneralization.Domain.Tests
     public class PolygonTests
     {
         [Test]
-        public void Correct_massCenter_after_preparing()
+        public void Correct_massCenter_after_culculate_mass_center()
         {
             var polygon = new Polygon(new Path[]
             {
                 new Path(new Point(0, 0), new Point(4, 0), new Point(4, 4), new Point(0, 4))
             });
             
-            polygon.PreparePolygon(1);
+            polygon.CalculateMassCenter();
 
             Assert.AreEqual(new Point(2, 2), polygon.MassCenter);
         }
@@ -24,16 +25,16 @@ namespace PolygonGeneralization.Domain.Tests
         {
             var polygon = new Polygon(new Path[]
             {
-                new Path(new Point(0, 0), new Point(4, 0), new Point(4, 4), new Point(0, 4))
+                new Path(new Point(0, -2), new Point(2, 0), new Point(0, 2), new Point(-2, 0))
             });
             
-            polygon.PreparePolygon(2);
+            var result = polygon.GetIncreasePolygon(2);
             
             Assert.AreEqual(new Path(
-                new Point(-2, -2),
-                new Point(6, -2),
-                new Point(6, 6),
-                new Point(-2, 6)), polygon.EpsilonArea);
+                new Point(0, -4),
+                new Point(4, 0),
+                new Point(0, 4),
+                new Point(-4, 0)), result.Paths.Single());
         }
     }
 }

@@ -162,6 +162,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
             command.Execute();
             
             var generalizedPolygons = command.Result;
+            //var generalizedPolygons = polygons.ToList();
 
             _meta.PolygonsCountAfterGeneralization = generalizedPolygons.Count;
             _meta.TotalPolygonsCount = polygons.Length;

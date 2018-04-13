@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using PolygonGeneralization.Domain.Models;
 
@@ -146,7 +147,7 @@ namespace PolygonGeneralization.Domain.Tests
         #region Generalize tests
 
         [Test]
-        public void Return_same_polygons_when_real_distance_bigger_then_minDistance()
+        public async Task Return_same_polygons_when_real_distance_bigger_then_minDistance()
         {
             var polygons = new List<Polygon>
             {
@@ -178,13 +179,13 @@ namespace PolygonGeneralization.Domain.Tests
             var expected = new Polygon[polygons.Count];
             polygons.CopyTo(expected);
 
-            var result = _generalizer.Generalize(polygons, 1);
+            var result = await _generalizer.Generalize(polygons, 1);
 
             AssertEquals(result, expected.ToList());
         }
         
         [Test]
-        public void Return_two_polygons_after_generalization()
+        public async Task Return_two_polygons_after_generalization()
         {
             var polygons = new List<Polygon>
             {
@@ -253,7 +254,7 @@ namespace PolygonGeneralization.Domain.Tests
                 }))
             };
 
-            var result = _generalizer.Generalize(polygons, 10);
+            var result = await _generalizer.Generalize(polygons, 10);
 
             AssertEquals(result, expected);
         }
