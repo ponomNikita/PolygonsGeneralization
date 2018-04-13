@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="GeneralizerTests.cs" />
+    <Compile Include="GraphHelperTests.cs" />
     <Compile Include="PolygonTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

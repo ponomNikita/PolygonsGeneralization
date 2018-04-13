@@ -103,10 +103,18 @@ namespace PolygonGeneralization.Domain.SimpleClipper
         {
             var graph = new List<Edge>();
 
-            for (var i = pathA.Count - 1; i > 0; i--)
+            Vertex start = null;
+            Vertex end = null;
+
+            for (var i = pathA.Count - 1; i >= 0; i--)
             {
-                var end = new Vertex(pathA[i]);
-                var start = new Vertex(pathA[i - 1]);
+                end = i == pathA.Count - 1 
+                    ? new Vertex(pathA[i])
+                    : start;
+                
+                start = i != 0 
+                    ? new Vertex(pathA[i - 1])
+                    : graph.First().End;
 
                 if (i != pathA.Count - 1)
                 {
