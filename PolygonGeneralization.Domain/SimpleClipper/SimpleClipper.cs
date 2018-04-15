@@ -44,7 +44,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                     if (distance < minDistance)
                     {
                         minDistance = distance;
-                        firstPair = new Tuple<Point, Point>(pointFromA, pointFormB);
+                        secondPair = new Tuple<Point, Point>(pointFromA, pointFormB);
                     }
                 }
             }
@@ -61,7 +61,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
         private double DistanceSqr(Point a, Point b)
         {
-            return a.X * b.X + a.Y * b.Y;
+            return (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
         }
 
         public Path UnionPaths(
