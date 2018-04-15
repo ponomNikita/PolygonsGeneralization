@@ -9,11 +9,11 @@ namespace PolygonGeneralization.Domain
         public Vertex(Point point)
         {
             Point = point;
-            Edges = new List<Edge>();
+            Neigbours = new List<Vertex>();
         }
 
         public Point Point { get; }
-        public List<Edge> Edges { get; }
+        public List<Vertex> Neigbours { get; }
 
         public override int GetHashCode()
         {
@@ -22,15 +22,15 @@ namespace PolygonGeneralization.Domain
 
         public override bool Equals(object obj)
         {
-            var other = obj as Vertex;
-            var point = obj as Point;
-            if (other != null)
+            var vertex = obj as Vertex;
+            if (vertex != null)
             {
-                return Point.Equals(other.Point);
+                return Point.Equals(vertex.Point);
             }
-            else if (point != null)
+
+            if (obj is Point)
             {
-                return point.Equals(Point);
+                return Point.Equals(((Point)obj));
             }
 
             return false;

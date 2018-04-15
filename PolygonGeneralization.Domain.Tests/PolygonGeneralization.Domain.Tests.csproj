@@ -50,6 +50,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AntiClockwiseOrderComparerTests.cs" />
     <Compile Include="GeneralizerTests.cs" />
     <Compile Include="GraphHelperTests.cs" />
     <Compile Include="PolygonTests.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -22,30 +23,92 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(0, 4)
             };
             
-            var verex3 = new Vertex(path[3]);
-            var verex2 = new Vertex(path[2]);
-            var verex1 = new Vertex(path[1]);
-            var verex0 = new Vertex(path[0]);
+            var vertex3 = new Vertex(path[3]);
+            var vertex2 = new Vertex(path[2]);
+            var vertex1 = new Vertex(path[1]);
+            var vertex0 = new Vertex(path[0]);
             
-            var edge0 = new Edge(verex2, verex3);
-            var edge1 = new Edge(verex1, verex2);
-            var edge2 = new Edge(verex0, verex1);
-            var edge3 = new Edge(verex3, verex0);
-            
-            verex3.Edges.Add(edge2);
-            verex2.Edges.Add(edge0);
-            verex1.Edges.Add(edge1);
-            verex0.Edges.Add(edge2);
+            vertex3.Neigbours.Add(vertex0);
+            vertex2.Neigbours.Add(vertex3);
+            vertex1.Neigbours.Add(vertex2);
+            vertex0.Neigbours.Add(vertex1);
 
-            var expectedGraph = new List<Edge>
+            var expectedGraph = new List<Vertex>
             {
-                edge0,
-                edge1,
-                edge2,
-                edge3
+                vertex0,
+                vertex1,
+                vertex2,
+                vertex3
             };
 
             var actualGraph = _sut.BuildRing(path);
+            
+            CollectionAssert.AreEqual(expectedGraph, actualGraph, new GraphComparer());
+        }
+
+        [Test]
+        public void Can_build_graph()
+        {
+            var pathA = new List<Point>
+            {
+                new Point(0, 0),
+                new Point(4, 0),
+                new Point(4, 4),
+                new Point(0, 4)
+            };
+            
+            var pathB = new List<Point>
+            {
+                new Point(0, 6),
+                new Point(4, 6),
+                new Point(4, 10),
+                new Point(0, 10)
+            };
+
+            var firstPair = new Tuple<Point, Point>(new Point(0, 4), new Point(0, 6));
+            var secondPair = new Tuple<Point, Point>(new Point(4, 4), new Point(4, 6));
+            
+            var vertexA3 = new Vertex(pathA[3]);
+            var vertexA2 = new Vertex(pathA[2]);
+            var vertexA1 = new Vertex(pathA[1]);
+            var vertexA0 = new Vertex(pathA[0]);
+            
+            vertexA3.Neigbours.Add(vertexA0);
+            vertexA2.Neigbours.Add(vertexA3);
+            vertexA1.Neigbours.Add(vertexA2);
+            vertexA0.Neigbours.Add(vertexA1);
+            
+            var vertexB3 = new Vertex(pathB[3]);
+            var vertexB2 = new Vertex(pathB[2]);
+            var vertexB1 = new Vertex(pathB[1]);
+            var vertexB0 = new Vertex(pathB[0]);
+            
+            vertexB3.Neigbours.Add(vertexB0);
+            vertexB2.Neigbours.Add(vertexB3);
+            vertexB1.Neigbours.Add(vertexB2);
+            vertexB0.Neigbours.Add(vertexB1);
+            
+            // Bridge 1
+            vertexA2.Neigbours.Add(vertexB1);
+            vertexB1.Neigbours.Add(vertexA2);
+
+            // Bridge 2
+            vertexA3.Neigbours.Add(vertexB0);
+            vertexB0.Neigbours.Add(vertexA3);
+            
+            var expectedGraph = new List<Vertex>
+            {
+                vertexA0,
+                vertexA1,
+                vertexA2,
+                vertexA3,
+                vertexB0,
+                vertexB1,
+                vertexB2,
+                vertexB3,
+            };
+
+            var actualGraph = _sut.BuildGraph(pathA, pathB, firstPair, secondPair);
             
             CollectionAssert.AreEqual(expectedGraph, actualGraph, new GraphComparer());
         }
@@ -54,27 +117,25 @@ namespace PolygonGeneralization.Domain.Tests
         {
             public int Compare(object x, object y)
             {
-                var edgeX = x as Edge;
-                var edgeY = y as Edge;
+                var vertexX = x as Vertex;
+                var vertexY = y as Vertex;
 
-                if (edgeX == null || edgeY == null)
+                if (vertexX == null || vertexY == null)
                 {
                     return 1;
                 }
 
-                if (!edgeX.End.Equals(edgeY.End) || !edgeX.Start.Equals(edgeY.Start))
+                if (!vertexX.Point.Equals(vertexY.Point))
                 {
                     return 1;
                 }
 
-                if (edgeX.End.Edges.Count != edgeY.End.Edges.Count ||
-                    edgeX.Start.Edges.Count != edgeY.Start.Edges.Count)
+                if (vertexX.Neigbours.Count != vertexY.Neigbours.Count)
                 {
                     return 1;
                 }
                 
-                if (edgeX.Start.Edges.Where((t, i) => t.GetHashCode() != edgeY.Start.Edges[i].GetHashCode()).Any() ||
-                    edgeX.End.Edges.Where((t, i) => t.GetHashCode() != edgeY.End.Edges[i].GetHashCode()).Any() )
+                if (vertexX.Neigbours.Where((p, i) => !p.Point.Equals(vertexY.Neigbours[i].Point)).Any())
                 {
                     return 1;
                 }

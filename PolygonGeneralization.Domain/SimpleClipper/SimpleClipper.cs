@@ -72,7 +72,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
         {
             var graph = _graphHelper.BuildGraph(pathA, pathB, firstPair, secondPair);
             
-            throw new NotImplementedException();
+            throw new NotFiniteNumberException();
         }
 
         

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Domain.SimpleClipper
 {
     public class GraphHelper
     {
-        public HashSet<Edge> BuildGraph(
+        public HashSet<Vertex> BuildGraph(
             List<Point> pathA,
             List<Point> pathB,
             Tuple<Point, Point> firstPair,
@@ -16,115 +17,50 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             var graphA = BuildRing(pathA);
             var graphB = BuildRing(pathB);
 
-            var graph = new HashSet<Edge>();
-            var vertexA = new Vertex(firstPair.Item1);
-            var vertexB = new Vertex(firstPair.Item2);
-            var vertexC = new Vertex(secondPair.Item1);
-            var vertexD = new Vertex(secondPair.Item2);
+            var bridge1A = graphA.Find(v => v.Point.Equals(firstPair.Item1));
+            var bridge1B = graphB.Find(v => v.Point.Equals(firstPair.Item2));
 
-            var relatedForVertexA = graphA.Where(it => it.End.Equals(vertexA) || it.Start.Equals(vertexA)).ToList();
-            var relatedForVertexB = graphB.Where(it => it.End.Equals(vertexB) || it.Start.Equals(vertexB)).ToList();
-            var relatedForVertexC = graphA.Where(it => it.End.Equals(vertexC) || it.Start.Equals(vertexC)).ToList();
-            var relatedForVertexD = graphB.Where(it => it.End.Equals(vertexD) || it.Start.Equals(vertexD)).ToList();
-
-            vertexA.Edges.AddRange(relatedForVertexA);
-            vertexB.Edges.AddRange(relatedForVertexB);
-            vertexC.Edges.AddRange(relatedForVertexC);
-            vertexD.Edges.AddRange(relatedForVertexD);
-
-            var bridgeA = new Edge(vertexA, vertexB);
-            var bridgeB = new Edge(vertexC, vertexD);
-
-            foreach (var edge in relatedForVertexA)
+            var bridge2A = graphA.Find(v => v.Point.Equals(secondPair.Item1));
+            var bridge2B = graphB.Find(v => v.Point.Equals(secondPair.Item2));
+            
+            bridge1A.Neigbours.Add(bridge1B);
+            bridge1B.Neigbours.Add(bridge1A);
+            
+            bridge2A.Neigbours.Add(bridge2B);
+            bridge2B.Neigbours.Add(bridge2A);
+            
+            var resultGraph = new HashSet<Vertex>();
+            
+            foreach (var item in graphA)
             {
-                if (edge.Start.Equals(bridgeA.Start))
-                {
-                    edge.Start.Edges.Add(bridgeA);
-                }
-                else if (edge.End.Equals(bridgeA.Start))
-                {
-                    edge.End.Edges.Add(bridgeA);
-                }
+                resultGraph.Add(item);
+            }
+            
+            foreach (var item in graphB)
+            {
+                resultGraph.Add(item);
             }
 
-            foreach (var edge in relatedForVertexB)
-            {
-                if (edge.Start.Equals(bridgeA.End))
-                {
-                    edge.Start.Edges.Add(bridgeA);
-                }
-                else if (edge.End.Equals(bridgeA.End))
-                {
-                    edge.End.Edges.Add(bridgeA);
-                }
-            }
-
-            foreach (var edge in relatedForVertexC)
-            {
-                if (edge.Start.Equals(bridgeB.Start))
-                {
-                    edge.Start.Edges.Add(bridgeB);
-                }
-                else if (edge.End.Equals(bridgeB.Start))
-                {
-                    edge.End.Edges.Add(bridgeB);
-                }
-            }
-
-            foreach (var edge in relatedForVertexD)
-            {
-                if (edge.Start.Equals(bridgeB.End))
-                {
-                    edge.Start.Edges.Add(bridgeB);
-                }
-                else if (edge.End.Equals(bridgeB.End))
-                {
-                    edge.End.Edges.Add(bridgeB);
-                }
-            }
-
-            graph.Add(bridgeA);
-            graph.Add(bridgeB);
-
-            foreach (var edge in graphA)
-            {
-                graph.Add(edge);
-            }
-
-            foreach (var edge in graphB)
-            {
-                graph.Add(edge);
-            }
-
-            return graph;
+            return resultGraph;
         }
 
-        public List<Edge> BuildRing(List<Point> pathA)
+        public List<Vertex> BuildRing(List<Point> pathA)
         {
-            var graph = new List<Edge>();
+            var graph = new List<Vertex>();
 
-            Vertex start = null;
-            Vertex end = null;
-
-            for (var i = pathA.Count - 1; i >= 0; i--)
+            Vertex current = null;
+            Vertex next = null;
+            
+            for (var i = 0; i < pathA.Count; i++)
             {
-                end = i == pathA.Count - 1 
-                    ? new Vertex(pathA[i])
-                    : start;
+                current = i == 0 ? new Vertex(pathA[i]) : next;
+                next = i != pathA.Count - 1 ? new Vertex(pathA[i + 1]) : graph[0];
                 
-                start = i != 0 
-                    ? new Vertex(pathA[i - 1])
-                    : graph.First().End;
-
-                if (i != pathA.Count - 1)
-                {
-                    end.Edges.Add(graph.Last());
-                }
-
-                graph.Add(new Edge(start, end));
+                current.Neigbours.Add(next);
+                
+                graph.Add(current);
             }
 
-            graph.First().End.Edges.Add(graph.Last());
             return graph;
         }
     }
