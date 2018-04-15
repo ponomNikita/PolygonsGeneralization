@@ -9,7 +9,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 {
     public class SimpleClipper : IClipper
     {
-        private GraphHelper _graphHelper = new GraphHelper();
+        private readonly GraphHelper _graphHelper = new GraphHelper();
         
         public Task<Polygon> Union(Polygon a, Polygon b)
         {
@@ -64,15 +64,53 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             return a.X * b.X + a.Y * b.Y;
         }
 
-        private Path UnionPaths(
+        public Path UnionPaths(
             List<Point> pathA, 
             List<Point> pathB, 
             Tuple<Point, Point> firstPair,
             Tuple<Point, Point> secondPair)
         {
             var graph = _graphHelper.BuildGraph(pathA, pathB, firstPair, secondPair);
+
+            var current = graph.OrderBy(it => it.Point.X).ThenBy(it => it.Point.Y).First();
             
-            throw new NotFiniteNumberException();
+            var start = new Point(current.Point.X, current.Point.Y);
+
+            var resultPoint = new List<Point>();
+            Point prev = null;
+            
+            do
+            {
+                resultPoint.Add(current.Point);
+                if (current.Neigbours.Count == 1)
+                {
+                    prev = current.Point;
+                    current = current.Neigbours.Single();
+                }
+                else
+                {
+                    
+                    var comparer = prev == null 
+                        ? new AntiClockwiseOrderComparer(current.Point, 
+                        new Point(Double.MaxValue, current.Point.Y))
+                        : new AntiClockwiseOrderComparer(prev, current.Point);
+                    
+                    var minAntiClockwisePoint = current.Neigbours[0];
+                    foreach (var item in current.Neigbours)
+                    {
+                        if (comparer.Compare(minAntiClockwisePoint.Point, item.Point) > 0)
+                        {
+                            minAntiClockwisePoint = item;
+                        }    
+                    }
+                    
+                    prev = current.Point;
+                    current = minAntiClockwisePoint;
+                }
+                
+            } while (!current.Point.Equals(start));
+
+            return new Path(resultPoint.ToArray());
         }
 
         

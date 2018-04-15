@@ -39,6 +39,11 @@ namespace PolygonGeneralization.Domain.Models
 
         public static bool operator ==(Point a, Point b)
         {
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+            {
+                return ReferenceEquals(a, null) && ReferenceEquals(b, null);
+            }
+            
             return a.X.Equals(b.X) && a.Y.Equals(b.Y);
         }
 

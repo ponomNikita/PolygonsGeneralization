@@ -46,6 +46,16 @@ namespace PolygonGeneralization.Domain.Tests
                     new Point(0, 15), 
                 },
                 new Point(0, 15) // expected
+            },
+            // Case 4
+            new object[]
+            {
+                new Point[] 
+                { 
+                    new Point(-5, 10), 
+                    new Point(0, 20), 
+                },
+                new Point(0, 20) // expected
             }
         };
         
@@ -57,6 +67,14 @@ namespace PolygonGeneralization.Domain.Tests
             Array.Sort(points, sut);
             
             Assert.AreEqual(expected, points.First());
+        }
+
+        [Test]
+        public void ComparerTest()
+        {
+            var sut = new AntiClockwiseOrderComparer(new Point(4, 4), new Point(4, 6));
+            
+            Assert.True(sut.Compare(new Point(4, 10), new Point(4, 4)) < 0);
         }
     }
 }

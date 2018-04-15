@@ -25,14 +25,14 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             var detB = Xp(_reference, db);
 
-            if (Math.Abs(detB) < Double.Epsilon && db.X * _reference.X + db.Y * _reference.Y >= 0)
+            if (Math.Abs(detB) < Double.Epsilon && db.X * _reference.X + db.Y * _reference.Y > 0)
             {
                 return 1;
             }
 
             var detA = Xp(_reference, da);
 
-            if (Math.Abs(detA) < Double.Epsilon && da.X * _reference.X + da.Y * _reference.Y >= 0)
+            if (Math.Abs(detA) < Double.Epsilon && da.X * _reference.X + da.Y * _reference.Y > 0)
             {
                 return -1;
             }
