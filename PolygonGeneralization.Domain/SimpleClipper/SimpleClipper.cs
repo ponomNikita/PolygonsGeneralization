@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Domain.Models;
@@ -9,6 +11,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 {
     public class SimpleClipper : IClipper
     {
+        private readonly VectorGeometry _vectorGeometry = new VectorGeometry();
         private readonly GraphHelper _graphHelper = new GraphHelper();
         
         public Task<Polygon> Union(Polygon a, Polygon b)
@@ -16,40 +19,16 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             var pathA = a.Paths.First().Points;
             var pathB = b.Paths.First().Points;
 
-            var minDistance = Double.MaxValue;
-            var firstPair = new Tuple<Point, Point>(pathA.First(), pathB.First());
-            foreach (var pointFromA in pathA)
+            Tuple<Point, Point> secondPair;
+            var bridge = GetBridge(pathA, pathB);
+
+            if (bridge.Length != 4 && bridge.Distinct().Count() != 4)
             {
-                foreach (var pointFormB in pathB)
-                {
-                    var distance = DistanceSqr(pointFromA, pointFormB);
-                    if (distance < minDistance)
-                    {
-                        minDistance = distance;
-                        firstPair = new Tuple<Point, Point>(pointFromA, pointFormB);
-                    }
-                }
+                return Task.FromResult((Polygon)null);
             }
             
-            minDistance = Double.MaxValue;
-            var secondPair = new Tuple<Point, Point>(pathA.First(), pathB.First());
-            foreach (var pointFromA in pathA)
-            {
-                foreach (var pointFormB in pathB)
-                {
-                    if (pointFromA.Equals(firstPair.Item1) || pointFormB.Equals(firstPair.Item2))
-                        continue;
-                    
-                    var distance = DistanceSqr(pointFromA, pointFormB);
-                    if (distance < minDistance)
-                    {
-                        minDistance = distance;
-                        secondPair = new Tuple<Point, Point>(pointFromA, pointFormB);
-                    }
-                }
-            }
-
-            var union = UnionPaths(pathA, pathB, firstPair, secondPair);
+            var union = UnionPaths(pathA, pathB, new Tuple<Point, Point>(bridge[0], bridge[1]),
+                new Tuple<Point, Point>(bridge[2], bridge[3]));
 
             var paths = new List<Path> {union};
             paths.AddRange(a.Paths.Skip(1).Union(b.Paths.Skip(1)));
@@ -59,9 +38,43 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             return Task.FromResult(result);
         }
 
-        private double DistanceSqr(Point a, Point b)
+        public Point[] GetBridge(List<Point> pathA, List<Point> pathB)
         {
-            return (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
+            var bridge = new Point[4];
+            
+            var minDistance = Double.MaxValue;
+            foreach (var pFromA in pathA)
+            {
+                for (var i = 0; i < pathB.Count; i++)
+                {
+                    var projection = i != pathB.Count - 1
+                        ? _vectorGeometry.CalculateProjection(pFromA, pathB[i], pathB[i + 1])
+                        : _vectorGeometry.CalculateProjection(pFromA, pathB[i], pathB[0]);
+                    if (projection.Item2 < minDistance)
+                    {
+                        bridge[0] = pFromA;
+                        bridge[1] = projection.Item1;
+                    }
+                }
+            }
+            
+            minDistance = Double.MaxValue;
+            foreach (var pFromB in pathB)
+            {
+                for (var i = 0; i < pathA.Count; i++)
+                {
+                    var projection = i != pathB.Count - 1
+                        ? _vectorGeometry.CalculateProjection(pFromB, pathA[i], pathA[i + 1])
+                        : _vectorGeometry.CalculateProjection(pFromB, pathA[i], pathA[0]);
+                    if (projection.Item2 < minDistance)
+                    {
+                        bridge[2] = projection.Item1;
+                        bridge[3] = pFromB;
+                    }
+                }
+            }
+
+            return bridge;
         }
 
         public Path UnionPaths(
@@ -91,9 +104,9 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                 {
                     
                     var comparer = prev == null 
-                        ? new AntiClockwiseOrderComparer(current.Point, 
+                        ? new ClockwiseOrderComparer(current.Point, 
                         new Point(Double.MaxValue, current.Point.Y))
-                        : new AntiClockwiseOrderComparer(prev, current.Point);
+                        : new ClockwiseOrderComparer(prev, current.Point);
                     
                     var minAntiClockwisePoint = current.Neigbours[0];
                     foreach (var item in current.Neigbours)

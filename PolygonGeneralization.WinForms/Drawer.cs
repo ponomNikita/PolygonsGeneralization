@@ -22,6 +22,7 @@ namespace PolygonGeneralization.WinForms
 
         public void DrawPolygon(Point2D[] points)
         {
+            //_graphics.FillPolygon(_pen.Brush, points.Select(p => new Point(p.X, p.Y)).ToArray());
             _graphics.DrawPolygon(_pen, points.Select(p => new Point(p.X, p.Y)).ToArray());
         }
     }

@@ -93,11 +93,12 @@
     <Compile Include="Models\Path.cs" />
     <Compile Include="Models\Polygon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleClipper\AntiClockwiseOrderComparer.cs" />
+    <Compile Include="SimpleClipper\ClockwiseOrderComparer.cs" />
     <Compile Include="SimpleClipper\Edge.cs" />
     <Compile Include="SimpleClipper\GraphHelper.cs" />
     <Compile Include="SimpleClipper\SimpleClipper.cs" />
     <Compile Include="SimpleClipper\Vertex.cs" />
+    <Compile Include="VectorGeometry.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

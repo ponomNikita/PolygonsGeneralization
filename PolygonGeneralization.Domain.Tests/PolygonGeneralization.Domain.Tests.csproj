@@ -50,12 +50,13 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="AntiClockwiseOrderComparerTests.cs" />
+    <Compile Include="ClockwiseOrderComparerTests.cs" />
     <Compile Include="GeneralizerTests.cs" />
     <Compile Include="GraphHelperTests.cs" />
     <Compile Include="PolygonTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleClipperTests.cs" />
+    <Compile Include="VectorGeometryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
