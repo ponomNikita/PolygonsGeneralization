@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.SqlClient;
+using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Infrastructure.Logger;
 
 namespace PolygonGeneralization.Infrastructure.Commands

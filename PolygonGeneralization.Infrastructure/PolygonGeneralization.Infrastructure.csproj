@@ -112,7 +112,6 @@
     <Compile Include="Commands\SaveMapMetaCommand.cs" />
     <Compile Include="ConnectionStringsProvider.cs" />
     <Compile Include="DataBaseContext.cs" />
-    <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\Logger.cs" />
     <Compile Include="Logger\LoggerFactory.cs" />
     <Compile Include="Migrations\201711301752136_Initial.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using PolygonGeneralization.Domain.Interfaces;
 
 namespace PolygonGeneralization.Infrastructure.Logger
 {

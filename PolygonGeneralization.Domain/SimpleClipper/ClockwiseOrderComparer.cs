@@ -31,28 +31,6 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             {
                 return 1;
             }
-
-            /*var projectionX = _vectorGeometry.CalculateProjection(_origin, _reference, x, false);
-            var projectionY = _vectorGeometry.CalculateProjection(_origin, _reference, y, false);
-
-            if (Math.Abs(projectionX.Item2 - projectionY.Item2) < Double.Epsilon)
-            {
-                if (Math.Abs(projectionX.Item2) < Double.Epsilon &&
-                    Math.Abs(projectionY.Item2) < Double.Epsilon)
-                {
-                    if (projectionX.Item3 > 0 && projectionY.Item3 > 0)
-                    {
-                        return projectionX.Item3 > projectionY.Item3 ? -1 : 1;
-                    }
-                    
-                    return projectionX.Item3 > projectionY.Item3 ? 1 : -1;
-                }
-                
-                var xProjLength = _vectorGeometry.DistanceSqr(_origin, projectionX.Item1);
-                var yProjLength = _vectorGeometry.DistanceSqr(_origin, projectionY.Item1);
-
-                return xProjLength > yProjLength ? -1 : 1;
-            }*/
             
             var det = (x.X - _reference.X) * (y.Y - _reference.Y) - (y.X - _reference.X) * (x.Y - _reference.Y);
             if (det < 0)

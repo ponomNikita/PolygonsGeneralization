@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PolygonGeneralization.Infrastructure.Logger
+namespace PolygonGeneralization.Domain.Interfaces
 {
     public interface ILogger
     {

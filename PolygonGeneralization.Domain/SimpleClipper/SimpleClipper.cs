@@ -52,16 +52,18 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                 }
                 else
                 {
-                    
                     var comparer = prev == null 
-                        ? new ClockwiseOrderComparer(current.Point, 
-                        new Point(Double.MaxValue, current.Point.Y))
-                        : new ClockwiseOrderComparer(prev, current.Point);
+                        ? new ClockwiseOrderComparer(new Point(Double.MaxValue, current.Point.Y), current.Point)
+                        : new ClockwiseOrderComparer(current.Point, prev);
                     
                     var minAntiClockwisePoint = current.Neigbours.First();
                     foreach (var item in current.Neigbours)
                     {
-                        if (comparer.Compare(minAntiClockwisePoint.Point, item.Point) > 0)
+                        if (item.Point.Equals(prev))
+                        {
+                            continue;
+                        }
+                        if (comparer.Compare(minAntiClockwisePoint.Point, item.Point) < 0)
                         {
                             minAntiClockwisePoint = item;
                         }    

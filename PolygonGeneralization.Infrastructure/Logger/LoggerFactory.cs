@@ -1,4 +1,6 @@
-﻿namespace PolygonGeneralization.Infrastructure.Logger
+﻿using PolygonGeneralization.Domain.Interfaces;
+
+namespace PolygonGeneralization.Infrastructure.Logger
 {
     public static class LoggerFactory
     {

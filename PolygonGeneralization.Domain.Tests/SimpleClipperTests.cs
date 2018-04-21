@@ -136,5 +136,48 @@ namespace PolygonGeneralization.Domain.Tests
             
             CollectionAssert.AreEqual(expectedPoints, actual.Paths.Single().Points);
         }
+        
+        [Test]
+        public void UnionTest3()
+        {
+            var sut = new SimpleClipper.SimpleClipper();
+            
+            var polygonA = new Polygon(new Path(
+                new Point[]
+                {
+                    new Point(0, 0),
+                    new Point(2, 2),
+                    new Point(0, 4),
+                    new Point(-2, 2)
+                }
+            ));
+            
+            var polygonB = new Polygon(new Path(
+                new Point[]
+                {
+                    new Point(5, 0),
+                    new Point(7, 2),
+                    new Point(5, 4),
+                    new Point(3, 2),
+                }
+            ));
+
+            var expectedPoints = new Point[]
+            {
+                new Point(-2, 2),
+                new Point(0, 0),
+                new Point(2, 2),
+                new Point(5, 0),
+                new Point(7, 2),
+                new Point(5, 4),
+                new Point(3, 2),
+                new Point(2, 2),
+                new Point(0, 4),
+            };
+
+            var actual = sut.Union(polygonA, polygonB).Result;
+            
+            CollectionAssert.AreEqual(expectedPoints, actual.Paths.Single().Points);
+        }
     }
 }
