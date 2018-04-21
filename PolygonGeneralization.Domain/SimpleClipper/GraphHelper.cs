@@ -8,26 +8,16 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 {
     public class GraphHelper
     {
+        private readonly VectorGeometry _vectorGeometry = new VectorGeometry();
+        
         public HashSet<Vertex> BuildGraph(
             List<Point> pathA,
-            List<Point> pathB,
-            Tuple<Point, Point> firstPair,
-            Tuple<Point, Point> secondPair)
+            List<Point> pathB)
         {
             var graphA = BuildRing(pathA);
             var graphB = BuildRing(pathB);
 
-            var bridge1A = graphA.Find(v => v.Point.Equals(firstPair.Item1));
-            var bridge1B = graphB.Find(v => v.Point.Equals(firstPair.Item2));
-
-            var bridge2A = graphA.Find(v => v.Point.Equals(secondPair.Item1));
-            var bridge2B = graphB.Find(v => v.Point.Equals(secondPair.Item2));
-            
-            bridge1A.Neigbours.Add(bridge1B);
-            bridge1B.Neigbours.Add(bridge1A);
-            
-            bridge2A.Neigbours.Add(bridge2B);
-            bridge2B.Neigbours.Add(bridge2A);
+            var bridge = GetBridge(graphA, graphB);
             
             var resultGraph = new HashSet<Vertex>();
             
@@ -39,6 +29,11 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             foreach (var item in graphB)
             {
                 resultGraph.Add(item);
+            }
+            
+            foreach (var vertex in bridge)
+            {
+                resultGraph.Add(vertex);
             }
 
             return resultGraph;
@@ -62,6 +57,146 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             }
 
             return graph;
+        }
+        
+        public Vertex[] GetBridge(List<Vertex> pathA, List<Vertex> pathB)
+        {
+            var bridge = new Vertex[4];
+            
+            var minDistance = Double.MaxValue;
+            Vertex minVertexA1 = null;
+            Vertex minVertexB1 = null;
+            
+            foreach (var pFromA in pathA)
+            {
+                for (var i = 0; i < pathB.Count; i++)
+                {
+                    var vertexA = pathB[i];
+                    var vertexB = i != pathB.Count - 1 ? pathB[i + 1] : pathB[0];
+                    var projection = _vectorGeometry.CalculateProjection(vertexA.Point, vertexB.Point, pFromA.Point);
+                    
+                    if (projection.Item2 < minDistance)
+                    {
+                        if (projection.Item3 < 1 && projection.Item3 > 0)
+                        {
+                            bridge[1] = new Vertex(projection.Item1);
+                            minVertexA1 = vertexA;
+                            minVertexB1 = vertexB;
+                        }
+                        else {
+                            
+                            minVertexA1 = null;
+                            minVertexB1 = null;
+                            
+                            if (projection.Item1.Equals(vertexA.Point))
+                            {
+                                bridge[1] = vertexA;
+                            }
+                            else
+                            {
+                                bridge[1] = vertexB;   
+                            }
+                        }
+                        
+                        bridge[0] = pFromA;
+                        minDistance = projection.Item2;
+                    }
+                }
+            }
+
+            if (minVertexA1 != null && minVertexB1 != null) // Если bridge[1] не на концах отрезка
+            {
+                minVertexA1.Neigbours.Remove(minVertexB1);
+                minVertexB1.Neigbours.Remove(minVertexA1);
+                
+                bridge[1].Neigbours.Add(minVertexA1);
+                bridge[1].Neigbours.Add(minVertexB1);
+                
+                if (bridge[1].Neigbours.Any())
+                {
+                    foreach (var neigbour in bridge[1].Neigbours)
+                    {
+                        neigbour.Neigbours.Add(bridge[1]);
+                    }
+                }
+            }
+
+            bridge[0].Neigbours.Add(bridge[1]);
+            bridge[1].Neigbours.Add(bridge[0]);
+            
+            minDistance = Double.MaxValue;
+            Vertex minVertexA2 = null;
+            Vertex minVertexB2 = null;
+            
+            foreach (var pFromB in pathB)
+            {
+                if (pFromB.Point.Equals(bridge[1].Point))
+                {
+                    continue;
+                }
+                
+                for (var i = 0; i < pathA.Count; i++)
+                {
+                    if (pathA[i].Point.Equals(bridge[0].Point))
+                    {
+                        continue;
+                    }
+                    
+                    var vertexA = pathA[i];
+                    var vertexB = i != pathA.Count - 1 ? pathA[i + 1] : pathA[0];
+
+                    var projection = _vectorGeometry.CalculateProjection(vertexA.Point, vertexB.Point, pFromB.Point);
+                    if (projection.Item2 < minDistance)
+                    {
+                        if (projection.Item3 > 0 && projection.Item3 < 1)
+                        {
+                            bridge[2] = new Vertex(projection.Item1);
+                            minVertexA2 = vertexA;
+                            minVertexB2 = vertexB;
+                        }
+                        else
+                        {
+                            minVertexA2 = null;
+                            minVertexB2 = null;
+                            
+                            if (projection.Item1.Equals(vertexA.Point))
+                            {
+                                bridge[2] = vertexA;
+                            }
+                            else
+                            {
+                                bridge[2] = vertexB;
+                            }
+                        }
+                        
+                        bridge[3] = pFromB;
+                        minDistance = projection.Item2;
+                    }
+                }
+            }
+
+
+            if (minVertexA2 != null && minVertexB2 != null)
+            {
+                minVertexA2.Neigbours.Remove(minVertexB2);
+                minVertexB2.Neigbours.Remove(minVertexA2);
+                
+                bridge[2].Neigbours.Add(minVertexA2);
+                bridge[2].Neigbours.Add(minVertexB2);
+            
+                if (bridge[2].Neigbours.Any())
+                {
+                    foreach (var neigbour in bridge[2].Neigbours)
+                    {
+                        neigbour.Neigbours.Add(bridge[2]);
+                    }
+                }
+            }
+            
+            bridge[2].Neigbours.Add(bridge[3]);
+            bridge[3].Neigbours.Add(bridge[2]);
+            
+            return bridge;
         }
     }
 }

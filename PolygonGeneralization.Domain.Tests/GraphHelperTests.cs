@@ -64,9 +64,6 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(4, 10),
                 new Point(0, 10)
             };
-
-            var firstPair = new Tuple<Point, Point>(new Point(0, 4), new Point(0, 6));
-            var secondPair = new Tuple<Point, Point>(new Point(4, 4), new Point(4, 6));
             
             var vertexA3 = new Vertex(pathA[3]);
             var vertexA2 = new Vertex(pathA[2]);
@@ -108,9 +105,40 @@ namespace PolygonGeneralization.Domain.Tests
                 vertexB3,
             };
 
-            var actualGraph = _sut.BuildGraph(pathA, pathB, firstPair, secondPair);
+            var actualGraph = _sut.BuildGraph(pathA, pathB).ToList();
             
             CollectionAssert.AreEqual(expectedGraph, actualGraph, new GraphComparer());
+        }
+        
+        private static IEnumerable<object[]> GetBridgeTestCases => new[]
+        {
+            new object[]
+            {
+                new List<Point>
+                    { new Point(0, 0), new Point(4, 0), new Point(4, 4), new Point(0, 4) },
+                
+                new List<Point>
+                    { new Point(6, 0), new Point(10, 0), new Point(10, 4), new Point(6, 4) },
+                
+                new List<Point>
+                    { new Point(4, 0), new Point(6, 0), new Point(4, 4), new Point(6, 4) }
+            }
+        };
+        
+        [TestCaseSource(nameof(GetBridgeTestCases))]
+        public void GetBridgeTest(List<Point> pathA, 
+            List<Point> pathB,
+            List<Point> expectedBridge)
+        {
+            var bridge = _sut.GetBridge(pathA.Select(it => new Vertex(it)).ToList(),
+                pathB.Select(it => new Vertex(it)).ToList());
+            
+            Assert.NotNull(bridge);
+            Assert.AreEqual(4, bridge.Length);
+            Assert.AreEqual(expectedBridge[0], bridge[0].Point);
+            Assert.AreEqual(expectedBridge[1], bridge[1].Point);
+            Assert.AreEqual(expectedBridge[2], bridge[2].Point);
+            Assert.AreEqual(expectedBridge[3], bridge[3].Point);
         }
 
         private class GraphComparer : IComparer
@@ -134,8 +162,9 @@ namespace PolygonGeneralization.Domain.Tests
                 {
                     return 1;
                 }
-                
-                if (vertexX.Neigbours.Where((p, i) => !p.Point.Equals(vertexY.Neigbours[i].Point)).Any())
+
+                var vertexYneigbours = vertexY.Neigbours.ToList();
+                if (vertexX.Neigbours.Where((p, i) => !p.Point.Equals(vertexYneigbours[i].Point)).Any())
                 {
                     return 1;
                 }

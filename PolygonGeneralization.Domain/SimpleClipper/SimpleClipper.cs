@@ -18,17 +18,8 @@ namespace PolygonGeneralization.Domain.SimpleClipper
         {
             var pathA = a.Paths.First().Points;
             var pathB = b.Paths.First().Points;
-
-            Tuple<Point, Point> secondPair;
-            var bridge = GetBridge(pathA, pathB);
-
-            if (bridge.Length != 4 && bridge.Distinct().Count() != 4)
-            {
-                return Task.FromResult((Polygon)null);
-            }
             
-            var union = UnionPaths(pathA, pathB, new Tuple<Point, Point>(bridge[0], bridge[1]),
-                new Tuple<Point, Point>(bridge[2], bridge[3]));
+            var union = UnionPaths(pathA, pathB);
 
             var paths = new List<Path> {union};
             paths.AddRange(a.Paths.Skip(1).Union(b.Paths.Skip(1)));
@@ -38,52 +29,11 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             return Task.FromResult(result);
         }
 
-        public Point[] GetBridge(List<Point> pathA, List<Point> pathB)
-        {
-            var bridge = new Point[4];
-            
-            var minDistance = Double.MaxValue;
-            foreach (var pFromA in pathA)
-            {
-                for (var i = 0; i < pathB.Count; i++)
-                {
-                    var projection = i != pathB.Count - 1
-                        ? _vectorGeometry.CalculateProjection(pFromA, pathB[i], pathB[i + 1])
-                        : _vectorGeometry.CalculateProjection(pFromA, pathB[i], pathB[0]);
-                    if (projection.Item2 < minDistance)
-                    {
-                        bridge[0] = pFromA;
-                        bridge[1] = projection.Item1;
-                    }
-                }
-            }
-            
-            minDistance = Double.MaxValue;
-            foreach (var pFromB in pathB)
-            {
-                for (var i = 0; i < pathA.Count; i++)
-                {
-                    var projection = i != pathB.Count - 1
-                        ? _vectorGeometry.CalculateProjection(pFromB, pathA[i], pathA[i + 1])
-                        : _vectorGeometry.CalculateProjection(pFromB, pathA[i], pathA[0]);
-                    if (projection.Item2 < minDistance)
-                    {
-                        bridge[2] = projection.Item1;
-                        bridge[3] = pFromB;
-                    }
-                }
-            }
-
-            return bridge;
-        }
-
         public Path UnionPaths(
             List<Point> pathA, 
-            List<Point> pathB, 
-            Tuple<Point, Point> firstPair,
-            Tuple<Point, Point> secondPair)
+            List<Point> pathB)
         {
-            var graph = _graphHelper.BuildGraph(pathA, pathB, firstPair, secondPair);
+            var graph = _graphHelper.BuildGraph(pathA, pathB);
 
             var current = graph.OrderBy(it => it.Point.X).ThenBy(it => it.Point.Y).First();
             
@@ -108,7 +58,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                         new Point(Double.MaxValue, current.Point.Y))
                         : new ClockwiseOrderComparer(prev, current.Point);
                     
-                    var minAntiClockwisePoint = current.Neigbours[0];
+                    var minAntiClockwisePoint = current.Neigbours.First();
                     foreach (var item in current.Neigbours)
                     {
                         if (comparer.Compare(minAntiClockwisePoint.Point, item.Point) > 0)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.Domain.SimpleClipper;
 
@@ -9,11 +10,11 @@ namespace PolygonGeneralization.Domain
         public Vertex(Point point)
         {
             Point = point;
-            Neigbours = new List<Vertex>();
+            Neigbours = new HashSet<Vertex>();
         }
 
         public Point Point { get; }
-        public List<Vertex> Neigbours { get; }
+        public HashSet<Vertex> Neigbours { get; }
 
         public override int GetHashCode()
         {
