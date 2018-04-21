@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using PolygonGeneralization.Domain.Exceptions;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Domain.SimpleClipper
@@ -195,6 +196,11 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             
             bridge[2].Neigbours.Add(bridge[3]);
             bridge[3].Neigbours.Add(bridge[2]);
+
+            if (bridge.Distinct().Count() != 4)
+            {
+                throw new PolygonGeneralizationException("Bridge has less then 4 points");
+            }
             
             return bridge;
         }

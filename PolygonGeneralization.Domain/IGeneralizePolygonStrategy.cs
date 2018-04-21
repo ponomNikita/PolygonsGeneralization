@@ -6,6 +6,6 @@ namespace PolygonGeneralization.Domain
 {
     public interface IGeneralizePolygonStrategy
     {
-        Task<List<Polygon>> Generalize(List<Claster> clasters, double minDistance);
+        List<Polygon> Generalize(List<Claster> clasters, double minDistance);
     }
 }

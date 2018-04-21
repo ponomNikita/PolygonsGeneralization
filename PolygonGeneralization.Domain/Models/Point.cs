@@ -80,6 +80,9 @@ namespace PolygonGeneralization.Domain.Models
         
         public bool Equals(Point other)
         {
+            if (other == null)
+                return false;
+            
             return X.Equals(other.X) && Y.Equals(other.Y);
         }
 

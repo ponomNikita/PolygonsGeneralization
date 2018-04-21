@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using PolygonGeneralization.Core;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Domain.Models;
@@ -16,7 +16,7 @@ namespace PolygonGeneralization.Infrastructure.Services
             _adapter = new PolygonsAdapter();
         }
 
-        public async Task<Polygon> Union(Polygon a, Polygon b)
+        public List<Polygon> Union(Polygon a, Polygon b)
         {
             var subject = _adapter.GetPaths(a);
             var clipping = _adapter.GetPaths(b);
@@ -24,18 +24,8 @@ namespace PolygonGeneralization.Infrastructure.Services
             _clipper.SetSubject(subject);
             _clipper.SetClipping(clipping);
 
-            var result = await ExecuteOperation();
-
-            return result;
-        }
-
-        public Task<Polygon> ExecuteOperation()
-        {
-            return Task.Run(() =>
-            {
-                _clipper.Execute();
-                return _adapter.GetPolygon(_clipper.GetSolution());
-            });
+            _clipper.Execute();
+            return new List<Polygon>() {_adapter.GetPolygon(_clipper.GetSolution())};
         }
     }
 }

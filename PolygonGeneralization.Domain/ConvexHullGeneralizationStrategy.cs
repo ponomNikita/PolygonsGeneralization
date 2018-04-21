@@ -8,7 +8,7 @@ namespace PolygonGeneralization.Domain
 {
     public class ConvexHullGeneralizationStrategy : IGeneralizePolygonStrategy
     {
-        public Task<List<Polygon>> Generalize(List<Claster> clasters, double minDistance)
+        public List<Polygon> Generalize(List<Claster> clasters, double minDistance)
         {
             var resultPolygons = new List<Polygon>();
             foreach (var claster in clasters)
@@ -16,7 +16,7 @@ namespace PolygonGeneralization.Domain
                 resultPolygons.Add(GetConvexHull(claster.Polygons.ToArray()));
             }
 
-            return Task.FromResult(resultPolygons);
+            return resultPolygons;
         }
 
         public Polygon GetConvexHull(params Polygon[] polygons)

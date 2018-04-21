@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Domain.Models;
 
@@ -7,7 +8,7 @@ namespace PolygonGeneralization.Infrastructure.Commands
     public class GeneralizePolygonsCommand : BaseCommand
     {
         private readonly IGeneralizer _generalizer;
-        private readonly List<Polygon> _polygons;
+        private List<Polygon> _polygons;
         private readonly double _minDistance;
 
         public GeneralizePolygonsCommand(IGeneralizer generalizer,
@@ -25,6 +26,9 @@ namespace PolygonGeneralization.Infrastructure.Commands
         
         protected override void HandleImpl()
         {
+            // removing invalid polygons
+            _polygons = _polygons.Where(it => it.Paths.All(p => p.Points.Count > 1)).ToList();
+            
             foreach (var polygon in _polygons)
             {
                 polygon.CalculateMassCenter();

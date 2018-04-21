@@ -17,27 +17,50 @@ namespace PolygonGeneralization.Domain
             _logger = logger;
         }
 
-        public async Task<List<Polygon>> Generalize(List<Claster> clasters, double minDistance)
+        public List<Polygon> Generalize(List<Claster> clasters, double minDistance)
         {
             var count = clasters.Count;
             var completedCount = 0;
             var result = new List<Polygon>();
             foreach (var claster in clasters)
             {
-                result.Add(await MergeClaster(claster));
-                _logger.Log($"Merged {++completedCount} from {count} clsters");
+                var mergedClaster = MergeClaster(claster);
+
+                if (mergedClaster.Count != 1)
+                {
+                    _logger.Log($"Count of polygons after merge: {mergedClaster.Count}. Try again.");
+                    var newClaster = new Claster();
+                    newClaster.Polygons.AddRange(mergedClaster);
+                    mergedClaster = MergeClaster(newClaster);
+                    result.AddRange(mergedClaster);
+                    
+                    if (mergedClaster.Count == 1)
+                    {
+                        _logger.Log($"Second attempt was saccessfull.\n Merged {++completedCount} from {count} clasters");
+                    }
+                    else
+                    {
+                        _logger.Log($"Second attempt failed.\n Merged {++completedCount} from {count} clasters");
+                    }
+                }
+                else
+                {
+                    result.AddRange(mergedClaster);
+                    _logger.Log($"Merged {++completedCount} from {count} clasters");
+                }
             }
 
             return result;
         }
 
-        private async Task<Polygon> MergeClaster(Claster claster)
+        private List<Polygon> MergeClaster(Claster claster)
         {
             if (claster.Polygons.Count == 1)
             {
-                return claster.Polygons.Single();
+                return claster.Polygons;
             }
 
+            List<Polygon> resultList = new List<Polygon>();
             Polygon result = null;
             var count = claster.Polygons.Count;
             var mergedCount = 0;
@@ -46,15 +69,24 @@ namespace PolygonGeneralization.Domain
                 if (result == null)
                 {
                     result = polygon;
-                    _logger.Log($"Merged {++mergedCount} from {count} polygons");
+                    //_logger.Log($"Merged {++mergedCount} from {count} polygons");
                     continue;
                 }
 
-                result = await _clipper.Union(result, polygon);
-                _logger.Log($"Merged {++mergedCount} from {count} polygons");
+                var union = _clipper.Union(result, polygon);
+                result = union.First();
+
+                if (union.Count == 2)
+                {
+                    resultList.Add(union.Last());
+                }
+                
+                //_logger.Log($"Merged {++mergedCount} from {count} polygons");
             }
 
-            return result;
+            resultList.Add(result);
+            
+            return resultList;
         }
     }
 }

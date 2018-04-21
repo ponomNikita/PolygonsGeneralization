@@ -34,7 +34,7 @@ namespace PolygonGeneralization.Domain
                 clasters.Add(claster);
             }
 
-            return await _generalizationStrategy.Generalize(clasters, minDistance);
+            return _generalizationStrategy.Generalize(clasters, minDistance);
         }
 
         private bool FindNeighbor(List<Polygon> polygons, Claster claster, double minSqrDistance)

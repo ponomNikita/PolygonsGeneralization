@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using PolygonGeneralization.Domain.Exceptions;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Domain.Models;
 
@@ -14,19 +15,26 @@ namespace PolygonGeneralization.Domain.SimpleClipper
         private readonly VectorGeometry _vectorGeometry = new VectorGeometry();
         private readonly GraphHelper _graphHelper = new GraphHelper();
         
-        public Task<Polygon> Union(Polygon a, Polygon b)
+        public List<Polygon> Union(Polygon a, Polygon b)
         {
             var pathA = a.Paths.First().Points;
             var pathB = b.Paths.First().Points;
-            
-            var union = UnionPaths(pathA, pathB);
 
-            var paths = new List<Path> {union};
-            paths.AddRange(a.Paths.Skip(1).Union(b.Paths.Skip(1)));
-            
-            var result = new Polygon(paths.ToArray());
+            try
+            {
+                var union = UnionPaths(pathA, pathB);
 
-            return Task.FromResult(result);
+                var paths = new List<Path> {union};
+                paths.AddRange(a.Paths.Skip(1).Union(b.Paths.Skip(1)));
+            
+                var result = new Polygon(paths.ToArray());
+
+                return new List<Polygon>{result};
+            }
+            catch (PolygonGeneralizationException e)
+            {
+                return new List<Polygon>{ a, b };
+            }
         }
 
         public Path UnionPaths(
@@ -41,9 +49,16 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             var resultPoint = new List<Point>();
             Point prev = null;
+            var maxPointCount = (pathA.Count + pathB.Count) * 2;
+            var iteration = 0;
             
             do
             {
+                if (++iteration > maxPointCount)
+                {
+                    throw new PolygonGeneralizationException("Looping was happened");
+                }
+                
                 resultPoint.Add(current.Point);
                 if (current.Neigbours.Count == 1)
                 {

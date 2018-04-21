@@ -87,9 +87,9 @@ namespace PolygonGeneralization.Domain.Tests
 
             };
 
-            var actual = sut.Union(polygonA, polygonB).Result;
+            var actual = sut.Union(polygonA, polygonB);
             
-            CollectionAssert.AreEqual(expectedPoints, actual.Paths.Single().Points);
+            CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
         
         [Test]
@@ -132,9 +132,9 @@ namespace PolygonGeneralization.Domain.Tests
 
             };
 
-            var actual = sut.Union(polygonA, polygonB).Result;
+            var actual = sut.Union(polygonA, polygonB);
             
-            CollectionAssert.AreEqual(expectedPoints, actual.Paths.Single().Points);
+            CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
         
         [Test]
@@ -175,9 +175,9 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(0, 4),
             };
 
-            var actual = sut.Union(polygonA, polygonB).Result;
+            var actual = sut.Union(polygonA, polygonB);
             
-            CollectionAssert.AreEqual(expectedPoints, actual.Paths.Single().Points);
+            CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
     }
 }
