@@ -12,7 +12,12 @@ namespace PolygonGeneralization.Domain.Tests
     [TestFixture]
     public class GeneralizerTests
     {
-        private readonly Generalizer _generalizer = new Generalizer(new ConvexHullGeneralizationStrategy());
+        private readonly Generalizer _generalizer = 
+            new Generalizer(new ConvexHullGeneralizationStrategy(), new GeneralizerOptions()
+        {
+            MinDistanceCoeff = 8
+        });
+        
         private readonly ConvexHullGeneralizationStrategy _convexHullGeneralizationStrategy = 
             new ConvexHullGeneralizationStrategy();
 

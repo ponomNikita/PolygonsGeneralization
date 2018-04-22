@@ -80,6 +80,7 @@
     <Compile Include="ClipperGeneralizationStrategy.cs" />
     <Compile Include="ConvexHullGeneralizationStrategy.cs" />
     <Compile Include="Exceptions\PolygonGeneralizationException.cs" />
+    <Compile Include="GeneralizerOptions.cs" />
     <Compile Include="IGeneralizePolygonStrategy.cs" />
     <Compile Include="Generalizer.cs" />
     <Compile Include="Interfaces\ICommand.cs" />

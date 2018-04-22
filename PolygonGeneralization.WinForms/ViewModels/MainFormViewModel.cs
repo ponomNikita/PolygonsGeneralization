@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Infrastructure.Commands;
 using PolygonGeneralization.Infrastructure.Logger;
@@ -31,12 +32,13 @@ namespace PolygonGeneralization.WinForms.ViewModels
         private readonly ILogger _logger;
         private Guid _currentMapId;
         private ViewType _viewType;
-        private IGeneralizer _generalizer;
+        private readonly IGeneralizer _generalizer;
+        private GeneralizerOptions _generalizerOptions;
 
         public MainFormViewModel(Panel canvas, 
             IGisDataReader dataReader,
             IDbService dbService,
-            ILogger logger, IGeneralizer generalizer)
+            ILogger logger, IGeneralizer generalizer, GeneralizerOptions generalizerOptions)
         {
             _dbService = dbService;
             _canvas = canvas;
@@ -45,6 +47,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
             _meta = new MetaInfo();
             _logger = logger;
             _generalizer = generalizer;
+            _generalizerOptions = generalizerOptions;
             _drawablePolygons = new List<DrawablePolygon>();
         }
         
@@ -158,7 +161,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             var polygons = _dbService.GetPolygons(mapId, _screenAdapter.Bbox.LeftDown, _screenAdapter.Bbox.RightTop);
 
-            var command = new GeneralizePolygonsCommand(_generalizer, polygons.ToList(), 30);
+            var command = new GeneralizePolygonsCommand(_generalizer, polygons.ToList(), _generalizerOptions.MinDistance);
             command.Execute();
             
             var generalizedPolygons = command.Result;

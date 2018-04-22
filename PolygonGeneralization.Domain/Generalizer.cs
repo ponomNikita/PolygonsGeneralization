@@ -12,10 +12,12 @@ namespace PolygonGeneralization.Domain
     public class Generalizer : IGeneralizer
     {
         private readonly IGeneralizePolygonStrategy _generalizationStrategy;
-
-        public Generalizer(IGeneralizePolygonStrategy generalizationStrategy)
+        private readonly GeneralizerOptions _options;
+        
+        public Generalizer(IGeneralizePolygonStrategy generalizationStrategy, GeneralizerOptions options)
         {
             _generalizationStrategy = generalizationStrategy;
+            _options = options;
         }
 
         public async Task<List<Polygon>> Generalize(List<Polygon> polygons, double minDistance)
@@ -39,15 +41,30 @@ namespace PolygonGeneralization.Domain
 
         private bool FindNeighbor(List<Polygon> polygons, Claster claster, double minSqrDistance)
         {
+            var massCenterMinDistance = minSqrDistance * _options.MinDistanceCoeff;
             foreach (var polygon in polygons)
             {
                 foreach (var polygonInClaster in claster.Polygons)
                 {
-                    if (SqrDistance(polygonInClaster.MassCenter, polygon.MassCenter) <= minSqrDistance)
+                    if (SqrDistance(polygonInClaster.MassCenter, polygon.MassCenter) <= massCenterMinDistance)
                     {
-                        claster.Polygons.Add(polygon);
-                        polygons.Remove(polygon);
-                        return true;
+                        if (polygonInClaster.Paths.First().Points.Any(it =>
+                        {
+                            foreach (var point in polygon.Paths.First().Points)
+                            {
+                                if (SqrDistance(point, it) < minSqrDistance)
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }))
+                        {
+                            claster.Polygons.Add(polygon);
+                            polygons.Remove(polygon);
+                            return true;
+                        }
                     }
                 }
             }

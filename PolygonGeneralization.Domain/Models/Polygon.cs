@@ -43,6 +43,7 @@ namespace PolygonGeneralization.Domain.Models
         public Guid MapId { get; set; }
         public virtual List<Path> Paths { get; }
         public Point MassCenter { get; private set; }
+        public double Diameter { get; private set; }
 
         public void AddPath(Path path)
         {
@@ -84,6 +85,19 @@ namespace PolygonGeneralization.Domain.Models
             MassCenter = GetMassCenter();
         }
 
+        public void CalculateDiameter()
+        {
+            double maxDiameter = 0;
+            for (var i = 0; i < Paths[0].Points.Count; i++)
+            {
+                maxDiameter = i != Paths[0].Points.Count - 1 
+                    ? Math.Max(maxDiameter, SqrDistance(Paths[0].Points[i], Paths[0].Points[i + 1]))
+                    : Math.Max(maxDiameter, SqrDistance(Paths[0].Points[i], Paths[0].Points[0]));
+            }
+
+            Diameter = maxDiameter;
+        }
+
         public override bool Equals(object obj)
         {
             var other = obj as Polygon;
@@ -111,6 +125,11 @@ namespace PolygonGeneralization.Domain.Models
             var y = allPoints.Sum(p => p.Y) / allPoints.Count();
             
             return new Point(x, y);
+        }
+        
+        private double SqrDistance(Point a, Point b)
+        {
+            return Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
         }
     }
 }

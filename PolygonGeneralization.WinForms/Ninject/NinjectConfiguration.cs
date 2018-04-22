@@ -15,7 +15,14 @@ namespace PolygonGeneralization.WinForms.Ninject
         public static StandardKernel GetKernel()
         {
             var kernel = new StandardKernel();
+            
+            var generalizerOptions = new GeneralizerOptions
+            {
+                MinDistance = 10,
+                MinDistanceCoeff = 8
+            };
 
+            kernel.Bind<GeneralizerOptions>().ToConstant(generalizerOptions).InSingletonScope();
             kernel.Bind<IClipper>().To<SimpleClipper>();
             kernel.Bind<IGisDataReader>().To<JsonGisDataReader>();
             kernel.Bind<IDrawerFactory>().To<DrawerFactory>();

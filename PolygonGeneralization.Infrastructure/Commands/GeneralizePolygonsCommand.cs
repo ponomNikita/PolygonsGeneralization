@@ -32,6 +32,7 @@ namespace PolygonGeneralization.Infrastructure.Commands
             foreach (var polygon in _polygons)
             {
                 polygon.CalculateMassCenter();
+                polygon.CalculateDiameter();
             }
             
             Result = _generalizer.Generalize(_polygons, _minDistance).Result;

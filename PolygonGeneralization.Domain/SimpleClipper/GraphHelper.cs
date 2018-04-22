@@ -197,10 +197,10 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             bridge[2].Neigbours.Add(bridge[3]);
             bridge[3].Neigbours.Add(bridge[2]);
 
-            if (bridge.Distinct().Count() != 4)
+            /*if (bridge.Distinct().Count() != 4)
             {
                 throw new PolygonGeneralizationException("Bridge has less then 4 points");
-            }
+            }*/
             
             return bridge;
         }

@@ -25,29 +25,9 @@ namespace PolygonGeneralization.Domain
             foreach (var claster in clasters)
             {
                 var mergedClaster = MergeClaster(claster);
-
-                if (mergedClaster.Count != 1)
-                {
-                    _logger.Log($"Count of polygons after merge: {mergedClaster.Count}. Try again.");
-                    var newClaster = new Claster();
-                    newClaster.Polygons.AddRange(mergedClaster);
-                    mergedClaster = MergeClaster(newClaster);
-                    result.AddRange(mergedClaster);
-                    
-                    if (mergedClaster.Count == 1)
-                    {
-                        _logger.Log($"Second attempt was saccessfull.\n Merged {++completedCount} from {count} clasters");
-                    }
-                    else
-                    {
-                        _logger.Log($"Second attempt failed.\n Merged {++completedCount} from {count} clasters");
-                    }
-                }
-                else
-                {
-                    result.AddRange(mergedClaster);
-                    _logger.Log($"Merged {++completedCount} from {count} clasters");
-                }
+                
+                result.AddRange(mergedClaster);
+                _logger.Log($"Merged {++completedCount} from {count} clasters");
             }
 
             return result;
