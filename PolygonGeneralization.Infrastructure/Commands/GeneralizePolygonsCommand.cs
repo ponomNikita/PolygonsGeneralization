@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Domain.LinearGeneralizer;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Infrastructure.Commands
@@ -10,14 +11,16 @@ namespace PolygonGeneralization.Infrastructure.Commands
         private readonly IGeneralizer _generalizer;
         private List<Polygon> _polygons;
         private readonly double _minDistance;
+        private readonly ILinearGeneralizer _linearGeneralizer;
 
         public GeneralizePolygonsCommand(IGeneralizer generalizer,
-            List<Polygon> polygons, 
+            List<Polygon> polygons, ILinearGeneralizer linearGeneralizer,
             double minDistance)
         {
             _generalizer = generalizer;
             _polygons = polygons;
             _minDistance = minDistance;
+            _linearGeneralizer = linearGeneralizer;
         }
 
         public override string CommandName => "Generalization";
@@ -31,11 +34,17 @@ namespace PolygonGeneralization.Infrastructure.Commands
             
             foreach (var polygon in _polygons)
             {
+                polygon.Paths[0].Points = _linearGeneralizer.Simplify(polygon.Paths[0].Points.ToArray()).ToList();
                 polygon.CalculateMassCenter();
                 polygon.CalculateDiameter();
             }
             
             Result = _generalizer.Generalize(_polygons, _minDistance).Result;
+            
+            foreach (var polygon in Result)
+            {
+                polygon.Paths[0].Points = _linearGeneralizer.Simplify(polygon.Paths[0].Points.ToArray()).ToList();
+            }
         }
     }
 }

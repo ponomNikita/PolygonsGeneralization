@@ -8,7 +8,7 @@ namespace PolygonGeneralization.Domain.LinearGeneralizer
     {
         private GeneralizerOptions _options;
         private readonly VectorGeometry _vectorGeometry = new VectorGeometry();
-        private double _maxDifference;
+        private readonly double _maxDifference;
 
         public LinearGeneralizer(GeneralizerOptions options)
         {
@@ -18,6 +18,11 @@ namespace PolygonGeneralization.Domain.LinearGeneralizer
 
         public Point[] Simplify(Point[] points)
         {
+            if (points.Length < 5)
+            {
+                return points;
+            }
+            
             var mutablePointList = points.Select(it => new MutableEntity<Point>(it)).ToList();
 
             for (var i = 0; i < mutablePointList.Count; i++)

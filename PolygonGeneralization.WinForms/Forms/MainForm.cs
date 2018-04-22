@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Domain.LinearGeneralizer;
 using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.WinForms.Controls;
 using PolygonGeneralization.WinForms.ViewModels;
@@ -19,11 +20,13 @@ namespace PolygonGeneralization.WinForms.Forms
             IDbService dbService, 
             ILogger logger, 
             IGeneralizer generalizer, 
-            GeneralizerOptions generalizerOptions)
+            GeneralizerOptions generalizerOptions,
+            ILinearGeneralizer linearGeneralizer)
         {
             InitializeComponent();
 
-            _viewModel = new MainFormViewModel(Canvas, dataReader, dbService, logger, generalizer, generalizerOptions);
+            _viewModel = new MainFormViewModel(Canvas, dataReader, dbService, logger, 
+                generalizer, generalizerOptions, linearGeneralizer);
 
             InitializeMetaSection();
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Domain.LinearGeneralizer;
 using PolygonGeneralization.Infrastructure.Commands;
 using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.WinForms.Interfaces;
@@ -33,12 +34,16 @@ namespace PolygonGeneralization.WinForms.ViewModels
         private Guid _currentMapId;
         private ViewType _viewType;
         private readonly IGeneralizer _generalizer;
-        private GeneralizerOptions _generalizerOptions;
+        private readonly GeneralizerOptions _generalizerOptions;
+        private ILinearGeneralizer _linearGeneralizer;
 
         public MainFormViewModel(Panel canvas, 
             IGisDataReader dataReader,
             IDbService dbService,
-            ILogger logger, IGeneralizer generalizer, GeneralizerOptions generalizerOptions)
+            ILogger logger, 
+            IGeneralizer generalizer,
+            GeneralizerOptions generalizerOptions,
+            ILinearGeneralizer linearGeneralizer)
         {
             _dbService = dbService;
             _canvas = canvas;
@@ -48,6 +53,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
             _logger = logger;
             _generalizer = generalizer;
             _generalizerOptions = generalizerOptions;
+            _linearGeneralizer = linearGeneralizer;
             _drawablePolygons = new List<DrawablePolygon>();
         }
         
@@ -161,7 +167,10 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             var polygons = _dbService.GetPolygons(mapId, _screenAdapter.Bbox.LeftDown, _screenAdapter.Bbox.RightTop);
 
-            var command = new GeneralizePolygonsCommand(_generalizer, polygons.ToList(), _generalizerOptions.MinDistance);
+            var command = new GeneralizePolygonsCommand(_generalizer, polygons.ToList(), 
+                _linearGeneralizer,
+                _generalizerOptions.MinDistance);
+            
             command.Execute();
             
             var generalizedPolygons = command.Result;

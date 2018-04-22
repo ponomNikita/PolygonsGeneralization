@@ -2,6 +2,7 @@
 using Ninject;
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
+using PolygonGeneralization.Domain.LinearGeneralizer;
 using PolygonGeneralization.Domain.SimpleClipper;
 using PolygonGeneralization.Infrastructure;
 using PolygonGeneralization.Infrastructure.Logger;
@@ -19,11 +20,13 @@ namespace PolygonGeneralization.WinForms.Ninject
             var generalizerOptions = new GeneralizerOptions
             {
                 MinDistance = 10,
-                MinDistanceCoeff = 8
+                MinDistanceCoeff = 8,
+                MaxDifferenceInPercent = 5
             };
 
             kernel.Bind<GeneralizerOptions>().ToConstant(generalizerOptions).InSingletonScope();
             kernel.Bind<IClipper>().To<SimpleClipper>();
+            kernel.Bind<ILinearGeneralizer>().To<LinearGeneralizer>();
             kernel.Bind<IGisDataReader>().To<JsonGisDataReader>();
             kernel.Bind<IDrawerFactory>().To<DrawerFactory>();
             kernel.Bind<IDbService>().To<DbService>().InSingletonScope();
