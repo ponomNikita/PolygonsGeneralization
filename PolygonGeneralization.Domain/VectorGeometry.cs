@@ -31,6 +31,11 @@ namespace PolygonGeneralization.Domain
         {
             return (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
         }
+        
+        public double Distance(Point a, Point b)
+        {
+            return Math.Sqrt(DistanceSqr(a, b));
+        }
 
         /// <summary>
         /// Cторона с которой находится точка от вектора
