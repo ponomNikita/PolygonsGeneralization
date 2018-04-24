@@ -7,6 +7,8 @@ namespace PolygonGeneralization.Domain.Interfaces
         void Log(string log);
         string GetLog();
 
+        void Clear();
+
         void AddEventHandler(EventHandler handler);
     }
 }

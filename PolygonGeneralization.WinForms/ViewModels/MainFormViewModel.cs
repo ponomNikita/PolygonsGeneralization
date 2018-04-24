@@ -258,6 +258,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             if (IsMapLoaded)
             {
+                _logger.Clear();
                 _logger.Log($"Scroll: {scrollNumber}");
                 _screenAdapter.Scroll(scrollNumber);
 

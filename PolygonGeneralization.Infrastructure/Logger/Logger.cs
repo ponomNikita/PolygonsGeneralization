@@ -28,6 +28,12 @@ namespace PolygonGeneralization.Infrastructure.Logger
             return _logs.ToString();
         }
 
+        public void Clear()
+        {
+            _logs.Clear();
+            OnAddLogEvent();
+        }
+
         public void AddEventHandler(EventHandler handler)
         {
             AddLogEvent += handler;
