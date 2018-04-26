@@ -146,6 +146,18 @@ namespace PolygonGeneralization.Domain.Tests
                 
                 new List<Point>
                     { new Point(0, 5), new Point(0, 3), new Point(10, 5), new Point(10, 3) }
+            },
+            
+            new object[]
+            {
+                new List<Point>
+                    { new Point(0, 0), new Point(4, 0), new Point(4, 4), new Point(0, 4)},
+                
+                new List<Point>
+                    { new Point(5, 3), new Point(8, 3), new Point(8, 7), new Point(5, 7), },
+                
+                new List<Point>
+                    { new Point(4, 4), new Point(5, 4), new Point(4, 3), new Point(5, 3) }
             }
         };
         

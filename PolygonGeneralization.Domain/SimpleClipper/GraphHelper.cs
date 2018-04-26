@@ -93,9 +93,8 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                     if (minimalDistance.Item3 <= minDistance)
                     {
                         if (bridge[0] == null && bridge[1] == null || 
-                            bridge[0] != null && bridge[1] != null &&
-                        !bridge[0].Equals(minimalDistance.Item1) &&
-                            !bridge[1].Equals(minimalDistance.Item2))
+                            bridge[0] != null && !bridge[0].Equals(minimalDistance.Item1) || 
+                            bridge[1] != null && !bridge[1].Equals(minimalDistance.Item2))
                         {
                             bridge[2] = bridge[0];
                             bridge[3] = bridge[1];
