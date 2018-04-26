@@ -120,6 +120,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CustomJsonGisDataReader.cs" />
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\PolygonsAdapter.cs" />
     <Compile Include="Services\PolygonGeneralizationCoreClipper.cs" />

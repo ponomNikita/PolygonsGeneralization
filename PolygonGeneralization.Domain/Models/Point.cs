@@ -49,6 +49,19 @@ namespace PolygonGeneralization.Domain.Models
 
         public static bool operator !=(Point a, Point b)
         {
+            var aIsNull = ReferenceEquals(a, null);
+            var bIsNull = ReferenceEquals(b, null);
+
+            if (aIsNull && bIsNull)
+            {
+                return false;
+            }
+
+            if (aIsNull || bIsNull)
+            {
+                return true;
+            }
+            
             return !a.X.Equals(b.X) || !a.Y.Equals(b.Y);
         }
 

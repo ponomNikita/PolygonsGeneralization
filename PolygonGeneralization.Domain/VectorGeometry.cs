@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Domain
@@ -17,9 +18,42 @@ namespace PolygonGeneralization.Domain
                 ? Math.Max(0, Math.Min(1, Dot(p - a, b - a) / segmentLength))
                 : Dot(p - a, b - a) / segmentLength;
 
-            var projection = a + (b - a) * t;
+            var projection = Math.Abs(t) < Double.Epsilon 
+                ? a : Math.Abs(t - 1) < Double.Epsilon ? b :
+                a + (b - a) * t;
             
             return new Tuple<Point, double, double>(projection, DistanceSqr(projection, p), t);
+        }
+
+        public Tuple<Point, Point, double> GetMinDistance(Point a, Point b, Point c, Point d)
+        {
+            var d11 = CalculateProjection(c, d, a);
+            var d12 = CalculateProjection(c, d, b);
+            var d21 = CalculateProjection(a, b, c);
+            var d22 = CalculateProjection(a, b, d);
+
+            if (d11.Item2 <= d12.Item2 &&
+                d11.Item2 <= d21.Item2 &&
+                d11.Item2 <= d22.Item2)
+            {
+                return new Tuple<Point, Point, double>(a, d11.Item1, d11.Item2);
+            }
+            
+            if (d12.Item2 <= d11.Item2 &&
+                d12.Item2 <= d21.Item2 &&
+                d12.Item2 <= d22.Item2)
+            {
+                return new Tuple<Point, Point, double>(b, d12.Item1, d12.Item2);
+            }
+            
+            if (d21.Item2 <= d11.Item2 &&
+                d21.Item2 <= d12.Item2 &&
+                d21.Item2 <= d22.Item2)
+            {
+                return new Tuple<Point, Point, double>(d21.Item1, c, d21.Item2);
+            }
+            
+            return new Tuple<Point, Point, double>(d22.Item1, d, d22.Item2);
         }
 
         public double Dot(Point a, Point b)

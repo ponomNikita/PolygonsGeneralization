@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
 using PolygonGeneralization.Domain.LinearGeneralizer;
+using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.Infrastructure.Commands;
 using PolygonGeneralization.Infrastructure.Logger;
 using PolygonGeneralization.WinForms.Interfaces;
@@ -28,6 +29,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
         private ScreenAdapter.ScreenAdapter _screenAdapter;
         private readonly IDrawerFactory _drawerFactory;
         private List<DrawablePolygon> _drawablePolygons;
+        private List<Polygon> _polygons;
         private readonly MetaInfo _meta;
         private readonly IDbService _dbService;
         private readonly ILogger _logger;
@@ -110,13 +112,13 @@ namespace PolygonGeneralization.WinForms.ViewModels
         {
             using (var dialog = new OpenFileDialog())
             {
-                dialog.Filter = Resources.FileDialogFilter;
+                //dialog.Filter = Resources.FileDialogFilter;
 
                 var result = dialog.ShowDialog();
 
                 if (result == DialogResult.OK)
                 {
-                    var filename = dialog.SafeFileName;
+                    var filename = dialog.FileName;
 
                     Task.Run(() =>
                     {
@@ -133,6 +135,7 @@ namespace PolygonGeneralization.WinForms.ViewModels
                             map.Polygons.SelectMany(p => p.Paths).SelectMany(p => p.Points).ToArray());
                         _logger.Log("Done");
 
+                        _polygons = map.Polygons.ToList();
                         _drawablePolygons.Clear();
                         _drawablePolygons = map.Polygons.Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
 
@@ -182,6 +185,35 @@ namespace PolygonGeneralization.WinForms.ViewModels
             
             _drawablePolygons.Clear();
             _drawablePolygons = generalizedPolygons
+                .Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
+
+            _canvas.Invalidate();
+        }
+        public void DrawMap(double minDistance)
+        {
+            var command = new GeneralizePolygonsCommand(_generalizer, _polygons,
+                _linearGeneralizer, minDistance);
+
+            command.Execute();
+
+            var generalizedPolygons = command.Result;
+            //var generalizedPolygons = polygons.ToList();
+
+            _meta.PolygonsCountAfterGeneralization = generalizedPolygons.Count;
+            _meta.TotalPolygonsCount = _polygons.Count;
+            _meta.InMemoryPolygonsCount = _polygons.Count;
+
+            _drawablePolygons.Clear();
+            _drawablePolygons = generalizedPolygons
+                .Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
+
+            _canvas.Invalidate();
+        }
+
+        public void DrawSource()
+        {
+            _drawablePolygons.Clear();
+            _drawablePolygons = _polygons
                 .Select(p => new DrawablePolygon(p, _screenAdapter, _drawerFactory)).ToList();
 
             _canvas.Invalidate();

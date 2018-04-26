@@ -10,7 +10,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
     public class GraphHelper
     {
         private readonly VectorGeometry _vectorGeometry = new VectorGeometry();
-        
+         
         public HashSet<Vertex> BuildGraph(
             List<Point> pathA,
             List<Point> pathB)
@@ -59,8 +59,126 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             return graph;
         }
-        
+
         public Vertex[] GetBridge(List<Vertex> pathA, List<Vertex> pathB)
+        {
+            var bridge = new Vertex[4];
+            
+            var minDistance = Double.MaxValue;
+            Vertex minVertexA1 = null;
+            Vertex minVertexB1 = null;
+            Vertex minVertexA2 = null;
+            Vertex minVertexB2 = null;
+            
+            Vertex minVertexC1 = null;
+            Vertex minVertexD1 = null;
+            Vertex minVertexC2 = null;
+            Vertex minVertexD2 = null;
+            
+            for (var i = 0; i < pathA.Count; i++)
+            {
+                var startIndexI = i;
+                var endIndexI = i == pathA.Count - 1 ? 0 : i + 1;
+                
+                for (var j = 0; j < pathB.Count; j++)
+                {
+                    var startIndexJ = j;
+                    var endIndexJ = j == pathB.Count - 1 ? 0 : j + 1;
+
+                    var minimalDistance = _vectorGeometry.GetMinDistance(pathA[startIndexI],
+                        pathA[endIndexI],
+                        pathB[startIndexJ],
+                        pathB[endIndexJ]);
+
+                    if (minimalDistance.Item3 <= minDistance)
+                    {
+                        if (bridge[0] == null && bridge[1] == null || 
+                            bridge[0] != null && bridge[1] != null &&
+                        !bridge[0].Equals(minimalDistance.Item1) &&
+                            !bridge[1].Equals(minimalDistance.Item2))
+                        {
+                            bridge[2] = bridge[0];
+                            bridge[3] = bridge[1];
+
+                            var resultVertex1 = minimalDistance.Item1 as Vertex;
+                            if (resultVertex1 != null)
+                            {
+                                bridge[0] = resultVertex1;
+                                minVertexA1 = null;
+                                minVertexA2 = null;
+                            }
+                            else
+                            {
+                                bridge[0] = new Vertex(minimalDistance.Item1);
+                                minVertexC1 = minVertexA1;
+                                minVertexC2 = minVertexA2;
+                                minVertexA1 = pathA[startIndexI];
+                                minVertexA2 = pathA[endIndexI];
+                            }
+                            
+                            var resultVertex2 = minimalDistance.Item2 as Vertex;
+                            if (resultVertex2 != null)
+                            {
+                                bridge[1] = resultVertex2;
+                                minVertexB1 = null;
+                                minVertexB2 = null;
+                            }
+                            else
+                            {
+                                bridge[1] = new Vertex(minimalDistance.Item2);
+                                minVertexD1 = minVertexB1;
+                                minVertexD2 = minVertexB2;
+                                minVertexB1 = pathB[startIndexJ];
+                                minVertexB2 = pathB[endIndexJ];
+                            }
+                            minDistance = minimalDistance.Item3;
+                        }
+                    }
+
+                }
+            }
+
+            if (minVertexA1 != null && minVertexA2 != null)
+            {
+                minVertexA1.Neigbours.Remove(bridge[0]);
+                minVertexA2.Neigbours.Remove(bridge[0]);
+                bridge[0].Neigbours.Add(minVertexA1);
+                bridge[0].Neigbours.Add(minVertexA2);
+            }
+
+            if (minVertexB1 != null && minVertexB2 != null)
+            {
+                minVertexB1.Neigbours.Remove(bridge[1]);
+                minVertexB2.Neigbours.Remove(bridge[1]);
+                bridge[1].Neigbours.Add(minVertexB1);
+                bridge[1].Neigbours.Add(minVertexB2);
+            }
+
+            if (minVertexC1 != null && minVertexC2 != null)
+            {
+                minVertexC1.Neigbours.Remove(bridge[2]);
+                minVertexC2.Neigbours.Remove(bridge[2]);
+                bridge[2].Neigbours.Add(minVertexC1);
+                bridge[2].Neigbours.Add(minVertexC2);
+            }
+
+            if (minVertexD1 != null && minVertexD2 != null)
+            {
+                minVertexD1.Neigbours.Remove(bridge[3]);
+                minVertexD2.Neigbours.Remove(bridge[3]);
+                bridge[3].Neigbours.Add(minVertexD1);
+                bridge[3].Neigbours.Add(minVertexD2);
+            }
+            
+            bridge[0].Neigbours.Add(bridge[1]);
+            bridge[1].Neigbours.Add(bridge[0]);
+            bridge[2].Neigbours.Add(bridge[3]);
+            bridge[3].Neigbours.Add(bridge[2]);
+
+            return bridge;
+        }
+        
+        /*public Vertex[] GetBridge(List<Vertex> pathA, List<Vertex> pathB)
         {
             var bridge = new Vertex[4];
             
@@ -200,9 +318,9 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             /*if (bridge.Distinct().Count() != 4)
             {
                 throw new PolygonGeneralizationException("Bridge has less then 4 points");
-            }*/
+            }#1#
             
             return bridge;
-        }
+        }*/
     }
 }

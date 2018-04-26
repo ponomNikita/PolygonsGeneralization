@@ -49,7 +49,7 @@ namespace PolygonGeneralization.Domain
                 if (result == null)
                 {
                     result = polygon;
-                    //_logger.Log($"Merged {++mergedCount} from {count} polygons");
+                    _logger.Log($"Merged {++mergedCount} from {count} polygons");
                     continue;
                 }
 
@@ -58,10 +58,11 @@ namespace PolygonGeneralization.Domain
 
                 if (union.Count == 2)
                 {
+                    _logger.Log($"Lopping :( {mergedCount} from {count} polygons");
                     resultList.Add(union.Last());
                 }
                 
-                //_logger.Log($"Merged {++mergedCount} from {count} polygons");
+                _logger.Log($"Merged {++mergedCount} from {count} polygons");
             }
 
             resultList.Add(result);

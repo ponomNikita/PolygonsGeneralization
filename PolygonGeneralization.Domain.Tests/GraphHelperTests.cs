@@ -121,9 +121,8 @@ namespace PolygonGeneralization.Domain.Tests
                     { new Point(6, 0), new Point(10, 0), new Point(10, 4), new Point(6, 4) },
                 
                 new List<Point>
-                    { new Point(4, 0), new Point(6, 0), new Point(4, 4), new Point(6, 4) }
+                    { new Point(4, 4), new Point(6, 4), new Point(4, 0), new Point(6, 0)  }
             },
-            
             
             new object[]
             {
@@ -134,7 +133,19 @@ namespace PolygonGeneralization.Domain.Tests
                 { new Point(5, 0), new Point(7, 2), new Point(5, 4), new Point(3, 2), },
                 
                 new List<Point>
-                    { new Point(2, 2), new Point(3, 2), new Point(2, 2), new Point(5, 0) }
+                    { new Point(0, 4), new Point(3, 2), new Point(2, 2), new Point(5, 0) }
+            },
+            
+            new object[]
+            {
+                new List<Point>
+                    { new Point(0, 5), new Point(10, 5), new Point(10, 8), new Point(0, 8) },
+                
+                new List<Point>
+                    { new Point(0, 0), new Point(11, 0), new Point(11, 3), new Point(0, 3), },
+                
+                new List<Point>
+                    { new Point(0, 5), new Point(0, 3), new Point(10, 5), new Point(10, 3) }
             }
         };
         
@@ -148,10 +159,10 @@ namespace PolygonGeneralization.Domain.Tests
             
             Assert.NotNull(bridge);
             Assert.AreEqual(4, bridge.Length);
-            Assert.AreEqual(expectedBridge[0], bridge[0].Point);
-            Assert.AreEqual(expectedBridge[1], bridge[1].Point);
-            Assert.AreEqual(expectedBridge[2], bridge[2].Point);
-            Assert.AreEqual(expectedBridge[3], bridge[3].Point);
+            Assert.AreEqual(expectedBridge[0], bridge[0]);
+            Assert.AreEqual(expectedBridge[1], bridge[1]);
+            Assert.AreEqual(expectedBridge[2], bridge[2]);
+            Assert.AreEqual(expectedBridge[3], bridge[3]);
         }
 
         private class GraphComparer : IComparer
@@ -166,7 +177,7 @@ namespace PolygonGeneralization.Domain.Tests
                     return 1;
                 }
 
-                if (!vertexX.Point.Equals(vertexY.Point))
+                if (!vertexX.Equals(vertexY))
                 {
                     return 1;
                 }
@@ -177,7 +188,7 @@ namespace PolygonGeneralization.Domain.Tests
                 }
 
                 var vertexYneigbours = vertexY.Neigbours.ToList();
-                if (vertexX.Neigbours.Where((p, i) => !p.Point.Equals(vertexYneigbours[i].Point)).Any())
+                if (vertexX.Neigbours.Where((p, i) => !p.Equals(vertexYneigbours[i])).Any())
                 {
                     return 1;
                 }

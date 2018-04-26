@@ -20,14 +20,14 @@ namespace PolygonGeneralization.WinForms.Ninject
             var generalizerOptions = new GeneralizerOptions
             {
                 MinDistance = 10,
-                MinDistanceCoeff = 8,
+                MinDistanceCoeff = 3,
                 MaxDifferenceInPercent = 5
             };
 
             kernel.Bind<GeneralizerOptions>().ToConstant(generalizerOptions).InSingletonScope();
             kernel.Bind<IClipper>().To<SimpleClipper>();
             kernel.Bind<ILinearGeneralizer>().To<LinearGeneralizer>();
-            kernel.Bind<IGisDataReader>().To<JsonGisDataReader>();
+            kernel.Bind<IGisDataReader>().To<CustomJsonGisDataReader>();
             kernel.Bind<IDrawerFactory>().To<DrawerFactory>();
             kernel.Bind<IDbService>().To<DbService>().InSingletonScope();
             kernel.Bind<DbContext>().To<DataBaseContext>();

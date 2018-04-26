@@ -43,9 +43,9 @@ namespace PolygonGeneralization.Domain.SimpleClipper
         {
             var graph = _graphHelper.BuildGraph(pathA, pathB);
 
-            var current = graph.OrderBy(it => it.Point.X).ThenBy(it => it.Point.Y).First();
+            var current = graph.OrderBy(it => it.X).ThenBy(it => it.Y).First();
             
-            var start = new Point(current.Point.X, current.Point.Y);
+            var start = new Point(current.X, current.Y);
 
             var resultPoint = new List<Point>();
             Point prev = null;
@@ -59,36 +59,36 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                     throw new PolygonGeneralizationException("Looping was happened");
                 }
                 
-                resultPoint.Add(current.Point);
+                resultPoint.Add(current);
                 if (current.Neigbours.Count == 1)
                 {
-                    prev = current.Point;
+                    prev = current;
                     current = current.Neigbours.Single();
                 }
                 else
                 {
                     var comparer = prev == null 
-                        ? new ClockwiseOrderComparer(new Point(Double.MaxValue, current.Point.Y), current.Point)
-                        : new ClockwiseOrderComparer(current.Point, prev);
+                        ? new ClockwiseOrderComparer(new Point(Double.MaxValue, current.Y), current)
+                        : new ClockwiseOrderComparer(current, prev);
                     
                     var minAntiClockwisePoint = current.Neigbours.First();
                     foreach (var item in current.Neigbours)
                     {
-                        if (item.Point.Equals(prev))
+                        if (item.Equals(prev))
                         {
                             continue;
                         }
-                        if (comparer.Compare(minAntiClockwisePoint.Point, item.Point) < 0)
+                        if (comparer.Compare(minAntiClockwisePoint, item) < 0)
                         {
                             minAntiClockwisePoint = item;
                         }    
                     }
                     
-                    prev = current.Point;
+                    prev = current;
                     current = minAntiClockwisePoint;
                 }
                 
-            } while (!current.Point.Equals(start));
+            } while (!current.Equals(start));
 
             return new Path(resultPoint.ToArray());
         }

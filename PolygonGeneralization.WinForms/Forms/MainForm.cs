@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Interfaces;
@@ -195,5 +196,19 @@ namespace PolygonGeneralization.WinForms.Forms
             Invoke(inv);
         }
 
+        private void GeneralizeBtn_Click(object sender, System.EventArgs e)
+        {
+            double minDistance = 0;
+            if (double.TryParse(MinDistanceTextBox.Text, out minDistance) &&
+                Math.Abs(minDistance) > double.Epsilon)
+            {
+                _viewModel.DrawMap(minDistance);
+            }
+        }
+
+        private void DrawSourceBtn_Click(object sender, EventArgs e)
+        {
+            _viewModel.DrawSource();
+        }
     }
 }

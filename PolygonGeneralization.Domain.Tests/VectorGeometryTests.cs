@@ -94,5 +94,39 @@ namespace PolygonGeneralization.Domain.Tests
 
             Assert.AreEqual(expected, actual);
         }
+        
+        public static IEnumerable<object[]> GetMinDistanceTestCases =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new Point(0, 0), new Point(5, 0), new Point(2, 2), new Point(5, 5),
+                    new Point(2, 0), new Point(2, 2), 4
+                },
+                
+                new object[]
+                {
+                    new Point(0, 0), new Point(5, 0), new Point(7, 2), new Point(10, 10),
+                    new Point(5, 0), new Point(7, 2), 8
+                },
+                
+                new object[]
+                {
+                    new Point(0, 0), new Point(5, 0), new Point(7, 0), new Point(10, 10),
+                    new Point(5, 0), new Point(7, 0), 4
+                },
+            };
+
+        [TestCaseSource(nameof(GetMinDistanceTestCases))]
+        public void GetMinDistanceTests(Point a, Point b, Point c, Point d, 
+            Point r1, Point r2, double distance)
+        {
+            var sut = new VectorGeometry();
+            var actual = sut.GetMinDistance(a, b, c, d);
+
+            Assert.AreEqual(distance, actual.Item3);
+            Assert.AreEqual(r1, actual.Item1);
+            Assert.AreEqual(r2, actual.Item2);
+        }
     }
 }
