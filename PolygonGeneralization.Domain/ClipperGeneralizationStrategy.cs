@@ -24,7 +24,7 @@ namespace PolygonGeneralization.Domain
             var result = new List<Polygon>();
             foreach (var claster in clasters)
             {
-                var mergedClaster = MergeClaster(claster);
+                var mergedClaster = MergeClaster(claster, minDistance);
                 
                 result.AddRange(mergedClaster);
                 _logger.Log($"Merged {++completedCount} from {count} clasters");
@@ -33,7 +33,7 @@ namespace PolygonGeneralization.Domain
             return result;
         }
 
-        private List<Polygon> MergeClaster(Claster claster)
+        private List<Polygon> MergeClaster(Claster claster, double minDistance)
         {
             if (claster.Polygons.Count == 1)
             {

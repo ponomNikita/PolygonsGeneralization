@@ -24,7 +24,7 @@ namespace PolygonGeneralization.WinForms
             {
                 var result = DialogResult.Cancel;
 
-                MessageBox.Show("Opps", args.Exception.ToString(),
+                MessageBox.Show(args.Exception.Message, "Opps",
                     MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);
 
                 if (result == DialogResult.Abort)

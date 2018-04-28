@@ -49,7 +49,7 @@ namespace PolygonGeneralization.WinForms.Forms
             fileToolStripMenuItem.DropDownItems.Add(importFromFileToolStrip);
             fileToolStripMenuItem.DropDownItems.Add(openFromFileToolStrip);
 
-            if (_viewModel != null)
+            /*if (_viewModel != null)
             {
                 var maps = _viewModel.GetAvailableMaps();
                 foreach (var map in maps)
@@ -68,7 +68,7 @@ namespace PolygonGeneralization.WinForms.Forms
 
                     fileToolStripMenuItem.DropDownItems.Add(openMapToolStrip);
                 }
-            }
+            }*/
 
             fileToolStripMenuItem.DropDownItems.Add(exitToolStrip);
 
