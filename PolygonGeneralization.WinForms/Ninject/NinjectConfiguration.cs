@@ -21,7 +21,7 @@ namespace PolygonGeneralization.WinForms.Ninject
             {
                 MinDistance = 10,
                 MinDistanceCoeff = 3,
-                MaxDifferenceInPercent = 5
+                MaxDifferenceInPercent = 3
             };
 
             kernel.Bind<GeneralizerOptions>().ToConstant(generalizerOptions).InSingletonScope();

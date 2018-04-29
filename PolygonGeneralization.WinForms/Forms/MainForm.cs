@@ -37,6 +37,14 @@ namespace PolygonGeneralization.WinForms.Forms
 
             _scrollTimer = new ScrollTimer();
             _scrollTimer.ScrollEvent += _scrollTimer_ScrollEvent;
+            
+            
+            GeneralizeBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            DrawSourceBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            MinDistanceTextBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            label1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            
+            WindowState = FormWindowState.Maximized;
         }
 
         private void InitializeMenu()
