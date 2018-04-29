@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using PolygonGeneralization.Domain.Models;
 
 namespace PolygonGeneralization.Domain
@@ -66,6 +67,22 @@ namespace PolygonGeneralization.Domain
             return (a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y);
         }
         
+        public double DistanceSqr(Polygon a, Polygon b)
+        {
+            var minDistance = double.MaxValue;
+
+            foreach (var pointFromA in a.Paths.First().Points)
+            {
+                foreach (var pointFromB in b.Paths.First().Points)
+                {
+                    var distance = DistanceSqr(pointFromA, pointFromB);
+                    minDistance = Math.Min(minDistance, distance);
+                }
+            }
+
+            return minDistance;
+        }
+        
         public double Distance(Point a, Point b)
         {
             return Math.Sqrt(DistanceSqr(a, b));
@@ -81,8 +98,13 @@ namespace PolygonGeneralization.Domain
         /// </returns>
         public int GetSide(Point a, Point b, Point p)
         {
-            return - Math.Sign((b.X - a.X) * (p.Y - a.Y) - (b.Y - a.Y) * (p.X - a.X));
-            //return Math.Sign((p.X - b.X) * (b.Y - a.Y));
+            var res = (b.X - a.X) * (p.Y - a.Y) - (b.Y - a.Y) * (p.X - a.X);
+            if (Math.Abs(res) < 0.000000001)
+            {
+                return 0;
+            }
+            
+            return - Math.Sign(res);
         }
     }
 }

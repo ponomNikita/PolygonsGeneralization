@@ -138,8 +138,8 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             if (minVertexA1 != null && minVertexA2 != null)
             {
-                minVertexA1.Neigbours.Remove(minVertexA2);
-                minVertexA2.Neigbours.Remove(minVertexA1);
+                /*minVertexA1.Neigbours.Remove(minVertexA2);
+                minVertexA2.Neigbours.Remove(minVertexA1);*/
                 bridge[0].Neigbours.Add(minVertexA1);
                 bridge[0].Neigbours.Add(minVertexA2);
                 minVertexA1.Neigbours.Add(bridge[0]);
@@ -148,8 +148,8 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             if (minVertexB1 != null && minVertexB2 != null)
             {
-                minVertexB1.Neigbours.Remove(minVertexB2);
-                minVertexB2.Neigbours.Remove(minVertexB1);
+                /*minVertexB1.Neigbours.Remove(minVertexB2);
+                minVertexB2.Neigbours.Remove(minVertexB1);*/
                 minVertexB1.Neigbours.Add(bridge[1]);
                 minVertexB2.Neigbours.Add(bridge[1]);
                 bridge[1].Neigbours.Add(minVertexB1);

@@ -71,14 +71,14 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                         ? new ClockwiseOrderComparer(new Point(Double.MaxValue, current.Y), current)
                         : new ClockwiseOrderComparer(current, prev);
                     
-                    var minAntiClockwisePoint = current.Neigbours.First();
-                    foreach (var item in current.Neigbours)
+                    var minAntiClockwisePoint = current.Neigbours.First(it => !it.Equals(prev));
+                    foreach (var item in current.Neigbours.Where(it => !it.Equals(prev)))
                     {
                         if (item.Equals(prev))
                         {
                             continue;
                         }
-                        if (comparer.Compare(minAntiClockwisePoint, item) < 0)
+                        if (comparer.Compare(item, minAntiClockwisePoint) < 0)
                         {
                             minAntiClockwisePoint = item;
                         }    

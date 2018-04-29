@@ -10,6 +10,7 @@ namespace PolygonGeneralization.Domain
     {
         private readonly IClipper _clipper;
         private ILogger _logger;
+        private VectorGeometry _vectorGeometry = new VectorGeometry();
 
         public ClipperGeneralizationStrategy(IClipper clipper, ILogger logger)
         {
@@ -33,39 +34,39 @@ namespace PolygonGeneralization.Domain
             return result;
         }
 
-        private List<Polygon> MergeClaster(Claster claster, double minDistance)
+        private IEnumerable<Polygon> MergeClaster(Claster claster, double minDistance)
         {
             if (claster.Polygons.Count == 1)
             {
                 return claster.Polygons;
             }
 
-            List<Polygon> resultList = new List<Polygon>();
-            Polygon result = null;
+            var resultList = new List<Polygon>();
+            var union = claster.Polygons.First();
+            claster.Polygons.Remove(union);
+            
             var count = claster.Polygons.Count;
-            var mergedCount = 0;
-            foreach (var polygon in claster.Polygons)
+            var completedCount = 0;
+
+            while (claster.Polygons.Any())
             {
-                if (result == null)
-                {
-                    result = polygon;
-                    _logger.Log($"Merged {++mergedCount} from {count} polygons");
-                    continue;
-                }
-
-                var union = _clipper.Union(result, polygon);
-                result = union.First();
-
-                if (union.Count == 2)
-                {
-                    _logger.Log($"Lopping :( {mergedCount} from {count} polygons");
-                    resultList.Add(union.Last());
-                }
+                var closest = claster.Polygons.OrderBy(it => _vectorGeometry.DistanceSqr(it, union)).First();
+                claster.Polygons.Remove(closest);
                 
-                _logger.Log($"Merged {++mergedCount} from {count} polygons");
+                var unionResult = _clipper.Union(union, closest);
+
+                if (unionResult.Count == 2)
+                {
+                    resultList.Add(unionResult[1]);
+                    _logger.Log($"Oops, looping happened");
+                }
+
+                union = unionResult[0];
+                
+                _logger.Log($"Merged {++completedCount} from {count} polygons");
             }
 
-            resultList.Add(result);
+            resultList.Add(union);
             
             return resultList;
         }

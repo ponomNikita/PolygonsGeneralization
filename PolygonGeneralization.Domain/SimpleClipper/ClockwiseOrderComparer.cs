@@ -19,30 +19,33 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
         public int Compare(Point x, Point y)
         {
-            var sideX = _vectorGeometry.GetSide(_origin, _reference, x);
-            var sideY = _vectorGeometry.GetSide(_origin, _reference, y);
+            var sideX = _vectorGeometry.GetSide(_reference, _origin, x);
+            var sideY = _vectorGeometry.GetSide(_reference, _origin, y);
 
-            if (sideX >= 0 && sideY < 0)
+            var projectionX = _vectorGeometry.CalculateProjection(_reference, _origin, x, false);
+            var projectionY = _vectorGeometry.CalculateProjection(_reference, _origin, y, false);
+
+            if ((sideX > 0 || sideX == 0 && projectionX.Item3 > 0) && (sideY < 0 || sideY == 0 && projectionY.Item3 < 0))
             {
                 return -1;
             }
             
-            if (sideX < 0 && sideY >= 0)
+            if ((sideX < 0 || sideX == 0 && projectionX.Item3 < 0) && (sideY > 0 || sideY == 0 && projectionY.Item3 > 0))
             {
                 return 1;
             }
             
             var det = (x.X - _reference.X) * (y.Y - _reference.Y) - (y.X - _reference.X) * (x.Y - _reference.Y);
             if (det < 0)
-                return -1;
-            if (det > 0)
                 return 1;
+            if (det > 0)
+                return -1;
 
             {
                 var distanceFromReferenceX = _vectorGeometry.DistanceSqr(x, _reference);
                 var distanceFromReferenceY = _vectorGeometry.DistanceSqr(y, _reference);
 
-                return distanceFromReferenceX < distanceFromReferenceY ? 1 : -1;
+                return distanceFromReferenceX < distanceFromReferenceY ? -1 : 1;
             }
         }
 
