@@ -13,12 +13,13 @@ namespace PolygonGeneralization.Domain.SimpleClipper
          
         public HashSet<Vertex> BuildGraph(
             List<Point> pathA,
-            List<Point> pathB)
+            List<Point> pathB, double minDistance)
         {
             var graphA = BuildRing(pathA);
             var graphB = BuildRing(pathB);
 
-            var bridge = GetBridge(graphA, graphB);
+            //var bridge = GetBridge(graphA, graphB);
+            var bridge = GetContactArea(graphA, graphB, minDistance);
             
             var resultGraph = new HashSet<Vertex>();
             
@@ -58,6 +59,88 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             }
 
             return graph;
+        }
+
+        public Vertex[] GetContactArea(List<Vertex> pathA, List<Vertex> pathB, double minDistance)
+        {
+            var areasForA = GetContactAreas(pathA, pathB, minDistance);
+            var areasForB = GetContactAreas(pathB, pathA, minDistance);
+
+            var areas = new HashSet<ContactArea>();
+            areas.AddRange(areasForA);
+            areas.AddRange(areasForB);
+
+            if (areas.Count < 2)
+            {
+                throw new PolygonGeneralizationException("Less then 2 contact areas were found");
+            }
+            
+            foreach (var area in areas)
+            {
+                area.From.Neigbours.Add(area.To);
+                area.To.Neigbours.Add(area.From);
+                area.To.Neigbours.Add(area.A);
+                area.To.Neigbours.Add(area.B);
+                area.A.Neigbours.Add(area.To);
+                area.B.Neigbours.Add(area.To);
+            }
+
+            return areas.Select(it => it.To).ToArray();
+        }
+
+        private IEnumerable<ContactArea> GetContactAreas(List<Vertex> pathA, List<Vertex> pathB, double minDistance)
+        {
+            var contactAreas = new HashSet<ContactArea>();
+            var minDistanceSqr = minDistance * minDistance;
+
+            foreach (var pointFromA in pathA)
+            {
+                ContactArea areaForPointFormA = null;
+
+                for (var j = 0; j < pathB.Count; j++)
+                {
+                    var startIndexJ = j;
+                    var endIndexJ = j == pathB.Count - 1 ? 0 : j + 1;
+
+                    var contactArea = GetContactArea(pointFromA, pathB[startIndexJ], pathB[endIndexJ], minDistanceSqr);
+
+                    if (contactArea != null)
+                    {
+                        if (areaForPointFormA == null)
+                        {
+                            areaForPointFormA = contactArea;
+                        }
+                        else
+                        {
+                            areaForPointFormA = areaForPointFormA.Distance > contactArea.Distance
+                                ? contactArea
+                                : areaForPointFormA;
+                        }
+                    }
+                }
+
+                if (areaForPointFormA != null)
+                {
+                    contactAreas.Add(areaForPointFormA);
+                }
+            }
+
+            return contactAreas;
+        }
+
+        private ContactArea GetContactArea(Vertex from, Vertex a, Vertex b, double minDistance)
+        {
+            var projection = _vectorGeometry.CalculateProjection(a, b, from, false);
+
+            if (projection.Item3 >= 0 && projection.Item3 <= 1 && projection.Item2 <= minDistance)
+            {
+                var projectionVertex = projection.Item1 as Vertex;
+                var to = projectionVertex ?? new Vertex(projection.Item1);
+                
+                return new ContactArea(from, to, a, b, projection.Item2);
+            }
+
+            return null;
         }
 
         public Vertex[] GetBridge(List<Vertex> pathA, List<Vertex> pathB)
@@ -159,6 +242,55 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             bridge[1].Neigbours.Add(bridge[0]);
 
             return bridge;
+        }
+
+        private class ContactArea
+        {
+            public ContactArea(Vertex @from, Vertex to, Vertex a, Vertex b, double distance)
+            {
+                From = @from;
+                To = to;
+                A = a;
+                B = b;
+                Distance = distance;
+            }
+            /// <summary>
+            /// Точка, проекция которой строилась на ребро
+            /// </summary>
+            public Vertex From { get; }
+            
+            /// <summary>
+            /// Проекция точки From на ребро AB
+            /// </summary>
+            public Vertex To { get; }
+            
+            /// <summary>
+            /// Точка А ребра АВ
+            /// </summary>
+            public Vertex A { get; }
+            
+            /// <summary>
+            /// Точка В ребра АВ
+            /// </summary>
+            public Vertex B { get; }
+            
+            /// <summary>
+            /// Длина проекции
+            /// </summary>
+            public double Distance { get; }
+
+            public override int GetHashCode()
+            {
+                return From.GetHashCode() + To.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is ContactArea other))
+                    return false;
+
+                return From.Equals(other.From) && To.Equals(other.To) || From.Equals(other.To) &&  To.Equals(other.From);
+            }
         }
     }
 }

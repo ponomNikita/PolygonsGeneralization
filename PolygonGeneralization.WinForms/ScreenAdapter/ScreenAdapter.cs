@@ -6,7 +6,7 @@ namespace PolygonGeneralization.WinForms.ScreenAdapter
 {
     public class ScreenAdapter
     {
-        private const double DEFAULT_SCALE = 1.1;
+        private const double DEFAULT_SCALE = 2;
         private double _scale;
         private readonly double[] _extrimalValues;
 

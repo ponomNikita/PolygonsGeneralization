@@ -6,6 +6,6 @@ namespace PolygonGeneralization.Domain.Interfaces
 {
     public interface IClipper
     {
-        List<Polygon> Union(Polygon a, Polygon b);
+        List<Polygon> Union(Polygon a, Polygon b, double minDistance);
     }
 }

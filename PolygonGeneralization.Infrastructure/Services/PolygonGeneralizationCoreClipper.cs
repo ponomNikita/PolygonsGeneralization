@@ -16,7 +16,7 @@ namespace PolygonGeneralization.Infrastructure.Services
             _adapter = new PolygonsAdapter();
         }
 
-        public List<Polygon> Union(Polygon a, Polygon b)
+        public List<Polygon> Union(Polygon a, Polygon b, double minDistance)
         {
             var subject = _adapter.GetPaths(a);
             var clipping = _adapter.GetPaths(b);

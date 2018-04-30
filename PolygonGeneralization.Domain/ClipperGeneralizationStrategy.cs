@@ -53,7 +53,7 @@ namespace PolygonGeneralization.Domain
                 var closest = claster.Polygons.OrderBy(it => _vectorGeometry.DistanceSqr(it, union)).First();
                 claster.Polygons.Remove(closest);
                 
-                var unionResult = _clipper.Union(union, closest);
+                var unionResult = _clipper.Union(union, closest, minDistance);
 
                 if (unionResult.Count == 2)
                 {

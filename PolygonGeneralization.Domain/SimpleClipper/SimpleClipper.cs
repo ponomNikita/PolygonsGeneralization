@@ -15,14 +15,14 @@ namespace PolygonGeneralization.Domain.SimpleClipper
         private readonly VectorGeometry _vectorGeometry = new VectorGeometry();
         private readonly GraphHelper _graphHelper = new GraphHelper();
         
-        public List<Polygon> Union(Polygon a, Polygon b)
+        public List<Polygon> Union(Polygon a, Polygon b, double minDistance)
         {
             var pathA = a.Paths.First().Points;
             var pathB = b.Paths.First().Points;
 
             try
             {
-                var union = UnionPaths(pathA, pathB);
+                var union = UnionPaths(pathA, pathB, minDistance);
 
                 var paths = new List<Path> {union};
                 paths.AddRange(a.Paths.Skip(1).Union(b.Paths.Skip(1)));
@@ -39,9 +39,9 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
         public Path UnionPaths(
             List<Point> pathA, 
-            List<Point> pathB)
+            List<Point> pathB, double minDistance)
         {
-            var graph = _graphHelper.BuildGraph(pathA, pathB);
+            var graph = _graphHelper.BuildGraph(pathA, pathB, minDistance);
 
             var current = graph.OrderBy(it => it.X).ThenBy(it => it.Y).First();
             
@@ -71,8 +71,8 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                         ? new ClockwiseOrderComparer(new Point(Double.MaxValue, current.Y), current)
                         : new ClockwiseOrderComparer(current, prev);
                     
-                    var minAntiClockwisePoint = current.Neigbours.First(it => !it.Equals(prev));
-                    foreach (var item in current.Neigbours.Where(it => !it.Equals(prev)))
+                    var minAntiClockwisePoint = current.Neigbours.First(it => !it.Equals(prev) && !it.Equals(current));
+                    foreach (var item in current.Neigbours.Where(it => !it.Equals(prev) && !it.Equals(current)))
                     {
                         if (item.Equals(prev))
                         {

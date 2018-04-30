@@ -41,10 +41,10 @@ namespace PolygonGeneralization.Infrastructure.Commands
             
             Result = _generalizer.Generalize(_polygons, _minDistance).Result;
             
-            foreach (var polygon in Result)
+            /*foreach (var polygon in Result)
             {
                 polygon.Paths[0].Points = _linearGeneralizer.Simplify(polygon.Paths[0].Points.ToArray()).ToList();
-            }
+            }*/
         }
     }
 }
