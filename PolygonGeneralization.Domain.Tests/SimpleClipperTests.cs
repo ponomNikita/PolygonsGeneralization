@@ -10,6 +10,8 @@ namespace PolygonGeneralization.Domain.Tests
 {
     public class SimpleClipperTests
     {
+        private const double MinDistance = 5;
+        
         [Test]
         public void UnionPathsTest()
         {
@@ -44,7 +46,7 @@ namespace PolygonGeneralization.Domain.Tests
                 
             });
 
-            var union = sut.UnionPaths(pathA, pathB);
+            var union = sut.UnionPaths(pathA, pathB, MinDistance);
             
             CollectionAssert.AreEqual(expected.Points, union.Points);
         }
@@ -87,7 +89,7 @@ namespace PolygonGeneralization.Domain.Tests
 
             };
 
-            var actual = sut.Union(polygonA, polygonB);
+            var actual = sut.Union(polygonA, polygonB, MinDistance);
             
             CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
@@ -132,7 +134,7 @@ namespace PolygonGeneralization.Domain.Tests
 
             };
 
-            var actual = sut.Union(polygonA, polygonB);
+            var actual = sut.Union(polygonA, polygonB, MinDistance);
             
             CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
@@ -175,7 +177,7 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(0, 4),
             };
 
-            var actual = sut.Union(polygonA, polygonB);
+            var actual = sut.Union(polygonA, polygonB, MinDistance);
             
             CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
@@ -219,7 +221,7 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(0, 10),
             };
 
-            var actual = sut.Union(polygonA, polygonB);
+            var actual = sut.Union(polygonA, polygonB, MinDistance);
             
             CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
@@ -263,7 +265,7 @@ namespace PolygonGeneralization.Domain.Tests
                 new Point(-1, 4),
             };
 
-            var actual = sut.Union(polygonA, polygonB);
+            var actual = sut.Union(polygonA, polygonB, MinDistance);
             
             CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
@@ -297,7 +299,7 @@ namespace PolygonGeneralization.Domain.Tests
             {
             };
 
-            var actual = sut.Union(polygonA, polygonB);
+            var actual = sut.Union(polygonA, polygonB, 200);
             
             Assert.AreEqual(1, actual.Count);
             
@@ -373,11 +375,11 @@ namespace PolygonGeneralization.Domain.Tests
             {
             };*/
 
-            var union1 = sut.Union(polygonA, polygonB);
+            var union1 = sut.Union(polygonA, polygonB, 200);
             
             Assert.AreEqual(1, union1.Count);
             
-            var union2 = sut.Union(union1[0], polygonC);
+            var union2 = sut.Union(union1[0], polygonC, 400);
             
             Assert.AreEqual(1, union2.Count);
             

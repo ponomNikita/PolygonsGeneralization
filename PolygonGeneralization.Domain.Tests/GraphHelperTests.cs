@@ -105,7 +105,7 @@ namespace PolygonGeneralization.Domain.Tests
                 vertexB3,
             };
 
-            var actualGraph = _sut.BuildGraph(pathA, pathB).ToList();
+            var actualGraph = _sut.BuildGraph(pathA, pathB, 5).ToList();
             
             CollectionAssert.AreEqual(expectedGraph, actualGraph, new GraphComparer());
         }
