@@ -25,12 +25,22 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             var projectionX = _vectorGeometry.CalculateProjection(_reference, _origin, x, false);
             var projectionY = _vectorGeometry.CalculateProjection(_reference, _origin, y, false);
 
-            if ((sideX > 0 || sideX == 0 && projectionX.Item3 > 0) && (sideY < 0 || sideY == 0 && projectionY.Item3 < 0))
+            if ((sideX > 0 || sideX == 0 && projectionX.Item3 > 1) && (sideY < 0 || sideY == 0 && projectionY.Item3 < 1))
             {
                 return -1;
             }
             
-            if ((sideX < 0 || sideX == 0 && projectionX.Item3 < 0) && (sideY > 0 || sideY == 0 && projectionY.Item3 > 0))
+            if ((sideX < 0 || sideX == 0 && projectionX.Item3 < 1) && (sideY > 0 || sideY == 0 && projectionY.Item3 > 1))
+            {
+                return 1;
+            }
+
+            if (sideY == 0 && projectionY.Item3 < 1 && (sideX != 0 || projectionX.Item3 >= 1))
+            {
+                return -1;
+            }
+
+            if (sideX == 0 && projectionX.Item3 < 1 && (sideY != 0 || projectionY.Item3 >= 1))
             {
                 return 1;
             }

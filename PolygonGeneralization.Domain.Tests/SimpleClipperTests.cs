@@ -305,9 +305,40 @@ namespace PolygonGeneralization.Domain.Tests
             
             //CollectionAssert.AreEqual(expectedPoints, actual.Single().Paths.Single().Points);
         }
-        
+
+
         [Test]
         public void UnionTest7()
+        {
+            var sut = new SimpleClipper.SimpleClipper();
+
+            var polygonA = new Polygon(new Path(
+                new Point[]
+                {
+                    new Point(2, 5),
+                    new Point(8, 4),
+                    new Point(11, 8),
+                    new Point(1, 9),
+                }
+            ));
+
+            var polygonB = new Polygon(new Path(
+                new Point[]
+                {
+                    new Point(0, 0),
+                    new Point(7, 1),
+                    new Point(10, 2),
+                    new Point(2, 3),
+                }
+            ));
+
+            var actual = sut.Union(polygonA, polygonB, 200);
+
+            Assert.AreEqual(1, actual.Count);
+        }
+
+        [Test]
+        public void UnionTest8()
         {
             var sut = new SimpleClipper.SimpleClipper();
             

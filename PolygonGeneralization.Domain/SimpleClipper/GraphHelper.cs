@@ -286,7 +286,8 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             public override bool Equals(object obj)
             {
-                if (!(obj is ContactArea other))
+                var other = obj as ContactArea;
+                if (other == null)
                     return false;
 
                 return From.Equals(other.From) && To.Equals(other.To) || From.Equals(other.To) &&  To.Equals(other.From);

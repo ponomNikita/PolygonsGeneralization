@@ -19,6 +19,7 @@ namespace PolygonGeneralization.Domain.Tests
             new object[] { new Point(4, 0), new Point(5, 0) },
             new object[] { new Point(-5, 0), new Point(-6, 0) },
             new object[] { new Point(4, -1), new Point(-3, 3) },
+            new object[] { new Point(0, 10), new Point(2, 2) },
         };
         
         
