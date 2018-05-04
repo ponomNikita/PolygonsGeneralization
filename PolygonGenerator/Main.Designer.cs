@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.Tools = new System.Windows.Forms.Panel();
+            this.UnionBtn = new System.Windows.Forms.Button();
+            this.WithDeltaArea = new System.Windows.Forms.CheckBox();
+            this.MinDistanceTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SaveBtn = new System.Windows.Forms.Button();
             this.LoadBtn = new System.Windows.Forms.Button();
             this.SaveAsBtn = new System.Windows.Forms.Button();
@@ -36,10 +40,7 @@
             this.UndoBtn = new System.Windows.Forms.Button();
             this.Coords = new System.Windows.Forms.Label();
             this.Container = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.MinDistanceTextBox = new System.Windows.Forms.TextBox();
-            this.WithDeltaArea = new System.Windows.Forms.CheckBox();
-            this.UnionBtn = new System.Windows.Forms.Button();
+            this.DrawSourceBtn = new System.Windows.Forms.Button();
             this.Tools.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,6 +49,7 @@
             this.Tools.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Tools.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Tools.Controls.Add(this.DrawSourceBtn);
             this.Tools.Controls.Add(this.UnionBtn);
             this.Tools.Controls.Add(this.WithDeltaArea);
             this.Tools.Controls.Add(this.MinDistanceTextBox);
@@ -62,6 +64,48 @@
             this.Tools.Name = "Tools";
             this.Tools.Size = new System.Drawing.Size(180, 466);
             this.Tools.TabIndex = 1;
+            // 
+            // UnionBtn
+            // 
+            this.UnionBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.UnionBtn.Location = new System.Drawing.Point(19, 212);
+            this.UnionBtn.Name = "UnionBtn";
+            this.UnionBtn.Size = new System.Drawing.Size(142, 23);
+            this.UnionBtn.TabIndex = 11;
+            this.UnionBtn.Text = "Union";
+            this.UnionBtn.UseVisualStyleBackColor = true;
+            this.UnionBtn.Click += new System.EventHandler(this.UnionBtn_Click);
+            // 
+            // WithDeltaArea
+            // 
+            this.WithDeltaArea.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.WithDeltaArea.AutoSize = true;
+            this.WithDeltaArea.Location = new System.Drawing.Point(9, 175);
+            this.WithDeltaArea.Name = "WithDeltaArea";
+            this.WithDeltaArea.Size = new System.Drawing.Size(123, 17);
+            this.WithDeltaArea.TabIndex = 10;
+            this.WithDeltaArea.Text = "Draw with delta area";
+            this.WithDeltaArea.UseVisualStyleBackColor = true;
+            this.WithDeltaArea.CheckStateChanged += new System.EventHandler(this.WithDeltaArea_CheckStateChanged);
+            // 
+            // MinDistanceTextBox
+            // 
+            this.MinDistanceTextBox.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.MinDistanceTextBox.Location = new System.Drawing.Point(79, 143);
+            this.MinDistanceTextBox.Name = "MinDistanceTextBox";
+            this.MinDistanceTextBox.Size = new System.Drawing.Size(82, 20);
+            this.MinDistanceTextBox.TabIndex = 9;
+            this.MinDistanceTextBox.Text = "50";
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 146);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(67, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Min distance";
             // 
             // SaveBtn
             // 
@@ -138,47 +182,16 @@
             this.Container.Size = new System.Drawing.Size(772, 466);
             this.Container.TabIndex = 3;
             // 
-            // label1
+            // DrawSourceBtn
             // 
-            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 146);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Min distance";
-            // 
-            // MinDistanceTextBox
-            // 
-            this.MinDistanceTextBox.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.MinDistanceTextBox.Location = new System.Drawing.Point(79, 143);
-            this.MinDistanceTextBox.Name = "MinDistanceTextBox";
-            this.MinDistanceTextBox.Size = new System.Drawing.Size(82, 20);
-            this.MinDistanceTextBox.TabIndex = 9;
-            this.MinDistanceTextBox.Text = "50";
-            // 
-            // WithDeltaArea
-            // 
-            this.WithDeltaArea.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.WithDeltaArea.AutoSize = true;
-            this.WithDeltaArea.Location = new System.Drawing.Point(9, 175);
-            this.WithDeltaArea.Name = "WithDeltaArea";
-            this.WithDeltaArea.Size = new System.Drawing.Size(123, 17);
-            this.WithDeltaArea.TabIndex = 10;
-            this.WithDeltaArea.Text = "Draw with delta area";
-            this.WithDeltaArea.UseVisualStyleBackColor = true;
-            this.WithDeltaArea.CheckStateChanged += new System.EventHandler(this.WithDeltaArea_CheckStateChanged);
-            // 
-            // UnionBtn
-            // 
-            this.UnionBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.UnionBtn.Location = new System.Drawing.Point(19, 212);
-            this.UnionBtn.Name = "UnionBtn";
-            this.UnionBtn.Size = new System.Drawing.Size(142, 23);
-            this.UnionBtn.TabIndex = 11;
-            this.UnionBtn.Text = "Union";
-            this.UnionBtn.UseVisualStyleBackColor = true;
-            this.UnionBtn.Click += new System.EventHandler(this.UnionBtn_Click);
+            this.DrawSourceBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.DrawSourceBtn.Location = new System.Drawing.Point(19, 241);
+            this.DrawSourceBtn.Name = "DrawSourceBtn";
+            this.DrawSourceBtn.Size = new System.Drawing.Size(142, 23);
+            this.DrawSourceBtn.TabIndex = 12;
+            this.DrawSourceBtn.Text = "Draw source";
+            this.DrawSourceBtn.UseVisualStyleBackColor = true;
+            this.DrawSourceBtn.Click += new System.EventHandler(this.DrawSourceBtn_Click);
             // 
             // Main
             // 
@@ -209,6 +222,7 @@
         private System.Windows.Forms.TextBox MinDistanceTextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button UnionBtn;
+        private System.Windows.Forms.Button DrawSourceBtn;
     }
 }
 

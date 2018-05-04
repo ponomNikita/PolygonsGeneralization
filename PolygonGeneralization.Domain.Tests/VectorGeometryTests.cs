@@ -128,5 +128,33 @@ namespace PolygonGeneralization.Domain.Tests
             Assert.AreEqual(r1, actual.Item1);
             Assert.AreEqual(r2, actual.Item2);
         }
+
+        public static IEnumerable<object[]> IntersectionTestCases =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new Point(0, 0), new Point(10, 0), new Point(5, 5), new Point(5, -5), new Point(5, 0)
+                },
+
+                new object[]
+                {
+                    new Point(0, 0), new Point(10, 0), new Point(0, 5), new Point(10, 0), new Point(10, 0)
+                },
+
+                new object[]
+                {
+                    new Point(0, 0), new Point(10, 0), new Point(0, 5), new Point(10, 5), null
+                }
+            };
+
+        [TestCaseSource(nameof(IntersectionTestCases))]
+        public void IntersectionTests(Point a, Point b, Point c, Point d, Point expected)
+        {
+            var sut = new VectorGeometry();
+            var actual = sut.GetIntersection(a, b, c, d);
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

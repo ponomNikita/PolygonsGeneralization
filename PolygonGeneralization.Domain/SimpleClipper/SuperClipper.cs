@@ -23,7 +23,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                     ? _vectorGeometry.IncreaseContour(pathA.ToArray(), a.MassCenter, minDistance/2)
                     : _vectorGeometry.IncreaseContour(pathA.ToArray(), minDistance / 2);
                 var increasedPathB = b.MassCenter != null 
-                    ? _vectorGeometry.IncreaseContour(pathB.ToArray(), a.MassCenter, minDistance/2)
+                    ? _vectorGeometry.IncreaseContour(pathB.ToArray(), b.MassCenter, minDistance/2)
                     : _vectorGeometry.IncreaseContour(pathB.ToArray(), minDistance / 2);
 
                 var union = UnionPaths(increasedPathA, increasedPathB, minDistance);
@@ -123,9 +123,14 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                         var newItem = new Vertex(intersection);
 
                         newItem.Neigbours.Add(ringA[startIndexI]);
-                        newItem.Neigbours.Add(ringA[startIndexJ]);
+                        newItem.Neigbours.Add(ringB[startIndexJ]);
                         newItem.Neigbours.Add(ringA[endIndexI]);
-                        newItem.Neigbours.Add(ringA[endIndexJ]);
+                        newItem.Neigbours.Add(ringB[endIndexJ]);
+
+                        ringA[startIndexI].Neigbours.Remove(ringA[endIndexI]);
+                        ringA[endIndexI].Neigbours.Remove(ringA[startIndexI]);
+                        ringB[startIndexJ].Neigbours.Remove(ringB[endIndexJ]);
+                        ringB[endIndexJ].Neigbours.Remove(ringB[startIndexJ]);
 
                         ringA[startIndexI].Neigbours.Add(newItem);
                         ringA[endIndexI].Neigbours.Add(newItem);

@@ -247,5 +247,11 @@ namespace PolygonGenerator
                 }
             }
         }
+
+        private void DrawSourceBtn_Click(object sender, EventArgs e)
+        {
+            _union.Clear();
+            _canvas.Invalidate();
+        }
     }
 }
