@@ -106,5 +106,65 @@ namespace PolygonGeneralization.Domain
             
             return - Math.Sign(res);
         }
+
+        public IEnumerable<Point> IncreaseContour(IEnumerable<Point> points, Point center, double delta)
+        {
+            var resultPoints = new List<Point>();
+            foreach (var point in points)
+            {
+                var length = Math.Sqrt((point.X - center.X) * (point.X - center.X) +
+                             (point.Y - center.Y) * (point.Y - center.Y));
+
+                var coeff = (delta + length) / length;
+                var modifiedPoint = new Point(center.X + (point.X - center.X) * coeff,
+                    center.Y + (point.Y - center.Y) * coeff);
+
+                resultPoints.Add(modifiedPoint);
+            }
+
+            return resultPoints.ToArray();
+        }
+
+        public IEnumerable<Point> IncreaseContour(IEnumerable<Point> points, double delta)
+        {
+            return IncreaseContour(points, GetMassCenter(points), delta);
+        }
+        public Point GetIntersection(Point a, Point b, Point c, Point d)
+        {
+            var dir1 = b - a;
+            var dir2 = d - c;
+
+            //считаем уравнения прямых проходящих через отрезки
+            var a1 = -dir1.Y;
+            var b1 = dir1.X;
+            var d1 = -a1 * a.X - b1 * a.Y;
+
+            var a2 = -dir2.Y;
+            var b2 = dir2.X;
+            var d2 = -a2 * c.X - b2 * c.Y;
+
+            //подставляем концы отрезков, для выяснения в каких полуплоскотях они
+            var firstSegmentStart = a2 * a.X + b2 * a.Y + d2;
+            var firstSegmentEnd = a2 * b.X + b2 * b.Y + d2;
+
+            var secondSegmentStart = a1 * c.X + b1 * c.Y + d1;
+            var secondSegmentEnd = a1 * d.X + b1 * d.Y + d1;
+
+            //если концы одного отрезка имеют один знак, значит он в одной полуплоскости и пересечения нет.
+            if (firstSegmentStart * firstSegmentEnd > 0 || secondSegmentStart * secondSegmentEnd > 0)
+                return null;
+
+            var u = firstSegmentStart / (firstSegmentStart - firstSegmentEnd);
+
+            return a + (dir1 * u);
+        }
+
+        public Point GetMassCenter(IEnumerable<Point> points)
+        {
+            var x = points.Sum(p => p.X) / points.Count();
+            var y = points.Sum(p => p.Y) / points.Count();
+
+            return new Point(x, y);
+        }
     }
 }

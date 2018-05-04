@@ -103,6 +103,7 @@
     <Compile Include="SimpleClipper\Edge.cs" />
     <Compile Include="SimpleClipper\GraphHelper.cs" />
     <Compile Include="SimpleClipper\SimpleClipper.cs" />
+    <Compile Include="SimpleClipper\SuperClipper.cs" />
     <Compile Include="SimpleClipper\Vertex.cs" />
     <Compile Include="VectorGeometry.cs" />
   </ItemGroup>
