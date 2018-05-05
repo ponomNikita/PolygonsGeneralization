@@ -25,7 +25,8 @@ namespace PolygonGeneralization.WinForms.Ninject
             };
 
             kernel.Bind<GeneralizerOptions>().ToConstant(generalizerOptions).InSingletonScope();
-            kernel.Bind<IClipper>().To<SuperClipper>();
+            //kernel.Bind<IClipper>().To<SuperClipper>();
+            kernel.Bind<IClipper>().To<SimpleClipper>();
             kernel.Bind<ILinearGeneralizer>().To<LinearGeneralizer>();
             kernel.Bind<IGisDataReader>().To<CustomJsonGisDataReader>();
             kernel.Bind<IDrawerFactory>().To<DrawerFactory>();
