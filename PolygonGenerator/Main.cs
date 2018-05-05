@@ -239,7 +239,7 @@ namespace PolygonGenerator
                         var modifiedPoint = _vectorGeometry
                             .IncreaseContour(polygon.Points
                                     .Select(it => new PolygonGeneralization.Domain.Models.Point(it.X, it.Y)).ToArray(),
-                                new PolygonGeneralization.Domain.Models.Point(massCenter.X, massCenter.Y), minDistance);
+                                new PolygonGeneralization.Domain.Models.Point(massCenter.X, massCenter.Y), minDistance / 2);
 
                         graphics.DrawPolygon(pen, modifiedPoint.Select(it => new Point((int)it.X, (int)it.Y))
                             .ToArray());

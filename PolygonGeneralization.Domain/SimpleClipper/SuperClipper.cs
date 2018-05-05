@@ -19,16 +19,15 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             try
             {
-                var increasedPathA = a.MassCenter != null 
-                    ? _vectorGeometry.IncreaseContour(pathA.ToArray(), a.MassCenter, minDistance/2)
-                    : _vectorGeometry.IncreaseContour(pathA.ToArray(), minDistance / 2);
-                var increasedPathB = b.MassCenter != null 
-                    ? _vectorGeometry.IncreaseContour(pathB.ToArray(), b.MassCenter, minDistance/2)
-                    : _vectorGeometry.IncreaseContour(pathB.ToArray(), minDistance / 2);
+                var massCenterA = a.MassCenter ?? _vectorGeometry.GetMassCenter(pathA.ToArray());
+                var massCenterB = b.MassCenter ?? _vectorGeometry.GetMassCenter(pathB.ToArray());
+
+                var increasedPathA = _vectorGeometry.IncreaseContour(pathA.ToArray(), massCenterB, - minDistance / 2);
+                var increasedPathB = _vectorGeometry.IncreaseContour(pathB.ToArray(), massCenterA, - minDistance / 2);
 
                 var union = UnionPaths(increasedPathA, increasedPathB, minDistance);
 
-                var original = _vectorGeometry.IncreaseContour(union, - minDistance / 2);
+                var original = _vectorGeometry.IncreaseContour(union, minDistance / 2);
 
                 var paths = new List<Path> { new Path(original.ToArray()) };
                 paths.AddRange(a.Paths.Skip(1).Union(b.Paths.Skip(1)));
@@ -140,6 +139,11 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                         intersections.Add(newItem);
                     }
                 }
+            }
+
+            if (!intersections.Any())
+            {
+                throw new PolygonGeneralizationException("No intersections");
             }
 
             var result = new HashSet<Vertex>();
