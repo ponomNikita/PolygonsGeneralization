@@ -6,7 +6,7 @@ namespace PolygonGeneralization.Domain.Tests
 {
     public class SuperClipperTests
     {
-        private SuperClipper _sut = new SuperClipper();
+        private SuperClipper _sut = new SuperClipper(new LoggerMock());
 
         [Test]
         public void UnionTest1()

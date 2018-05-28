@@ -112,17 +112,25 @@ namespace PolygonGeneralization.Domain
             var resultPoints = new List<Point>();
             foreach (var point in points)
             {
-                var length = Math.Sqrt((point.X - center.X) * (point.X - center.X) +
-                             (point.Y - center.Y) * (point.Y - center.Y));
-
-                var coeff = (delta + length) / length;
-                var modifiedPoint = new Point(center.X + (point.X - center.X) * coeff,
-                    center.Y + (point.Y - center.Y) * coeff);
+                var modifiedPoint = ScaleVector(center, point, delta);
 
                 resultPoints.Add(modifiedPoint);
             }
 
             return resultPoints.ToArray();
+        }
+
+        public Point ScaleVector(Point center, Point point, double delta)
+        {
+            var lengthX = Math.Abs(point.X - center.X);
+            var lengthY = Math.Abs(point.Y - center.Y);
+
+            var coeffX = Math.Abs(lengthX) > Double.Epsilon ? (delta + lengthX) / lengthX : 1;
+            var coeffY = Math.Abs(lengthY) > Double.Epsilon ?(delta + lengthY) / lengthY : 1;
+
+            var modifiedPoint = new Point(center.X + (point.X - center.X) * coeffX,
+                center.Y + (point.Y - center.Y) * coeffY);
+            return modifiedPoint;
         }
 
         public IEnumerable<Point> IncreaseContour(IEnumerable<Point> points, double delta)

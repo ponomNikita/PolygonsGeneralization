@@ -66,6 +66,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="clipper_library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Clipper.6.4.0\lib\net40\clipper_library.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -81,6 +85,7 @@
     <Compile Include="CollectionExtentions.cs" />
     <Compile Include="ConvexHullGeneralizationStrategy.cs" />
     <Compile Include="Exceptions\PolygonGeneralizationException.cs" />
+    <Compile Include="ExternalClipper.cs" />
     <Compile Include="GeneralizerOptions.cs" />
     <Compile Include="IGeneralizePolygonStrategy.cs" />
     <Compile Include="Generalizer.cs" />
@@ -106,6 +111,9 @@
     <Compile Include="SimpleClipper\SuperClipper.cs" />
     <Compile Include="SimpleClipper\Vertex.cs" />
     <Compile Include="VectorGeometry.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

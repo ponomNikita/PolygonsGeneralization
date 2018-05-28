@@ -54,6 +54,7 @@
     <Compile Include="GeneralizerTests.cs" />
     <Compile Include="GraphHelperTests.cs" />
     <Compile Include="LinearGeneralizerTests.cs" />
+    <Compile Include="LoggerMock.cs" />
     <Compile Include="PolygonTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleClipperTests.cs" />

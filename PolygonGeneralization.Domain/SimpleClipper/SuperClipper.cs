@@ -9,8 +9,14 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 {
     public class SuperClipper : IClipper
     {
-        private readonly VectorGeometry _vectorGeometry = new VectorGeometry();
+        protected readonly VectorGeometry VectorGeometry = new VectorGeometry();
         private readonly GraphHelper _graphHelper = new GraphHelper();
+        private ILogger _logger;
+
+        public SuperClipper(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         public List<Polygon> Union(Polygon a, Polygon b, double minDistance)
         {
@@ -19,15 +25,12 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             try
             {
-                var massCenterA = a.MassCenter ?? _vectorGeometry.GetMassCenter(pathA.ToArray());
-                var massCenterB = b.MassCenter ?? _vectorGeometry.GetMassCenter(pathB.ToArray());
-
-                var increasedPathA = _vectorGeometry.IncreaseContour(pathA.ToArray(), massCenterB, - minDistance / 2);
-                var increasedPathB = _vectorGeometry.IncreaseContour(pathB.ToArray(), massCenterA, - minDistance / 2);
+                var increasedPathA = VectorGeometry.IncreaseContour(pathA.ToArray(), minDistance / 2);
+                var increasedPathB = VectorGeometry.IncreaseContour(pathB.ToArray(), minDistance / 2);
 
                 var union = UnionPaths(increasedPathA, increasedPathB, minDistance);
 
-                var original = _vectorGeometry.IncreaseContour(union, minDistance / 2);
+                var original = VectorGeometry.IncreaseContour(union, - minDistance / 2);
 
                 var paths = new List<Path> { new Path(original.ToArray()) };
                 paths.AddRange(a.Paths.Skip(1).Union(b.Paths.Skip(1)));
@@ -42,7 +45,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             }
         }
 
-        public IEnumerable<Point> UnionPaths(
+        public virtual IEnumerable<Point> UnionPaths(
             IEnumerable<Point> pathA,
             IEnumerable<Point> pathB, double minDistance)
         {
@@ -61,6 +64,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
             {
                 if (++iteration > maxPointCount)
                 {
+                    _logger.Log("Looping was happened");
                     throw new PolygonGeneralizationException("Looping was happened");
                 }
 
@@ -114,7 +118,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
                     var startIndexJ = j;
                     var endIndexJ = j == ringB.Count - 1 ? 0 : j + 1;
 
-                    var intersection = _vectorGeometry.GetIntersection(ringA[startIndexI], ringA[endIndexI],
+                    var intersection = VectorGeometry.GetIntersection(ringA[startIndexI], ringA[endIndexI],
                         ringB[startIndexJ], ringB[endIndexJ]);
 
                     if (intersection != null)
@@ -143,6 +147,7 @@ namespace PolygonGeneralization.Domain.SimpleClipper
 
             if (!intersections.Any())
             {
+                _logger.Log("No intersections");
                 throw new PolygonGeneralizationException("No intersections");
             }
 

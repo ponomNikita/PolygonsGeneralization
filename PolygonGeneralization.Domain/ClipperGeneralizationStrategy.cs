@@ -58,7 +58,6 @@ namespace PolygonGeneralization.Domain
                 if (unionResult.Count == 2)
                 {
                     resultList.Add(unionResult[1]);
-                    _logger.Log($"Oops, looping happened");
                 }
 
                 union = unionResult[0];

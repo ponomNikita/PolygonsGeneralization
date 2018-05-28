@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using PolygonGeneralization.Domain;
 using PolygonGeneralization.Domain.Models;
 using PolygonGeneralization.Domain.SimpleClipper;
+using PolygonGeneralization.Domain.Tests;
 using Path = PolygonGeneralization.Domain.Models.Path;
 using Point = System.Drawing.Point;
 
@@ -19,8 +20,8 @@ namespace PolygonGenerator
         private PictureBox _canvas;
         private const int CANVAS_SIZE = 10000;
 
-        private SuperClipper _clipper = new SuperClipper();
-        private VectorGeometry _vectorGeometry = new VectorGeometry();
+        private readonly ExternalClipper _clipper = new ExternalClipper(new LoggerMock());
+        private readonly VectorGeometry _vectorGeometry = new VectorGeometry();
         private readonly List<Point> _points = new List<Point>();
         private List<Polygon> _polygons = new List<Polygon>();
         private List<Polygon> _union = new List<Polygon>();
@@ -222,28 +223,35 @@ namespace PolygonGenerator
 
         private void DrawPolygons(IEnumerable<Polygon> polygons, Graphics graphics, Color color)
         {
+            var list = polygons.ToList();
             var pen = new Pen(color);
-            foreach (var polygon in polygons)
+            pen.Width = 3;
+
+            if (WithDeltaArea.Checked && polygons.Count() > 1 && double.TryParse(MinDistanceTextBox.Text, out var minDistance))
             {
-                pen.Width = 3;
-                if (!WithDeltaArea.Checked)
+                var pathA = list[0].Points
+                    .Select(p => new PolygonGeneralization.Domain.Models.Point(p.X, p.Y))
+                    .ToArray();
+                var pathB = list[1].Points
+                    .Select(p => new PolygonGeneralization.Domain.Models.Point(p.X, p.Y))
+                    .ToArray();
+                var massCenterA = _vectorGeometry.GetMassCenter(pathA);
+                var massCenterB = _vectorGeometry.GetMassCenter(pathB);
+
+                var increasedPathA = _vectorGeometry.IncreaseContour(pathA.ToArray(), massCenterA, minDistance / 2);
+                var increasedPathB = _vectorGeometry.IncreaseContour(pathB.ToArray(), massCenterB, minDistance / 2);
+                
+                graphics.DrawPolygon(pen, increasedPathA.Select(it => new Point((int)it.X, (int)it.Y))
+                    .ToArray());
+                
+                graphics.DrawPolygon(pen, increasedPathB.Select(it => new Point((int)it.X, (int)it.Y))
+                    .ToArray());
+            }
+            else
+            {
+                foreach (var polygon in polygons)
                 {
                     graphics.DrawPolygon(pen, polygon.Points.ToArray());
-                }
-                else
-                {
-                    double minDistance;
-                    if (double.TryParse(MinDistanceTextBox.Text, out minDistance))
-                    {
-                        var massCenter = polygon.GetMassCenter();
-                        var modifiedPoint = _vectorGeometry
-                            .IncreaseContour(polygon.Points
-                                    .Select(it => new PolygonGeneralization.Domain.Models.Point(it.X, it.Y)).ToArray(),
-                                new PolygonGeneralization.Domain.Models.Point(massCenter.X, massCenter.Y), minDistance / 2);
-
-                        graphics.DrawPolygon(pen, modifiedPoint.Select(it => new Point((int)it.X, (int)it.Y))
-                            .ToArray());
-                    }
                 }
             }
         }

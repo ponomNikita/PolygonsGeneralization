@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Linq;
 using PolygonGeneralization.WinForms.Interfaces;
 using PolygonGeneralization.WinForms.Models;
@@ -25,7 +26,15 @@ namespace PolygonGeneralization.WinForms
         public void DrawPolygon(Point2D[] points)
         {
             //_graphics.FillPolygon(_pen.Brush, points.Select(p => new Point(p.X, p.Y)).ToArray());
-            _graphics.DrawPolygon(_pen, points.Select(p => new Point(p.X, p.Y)).ToArray());
+            try
+            {
+                _graphics.DrawPolygon(_pen, points.Select(p => new Point(p.X, p.Y)).ToArray());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
             //foreach (var point2D in points)
             //{
             //    _graphics.FillRectangle(_penForPoints.Brush, point2D.X, point2D.Y, 3, 3);
